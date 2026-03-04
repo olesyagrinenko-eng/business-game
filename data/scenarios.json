@@ -1,0 +1,1506 @@
+{
+  "common_intro": [
+    "В городе 2 конкурента (Команда 1 и Команда 2)",
+    "У каждого конкурента одинаковое кол-во курьеров, больше курьеров нет",
+    "Мы живем в идеальном мире, где нет перетока курьеров, нет суржа и пр.",
+    "В стране санкции, поэтому пользователи не могут скачать приложение конкурента и сделать заказ там",
+    "Задача: удержать CTE в таргете при максимальной марже (DC = Direct Contribution)"
+  ],
+  "rounds_intro": {
+    "1": [
+      "На след.неделе прогнозируют проливные дожди и рост спроса"
+    ],
+    "2": [
+      "На след.неделе прогнозируют проливные дожди и рост спроса",
+      "Вы с конкурентом одновременно изобрели механизм суржа, который обрезает заказы, но растит чек"
+    ],
+    "3": [
+      "На след.неделе прогнозируют проливные дожди и рост спроса",
+      "Вы с конкурентом одновременно изобрели механизм суржа, который обрезает заказы, но растит чек",
+      "На рынке появился сервис Доставки заказов, который вывозит заказы с неоптимальным CTE (макс возможность вывоза - 500 заказов)"
+    ],
+    "4": [
+      "На след.неделе прогнозируют проливные дожди и рост спроса",
+      "Вы с конкурентом одновременно изобрели механизм суржа, который обрезает заказы, но растит чек",
+      "На рынке появился сервис Доставки заказов, который вывозит заказы с неоптимальным CTE (макс возможность вывоза - 500 заказов)",
+      "Отключили санкции и пользователи теперь могут скачать приложение конкурента и перетекать"
+    ],
+    "5": [
+      "На след.неделе прогнозируют проливные дожди и рост спроса",
+      "Вы с конкурентом одновременно изобрели механизм суржа, который обрезает заказы, но растит чек",
+      "На рынке появился сервис Доставки заказов, который вывозит заказы с неоптимальным CTE (макс возможность вывоза - 500 заказов)",
+      "Отключили санкции и пользователи теперь могут скачать приложение конкурента и перетекать",
+      "У нас не бесконечный склад (АЗ привез сток под прогноз заказов) + мы продаем скоропортящиеся товары, которые списываются"
+    ]
+  },
+  "scenarios": {
+    "1": {
+      "0.4_-0.1": {
+        "team1": {
+          "CTE": 11.33,
+          "CPO": 156.86,
+          "DCPO": 206.14,
+          "DC": 259740,
+          "CTE_in_target": true,
+          "place_DC": 16
+        },
+        "team2": {
+          "CTE": 77.79,
+          "CPO": 268.71,
+          "DCPO": 357921.43,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.0": {
+        "team1": {
+          "CTE": 12.44,
+          "CPO": 153.05,
+          "DCPO": 209.95,
+          "DC": 264540,
+          "CTE_in_target": true,
+          "place_DC": 15
+        },
+        "team2": {
+          "CTE": 89.54,
+          "CPO": 256.96,
+          "DCPO": 342275.14,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_-0.1": {
+        "team1": {
+          "CTE": 13.78,
+          "CPO": 132.95,
+          "DCPO": 230.05,
+          "DC": 289860,
+          "CTE_in_target": true,
+          "place_DC": 12
+        },
+        "team2": {
+          "CTE": 85.0,
+          "CPO": 261.5,
+          "DCPO": 348321.43,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.2": {
+        "team1": {
+          "CTE": 15.45,
+          "CPO": 145.43,
+          "DCPO": 217.57,
+          "DC": 274140,
+          "CTE_in_target": true,
+          "place_DC": 14
+        },
+        "team2": {
+          "CTE": 113.03,
+          "CPO": 233.47,
+          "DCPO": 310982.57,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.0": {
+        "team1": {
+          "CTE": 15.45,
+          "CPO": 129.14,
+          "DCPO": 233.86,
+          "DC": 294660,
+          "CTE_in_target": true,
+          "place_DC": 11
+        },
+        "team2": {
+          "CTE": 96.74,
+          "CPO": 249.76,
+          "DCPO": 332675.14,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_-0.1": {
+        "team1": {
+          "CTE": 17.59,
+          "CPO": 109.05,
+          "DCPO": 253.95,
+          "DC": 319980,
+          "CTE_in_target": false,
+          "place_DC": 8
+        },
+        "team2": {
+          "CTE": 92.2,
+          "CPO": 254.3,
+          "DCPO": 338721.43,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_-0.1": {
+        "team1": {
+          "CTE": 20.4,
+          "CPO": 97.1,
+          "DCPO": 265.9,
+          "DC": 335040,
+          "CTE_in_target": false,
+          "place_DC": 5
+        },
+        "team2": {
+          "CTE": 95.81,
+          "CPO": 250.69,
+          "DCPO": 333921.43,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.0": {
+        "team1": {
+          "CTE": 20.4,
+          "CPO": 105.24,
+          "DCPO": 257.76,
+          "DC": 324780,
+          "CTE_in_target": false,
+          "place_DC": 7
+        },
+        "team2": {
+          "CTE": 103.95,
+          "CPO": 242.55,
+          "DCPO": 323075.14,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.2": {
+        "team1": {
+          "CTE": 20.4,
+          "CPO": 121.52,
+          "DCPO": 241.48,
+          "DC": 304260,
+          "CTE_in_target": false,
+          "place_DC": 10
+        },
+        "team2": {
+          "CTE": 120.24,
+          "CPO": 226.26,
+          "DCPO": 301382.57,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.4": {
+        "team1": {
+          "CTE": 20.4,
+          "CPO": 137.81,
+          "DCPO": 225.19,
+          "DC": 283740,
+          "CTE_in_target": false,
+          "place_DC": 13
+        },
+        "team2": {
+          "CTE": 136.52,
+          "CPO": 209.98,
+          "DCPO": 279690,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.0": {
+        "team1": {
+          "CTE": 24.29,
+          "CPO": 93.29,
+          "DCPO": 269.71,
+          "DC": 339840,
+          "CTE_in_target": false,
+          "place_DC": 4
+        },
+        "team2": {
+          "CTE": 107.55,
+          "CPO": 238.95,
+          "DCPO": 318275.14,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.2": {
+        "team1": {
+          "CTE": 30,
+          "CPO": 97.62,
+          "DCPO": 265.38,
+          "DC": 334380.0,
+          "CTE_in_target": false,
+          "place_DC": 6
+        },
+        "team2": {
+          "CTE": 127.44,
+          "CPO": 219.06,
+          "DCPO": 291782.57,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.4": {
+        "team1": {
+          "CTE": 30,
+          "CPO": 113.9,
+          "DCPO": 249.1,
+          "DC": 313860,
+          "CTE_in_target": false,
+          "place_DC": 9
+        },
+        "team2": {
+          "CTE": 143.73,
+          "CPO": 202.77,
+          "DCPO": 270090,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.2": {
+        "team1": {
+          "CTE": 39.23,
+          "CPO": 85.67,
+          "DCPO": 277.33,
+          "DC": 349440,
+          "CTE_in_target": false,
+          "place_DC": 2
+        },
+        "team2": {
+          "CTE": 131.05,
+          "CPO": 215.45,
+          "DCPO": 286982.57,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.4": {
+        "team1": {
+          "CTE": 56.67,
+          "CPO": 90,
+          "DCPO": 273,
+          "DC": 343980,
+          "CTE_in_target": false,
+          "place_DC": 3
+        },
+        "team2": {
+          "CTE": 150.94,
+          "CPO": 195.56,
+          "DCPO": 260490.0,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.4": {
+        "team1": {
+          "CTE": 102,
+          "CPO": 78.05,
+          "DCPO": 284.95,
+          "DC": 359040,
+          "CTE_in_target": false,
+          "place_DC": 1
+        },
+        "team2": {
+          "CTE": 154.54,
+          "CPO": 191.96,
+          "DCPO": 255690.0,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      }
+    },
+    "2": {
+      "0.4_-0.1": {
+        "team1": {
+          "CTE": 11.33,
+          "CPO": 156.86,
+          "DCPO": 206.14,
+          "DC": 259740,
+          "CTE_in_target": true,
+          "place_DC": 12
+        },
+        "team2": {
+          "CTE": 93.29,
+          "CPO": 407.06,
+          "DCPO": 122118.09,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.0": {
+        "team1": {
+          "CTE": 12.44,
+          "CPO": 153.05,
+          "DCPO": 209.95,
+          "DC": 264540,
+          "CTE_in_target": true,
+          "place_DC": 11
+        },
+        "team2": {
+          "CTE": 101.43,
+          "CPO": 330.54,
+          "DCPO": 178492.37,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_-0.1": {
+        "team1": {
+          "CTE": 13.78,
+          "CPO": 132.95,
+          "DCPO": 230.05,
+          "DC": 289860,
+          "CTE_in_target": true,
+          "place_DC": 7
+        },
+        "team2": {
+          "CTE": 93.29,
+          "CPO": 312.39,
+          "DCPO": 243660.94,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.2": {
+        "team1": {
+          "CTE": 15.45,
+          "CPO": 145.43,
+          "DCPO": 217.57,
+          "DC": 274140,
+          "CTE_in_target": true,
+          "place_DC": 9
+        },
+        "team2": {
+          "CTE": 119.59,
+          "CPO": 276.41,
+          "DCPO": 257721.6,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.0": {
+        "team1": {
+          "CTE": 15.45,
+          "CPO": 129.14,
+          "DCPO": 233.86,
+          "DC": 294660,
+          "CTE_in_target": true,
+          "place_DC": 5
+        },
+        "team2": {
+          "CTE": 103.31,
+          "CPO": 292.69,
+          "DCPO": 272906.4,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_-0.1": {
+        "team1": {
+          "CTE": 15.83,
+          "CPO": 112.12,
+          "DCPO": 291.22,
+          "DC": 330240.0,
+          "CTE_in_target": true,
+          "place_DC": 1
+        },
+        "team2": {
+          "CTE": 97.96,
+          "CPO": 293.73,
+          "DCPO": 299960.23,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_-0.1": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 101.86,
+          "DCPO": 304.7,
+          "DC": 319938.0,
+          "CTE_in_target": true,
+          "place_DC": 2
+        },
+        "team2": {
+          "CTE": 100.31,
+          "CPO": 287.77,
+          "DCPO": 319421.66,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.0": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 296.56,
+          "DC": 311388.0,
+          "CTE_in_target": true,
+          "place_DC": 3
+        },
+        "team2": {
+          "CTE": 108.46,
+          "CPO": 279.62,
+          "DCPO": 310383.09,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.2": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 280.27,
+          "DC": 294288.0,
+          "CTE_in_target": true,
+          "place_DC": 6
+        },
+        "team2": {
+          "CTE": 124.74,
+          "CPO": 263.34,
+          "DCPO": 292305.94,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.4": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 263.99,
+          "DC": 277188.0,
+          "CTE_in_target": true,
+          "place_DC": 8
+        },
+        "team2": {
+          "CTE": 141.03,
+          "CPO": 247.05,
+          "DCPO": 274228.8,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.0": {
+        "team1": {
+          "CTE": 18.62,
+          "CPO": 99.37,
+          "DCPO": 310.98,
+          "DC": 300402.0,
+          "CTE_in_target": false,
+          "place_DC": 4
+        },
+        "team2": {
+          "CTE": 110.46,
+          "CPO": 274.54,
+          "DCPO": 329121.43,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.2": {
+        "team1": {
+          "CTE": 21,
+          "CPO": 104.56,
+          "DCPO": 310.3,
+          "DC": 273684.0,
+          "CTE_in_target": false,
+          "place_DC": 10
+        },
+        "team2": {
+          "CTE": 127.44,
+          "CPO": 219.06,
+          "DCPO": 291782.57,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.4": {
+        "team1": {
+          "CTE": 21,
+          "CPO": 120.84,
+          "DCPO": 294.01,
+          "DC": 259320,
+          "CTE_in_target": false,
+          "place_DC": 13
+        },
+        "team2": {
+          "CTE": 143.73,
+          "CPO": 202.77,
+          "DCPO": 270090,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.2": {
+        "team1": {
+          "CTE": 24.29,
+          "CPO": 93.29,
+          "DCPO": 328.35,
+          "DC": 256115.14,
+          "CTE_in_target": false,
+          "place_DC": 14
+        },
+        "team2": {
+          "CTE": 131.05,
+          "CPO": 215.45,
+          "DCPO": 286982.57,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.4": {
+        "team1": {
+          "CTE": 24.29,
+          "CPO": 101.43,
+          "DCPO": 346.27,
+          "DC": 186986.57,
+          "CTE_in_target": false,
+          "place_DC": 15
+        },
+        "team2": {
+          "CTE": 150.94,
+          "CPO": 195.56,
+          "DCPO": 260490.0,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.4": {
+        "team1": {
+          "CTE": 24.29,
+          "CPO": 93.29,
+          "DCPO": 422.17,
+          "DC": 126652.29,
+          "CTE_in_target": false,
+          "place_DC": 16
+        },
+        "team2": {
+          "CTE": 154.54,
+          "CPO": 191.96,
+          "DCPO": 255690.0,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      }
+    },
+    "3": {
+      "0.4_-0.1": {
+        "team1": {
+          "CTE": 11.33,
+          "CPO": 156.86,
+          "DCPO": 206.14,
+          "DC": 259740,
+          "CTE_in_target": true,
+          "place_DC": 10
+        },
+        "team2": {
+          "CTE": 93.29,
+          "CPO": -95.42,
+          "DCPO": -76333.91,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.0": {
+        "team1": {
+          "CTE": 12.44,
+          "CPO": 153.05,
+          "DCPO": 209.95,
+          "DC": 264540,
+          "CTE_in_target": true,
+          "place_DC": 9
+        },
+        "team2": {
+          "CTE": 101.43,
+          "CPO": -52.07,
+          "DCPO": -54147.63,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_-0.1": {
+        "team1": {
+          "CTE": 13.78,
+          "CPO": 132.95,
+          "DCPO": 230.05,
+          "DC": 289860,
+          "CTE_in_target": true,
+          "place_DC": 6
+        },
+        "team2": {
+          "CTE": 93.29,
+          "CPO": -1.66,
+          "DCPO": -2128.29,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.2": {
+        "team1": {
+          "CTE": 15.45,
+          "CPO": 145.43,
+          "DCPO": 217.57,
+          "DC": 274140,
+          "CTE_in_target": true,
+          "place_DC": 8
+        },
+        "team2": {
+          "CTE": 119.59,
+          "CPO": 43.11,
+          "DCPO": 57422.1,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.0": {
+        "team1": {
+          "CTE": 15.45,
+          "CPO": 129.14,
+          "DCPO": 233.86,
+          "DC": 294660,
+          "CTE_in_target": true,
+          "place_DC": 4
+        },
+        "team2": {
+          "CTE": 103.31,
+          "CPO": 54.51,
+          "DCPO": 72606.9,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_-0.1": {
+        "team1": {
+          "CTE": 15.83,
+          "CPO": 112.12,
+          "DCPO": 291.22,
+          "DC": 330240.0,
+          "CTE_in_target": true,
+          "place_DC": 1
+        },
+        "team2": {
+          "CTE": 97.96,
+          "CPO": 107.23,
+          "DCPO": 142833.94,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_-0.1": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 101.86,
+          "DCPO": 304.7,
+          "DC": 319938.0,
+          "CTE_in_target": true,
+          "place_DC": 2
+        },
+        "team2": {
+          "CTE": 100.31,
+          "CPO": 287.77,
+          "DCPO": 319421.66,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.0": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 296.56,
+          "DC": 311388.0,
+          "CTE_in_target": true,
+          "place_DC": 3
+        },
+        "team2": {
+          "CTE": 108.46,
+          "CPO": 279.62,
+          "DCPO": 310383.09,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.2": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 280.27,
+          "DC": 294288.0,
+          "CTE_in_target": true,
+          "place_DC": 5
+        },
+        "team2": {
+          "CTE": 124.74,
+          "CPO": 263.34,
+          "DCPO": 292305.94,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.4": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 263.99,
+          "DC": 277188.0,
+          "CTE_in_target": true,
+          "place_DC": 7
+        },
+        "team2": {
+          "CTE": 141.03,
+          "CPO": 247.05,
+          "DCPO": 274228.8,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.0": {
+        "team1": {
+          "CTE": 18.24,
+          "CPO": 99.37,
+          "DCPO": 109.58,
+          "DC": 138069.26,
+          "CTE_in_target": false,
+          "place_DC": 11
+        },
+        "team2": {
+          "CTE": 110.46,
+          "CPO": 274.54,
+          "DCPO": 329121.43,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.2": {
+        "team1": {
+          "CTE": 20.29,
+          "CPO": 104.56,
+          "DCPO": 52.92,
+          "DC": 66675.0,
+          "CTE_in_target": false,
+          "place_DC": 12
+        },
+        "team2": {
+          "CTE": 127.44,
+          "CPO": 219.06,
+          "DCPO": 291782.57,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.4": {
+        "team1": {
+          "CTE": 21,
+          "CPO": 120.84,
+          "DCPO": 41.52,
+          "DC": 52311,
+          "CTE_in_target": false,
+          "place_DC": 13
+        },
+        "team2": {
+          "CTE": 143.73,
+          "CPO": 202.77,
+          "DCPO": 270090,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.2": {
+        "team1": {
+          "CTE": 23.03,
+          "CPO": 93.29,
+          "DCPO": -2.78,
+          "DC": -3498.4,
+          "CTE_in_target": false,
+          "place_DC": 14
+        },
+        "team2": {
+          "CTE": 131.05,
+          "CPO": 215.45,
+          "DCPO": 286982.57,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.4": {
+        "team1": {
+          "CTE": 24.29,
+          "CPO": 101.43,
+          "DCPO": -67.71,
+          "DC": -70413.43,
+          "CTE_in_target": false,
+          "place_DC": 15
+        },
+        "team2": {
+          "CTE": 150.94,
+          "CPO": 195.56,
+          "DCPO": 260490.0,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.4": {
+        "team1": {
+          "CTE": 24.29,
+          "CPO": 93.29,
+          "DCPO": -121.08,
+          "DC": -96867.71,
+          "CTE_in_target": false,
+          "place_DC": 16
+        },
+        "team2": {
+          "CTE": 154.54,
+          "CPO": 191.96,
+          "DCPO": 255690.0,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      }
+    },
+    "4": {
+      "0.4_-0.1": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 220.43,
+          "DC": 416610,
+          "CTE_in_target": true,
+          "place_DC": 1
+        },
+        "team2": {
+          "CTE": 93.29,
+          "CPO": -95.42,
+          "DCPO": -76333.91,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.0": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 220.43,
+          "DC": 379578,
+          "CTE_in_target": true,
+          "place_DC": 2
+        },
+        "team2": {
+          "CTE": 101.43,
+          "CPO": -52.07,
+          "DCPO": -54147.63,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_-0.1": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 236.71,
+          "DC": 367854,
+          "CTE_in_target": true,
+          "place_DC": 3
+        },
+        "team2": {
+          "CTE": 93.29,
+          "CPO": -1.66,
+          "DCPO": -2128.29,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.2": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 220.43,
+          "DC": 305514,
+          "CTE_in_target": true,
+          "place_DC": 8
+        },
+        "team2": {
+          "CTE": 119.59,
+          "CPO": 43.11,
+          "DCPO": 57422.1,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.0": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 236.71,
+          "DC": 328086,
+          "CTE_in_target": true,
+          "place_DC": 5
+        },
+        "team2": {
+          "CTE": 103.31,
+          "CPO": 54.51,
+          "DCPO": 72606.9,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_-0.1": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 293.33,
+          "DC": 357280,
+          "CTE_in_target": true,
+          "place_DC": 4
+        },
+        "team2": {
+          "CTE": 97.96,
+          "CPO": 107.23,
+          "DCPO": 142833.94,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_-0.1": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 101.86,
+          "DCPO": 304.7,
+          "DC": 319938.0,
+          "CTE_in_target": true,
+          "place_DC": 6
+        },
+        "team2": {
+          "CTE": 100.31,
+          "CPO": 287.77,
+          "DCPO": 319421.66,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.0": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 296.56,
+          "DC": 311388.0,
+          "CTE_in_target": true,
+          "place_DC": 7
+        },
+        "team2": {
+          "CTE": 108.46,
+          "CPO": 279.62,
+          "DCPO": 310383.09,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.2": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 280.27,
+          "DC": 294288.0,
+          "CTE_in_target": true,
+          "place_DC": 9
+        },
+        "team2": {
+          "CTE": 124.74,
+          "CPO": 263.34,
+          "DCPO": 292305.94,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.4": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 263.99,
+          "DC": 277188.0,
+          "CTE_in_target": true,
+          "place_DC": 10
+        },
+        "team2": {
+          "CTE": 141.03,
+          "CPO": 247.05,
+          "DCPO": 274228.8,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.0": {
+        "team1": {
+          "CTE": 18.53,
+          "CPO": 99.37,
+          "DCPO": 109.58,
+          "DC": 138069.26,
+          "CTE_in_target": false,
+          "place_DC": 11
+        },
+        "team2": {
+          "CTE": 108.46,
+          "CPO": 276.54,
+          "DCPO": 356078.57,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.2": {
+        "team1": {
+          "CTE": 20.79,
+          "CPO": 104.56,
+          "DCPO": 52.92,
+          "DC": 66675.0,
+          "CTE_in_target": false,
+          "place_DC": 12
+        },
+        "team2": {
+          "CTE": 124.74,
+          "CPO": 221.76,
+          "DCPO": 324920.83,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.4": {
+        "team1": {
+          "CTE": 21,
+          "CPO": 120.84,
+          "DCPO": 41.52,
+          "DC": 52311,
+          "CTE_in_target": false,
+          "place_DC": 13
+        },
+        "team2": {
+          "CTE": 141.03,
+          "CPO": 205.47,
+          "DCPO": 301059,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.2": {
+        "team1": {
+          "CTE": 23.81,
+          "CPO": 93.29,
+          "DCPO": -2.78,
+          "DC": -3498.4,
+          "CTE_in_target": false,
+          "place_DC": 14
+        },
+        "team2": {
+          "CTE": 124.74,
+          "CPO": 221.76,
+          "DCPO": 364305.17,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.4": {
+        "team1": {
+          "CTE": 24.29,
+          "CPO": 101.43,
+          "DCPO": -67.71,
+          "DC": -70413.43,
+          "CTE_in_target": false,
+          "place_DC": 15
+        },
+        "team2": {
+          "CTE": 141.03,
+          "CPO": 205.47,
+          "DCPO": 374043,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.4": {
+        "team1": {
+          "CTE": 24.29,
+          "CPO": 93.29,
+          "DCPO": -121.08,
+          "DC": -96867.71,
+          "CTE_in_target": false,
+          "place_DC": 16
+        },
+        "team2": {
+          "CTE": 141.03,
+          "CPO": 205.47,
+          "DCPO": 410535,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      }
+    },
+    "5": {
+      "0.4_-0.1": {
+        "team1": {
+          "CTE": 14.73,
+          "CPO": 146.97,
+          "DCPO": 199.11,
+          "DC": 326142.0,
+          "CTE_in_target": true,
+          "place_DC": 4
+        },
+        "team2": {
+          "CTE": 93.29,
+          "CPO": -230.06,
+          "DCPO": -184044.76,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.0": {
+        "team1": {
+          "CTE": 16.17,
+          "CPO": 144.04,
+          "DCPO": 202.04,
+          "DC": 330942.0,
+          "CTE_in_target": true,
+          "place_DC": 2
+        },
+        "team2": {
+          "CTE": 101.43,
+          "CPO": -116.64,
+          "DCPO": -121308.06,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_-0.1": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 218.88,
+          "DC": 340134.0,
+          "CTE_in_target": true,
+          "place_DC": 1
+        },
+        "team2": {
+          "CTE": 93.29,
+          "CPO": -43.65,
+          "DCPO": -55869.84,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.2": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 200.43,
+          "DC": 277794,
+          "CTE_in_target": true,
+          "place_DC": 8
+        },
+        "team2": {
+          "CTE": 119.59,
+          "CPO": 8.82,
+          "DCPO": 11753.53,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.0": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 216.71,
+          "DC": 300366,
+          "CTE_in_target": true,
+          "place_DC": 5
+        },
+        "team2": {
+          "CTE": 103.31,
+          "CPO": 20.22,
+          "DCPO": 26938.33,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_-0.1": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 268.05,
+          "DC": 326480.0,
+          "CTE_in_target": true,
+          "place_DC": 3
+        },
+        "team2": {
+          "CTE": 97.96,
+          "CPO": 76.27,
+          "DCPO": 101589.78,
+          "DC": "-",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_-0.1": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 101.86,
+          "DCPO": 275.13,
+          "DC": 288891.6,
+          "CTE_in_target": true,
+          "place_DC": 6
+        },
+        "team2": {
+          "CTE": 100.31,
+          "CPO": 259.54,
+          "DCPO": 288093.02,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.0": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 266.99,
+          "DC": 280341.6,
+          "CTE_in_target": true,
+          "place_DC": 7
+        },
+        "team2": {
+          "CTE": 108.46,
+          "CPO": 251.4,
+          "DCPO": 279054.45,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.2": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 250.71,
+          "DC": 263241.6,
+          "CTE_in_target": true,
+          "place_DC": 9
+        },
+        "team2": {
+          "CTE": 124.74,
+          "CPO": 235.11,
+          "DCPO": 260977.3,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.4": {
+        "team1": {
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 234.42,
+          "DC": 246141.6,
+          "CTE_in_target": true,
+          "place_DC": 10
+        },
+        "team2": {
+          "CTE": 141.03,
+          "CPO": 218.83,
+          "DCPO": 242900.16,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.0": {
+        "team1": {
+          "CTE": 18.6,
+          "CPO": 99.37,
+          "DCPO": 77.14,
+          "DC": 97196.67,
+          "CTE_in_target": false,
+          "place_DC": 11
+        },
+        "team2": {
+          "CTE": 108.46,
+          "CPO": 252.41,
+          "DCPO": 324998.57,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.2": {
+        "team1": {
+          "CTE": 20.94,
+          "CPO": 104.56,
+          "DCPO": 17.0,
+          "DC": 21417.86,
+          "CTE_in_target": false,
+          "place_DC": 12
+        },
+        "team2": {
+          "CTE": 124.74,
+          "CPO": 202.67,
+          "DCPO": 296948.83,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0.4": {
+        "team1": {
+          "CTE": 21,
+          "CPO": 120.84,
+          "DCPO": 5.6,
+          "DC": 7053.86,
+          "CTE_in_target": false,
+          "place_DC": 13
+        },
+        "team2": {
+          "CTE": 141.03,
+          "CPO": 186.38,
+          "DCPO": 273087.0,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.2": {
+        "team1": {
+          "CTE": 24.1,
+          "CPO": 93.29,
+          "DCPO": -44.06,
+          "DC": -55510.3,
+          "CTE_in_target": false,
+          "place_DC": 14
+        },
+        "team2": {
+          "CTE": 124.74,
+          "CPO": 204.73,
+          "DCPO": 336333.17,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.0_0.4": {
+        "team1": {
+          "CTE": 24.29,
+          "CPO": 101.43,
+          "DCPO": -131.02,
+          "DC": -136256.98,
+          "CTE_in_target": false,
+          "place_DC": 15
+        },
+        "team2": {
+          "CTE": 143.55,
+          "CPO": 186.15,
+          "DCPO": 309940.5,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.4": {
+        "team1": {
+          "CTE": 24.29,
+          "CPO": 93.29,
+          "DCPO": -252.29,
+          "DC": -201834.11,
+          "CTE_in_target": false,
+          "place_DC": 16
+        },
+        "team2": {
+          "CTE": 146.43,
+          "CPO": 183.27,
+          "DCPO": 305140.5,
+          "DC": "+",
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      }
+    }
+  },
+  "coefficients": [
+    {
+      "value": -0.1,
+      "label": "-10%"
+    },
+    {
+      "value": 0,
+      "label": "0%"
+    },
+    {
+      "value": 0.2,
+      "label": "+20%"
+    },
+    {
+      "value": 0.4,
+      "label": "+40%"
+    }
+  ]
+}
