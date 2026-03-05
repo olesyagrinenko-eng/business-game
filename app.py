@@ -121,8 +121,23 @@ def api_state():
             "rounds_done": [r for r in range(1, current_round) if (team_id, r) in choices],
         })
     # Экран: общее состояние
+    # Все ли пары ответили в текущем раунде
+    round_complete = True
+    if pairs:
+        for p in pairs:
+            if p.get("team2_id") is None:
+                round_complete = False
+                break
+            c1 = choices.get((p["team1_id"], current_round))
+            c2 = choices.get((p["team2_id"], current_round))
+            if c1 is None or c2 is None:
+                round_complete = False
+                break
+    else:
+        round_complete = False
     return jsonify({
         "current_round": current_round,
+        "round_complete": round_complete,
         "teams": [{"id": t["id"], "name": t["name"], "role": t["role"]} for t in teams],
         "pairs": [{"team1_id": p["team1_id"], "team2_id": p["team2_id"]} for p in pairs],
         "choices": {f"{tid}_{r}": c for (tid, r), c in choices.items()},
@@ -170,12 +185,16 @@ def api_round():
 
 @app.route("/api/results")
 def api_results():
-    """Итоги по всем командам за все раунды: сумма DC, доля раундов в таргете по CTE."""
+    """Итоги: сумма DC, CTE в таргете. ?round=N — только раунды 1..N (для карты после раунда N)."""
+    up_to_round = request.args.get("round", type=int)
+    if up_to_round is None or up_to_round < 1 or up_to_round > max_rounds:
+        up_to_round = max_rounds
+    rounds_consider = list(range(1, up_to_round + 1))
     results = []
     for t in teams:
         total_dc = 0
         cte_ok_count = 0
-        for r in range(1, max_rounds + 1):
+        for r in rounds_consider:
             c = choices.get((t["id"], r))
             if c is None:
                 continue
@@ -196,23 +215,25 @@ def api_results():
                 total_dc += dc
             if side.get("CTE_in_target"):
                 cte_ok_count += 1
+        rounds_played = sum(1 for r in rounds_consider if (t["id"], r) in choices)
         results.append({
             "team_id": t["id"],
             "name": t["name"],
             "role": t["role"],
             "total_dc": round(total_dc, 0),
             "cte_ok_rounds": cte_ok_count,
-            "rounds_played": sum(1 for r in range(1, max_rounds + 1) if (t["id"], r) in choices),
+            "rounds_played": rounds_played,
         })
-    # Медиана DC для квадрантов
+    # Квадранты: по рассмотренным раундам; для отображения нужен хотя бы один сыгранный раунд
     dcs = [x["total_dc"] for x in results if x["total_dc"]]
     median_dc = sorted(dcs)[len(dcs) // 2] if dcs else 0
+    need_rounds = min(up_to_round, max_rounds)  # для квадранта считаем по сыгранным в этом срезе
     for x in results:
         x["quadrant"] = None
-        if x["rounds_played"] < max_rounds:
+        if x["rounds_played"] < 1:
             continue
-        high_dc = x["total_dc"] >= median_dc
-        cte_ok = x["cte_ok_rounds"] >= (max_rounds / 2)
+        high_dc = x["total_dc"] >= median_dc if median_dc else False
+        cte_ok = x["cte_ok_rounds"] >= (x["rounds_played"] / 2)  # больше половины сыгранных — в таргете
         if high_dc and cte_ok:
             x["quadrant"] = "top_right"
         elif high_dc and not cte_ok:
@@ -221,7 +242,7 @@ def api_results():
             x["quadrant"] = "bottom_right"
         else:
             x["quadrant"] = "bottom_left"
-    return jsonify({"results": results, "median_dc": median_dc})
+    return jsonify({"results": results, "median_dc": median_dc, "up_to_round": up_to_round})
 
 
 if __name__ == "__main__":
