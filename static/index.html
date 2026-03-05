@@ -25,6 +25,18 @@
     .hidden { display: none; }
     .screen-link { display: block; text-align: center; margin-top: 1rem; color: var(--accent); }
     #screenLink { color: var(--accent); }
+    .round-badge { background: linear-gradient(135deg, #1a3a5c 0%, #0d2137 100%); border: 3px solid #58a6ff; border-radius: 16px; padding: 0.75rem 1.25rem; margin-bottom: 1rem; text-align: center; }
+    .round-badge span { font-size: 1.75rem; font-weight: 800; letter-spacing: 0.08em; color: #58a6ff; }
+    .round-badge .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8b949e; margin-bottom: 0.25rem; }
+    .task-box { background: linear-gradient(145deg, #1e3a5f 0%, #0f2847 50%, #1a2332 100%); border: 3px solid #f0883e; border-radius: 16px; padding: 1.25rem 1.5rem; margin: 1.25rem 0; box-shadow: 0 0 20px rgba(240, 136, 62, 0.15); }
+    .task-box .round-title { color: #f0883e; font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .task-box p { margin: 0.4rem 0; font-size: 1.1rem; color: #e6edf3; }
+    .task-box .coef-options { font-size: 1.35rem; font-weight: 700; color: #ffb74d; margin: 0.5rem 0; letter-spacing: 0.02em; }
+    .task-box .goal { color: #7ee787; font-size: 1rem; margin-top: 0.5rem; }
+    .complication { background: linear-gradient(90deg, #2d2318 0%, #252d3a 100%); border-left: 5px solid #f0883e; padding: 0.6rem 1rem; margin: 0.5rem 0; border-radius: 0 10px 10px 0; font-weight: 500; }
+    .next-step { background: linear-gradient(135deg, #0d3320 0%, #1a4729 100%); border: 3px solid #3fb950; border-radius: 16px; padding: 1.25rem; margin-top: 1.25rem; box-shadow: 0 0 24px rgba(63, 185, 80, 0.2); }
+    .next-step strong { color: #7ee787; font-size: 1.15rem; }
+    .next-step p { margin: 0.4rem 0; font-size: 1.05rem; color: #c9d1d9; }
   </style>
 </head>
 <body>
@@ -40,6 +52,10 @@
     </div>
 
     <div id="step-game" class="hidden">
+      <div class="round-badge">
+        <div class="label">Текущий раунд</div>
+        <span id="roundNum">1</span>
+      </div>
       <div class="card">
         <h1 id="teamHeading">—</h1>
         <p class="role" id="teamRole">—</p>
@@ -48,12 +64,19 @@
         </p>
       </div>
       <div class="card">
-        <p class="round-title">Раунд <span id="roundNum">1</span>. Вводные</p>
+        <p class="round-title">Вводные</p>
         <ul id="introList"></ul>
-        <p class="round-title" style="margin-top:1rem;">Выберите коэффициент изменения ставки курьера на следующую неделю:</p>
+        <div id="complicationsList"></div>
+        <div class="task-box">
+          <p class="round-title">Задание</p>
+          <p>Выберите коэффициент изменения ставки курьера за заказ на следующую неделю:</p>
+          <p class="coef-options">-10% &nbsp; 0% &nbsp; +20% &nbsp; +40%</p>
+          <p class="goal">Цель: удержать CTE в таргете при максимальной марже (DC).</p>
+        </div>
         <div class="btn-group" id="coefButtons"></div>
         <p id="waitOpponent" class="muted hidden" style="margin-top:1rem;">Ожидаем решение соперника...</p>
         <div id="resultBox" class="result-box hidden"></div>
+        <div id="nextStepBox" class="next-step hidden"></div>
       </div>
       <p class="muted" style="text-align:center; margin-top:1rem; font-size:0.85rem;">
         <a href="/screen" style="color:var(--accent);">Экран для проектора →</a>
@@ -117,22 +140,37 @@
 
     function renderRound() {
       const r = String(data.current_round || 1);
+      const rNum = parseInt(r, 10);
       document.getElementById("roundNum").textContent = r;
       const common = (data && data.common_intro) || [];
       const roundIntro = (data && data.rounds_intro && data.rounds_intro[r]) || [];
       const ul = document.getElementById("introList");
       ul.innerHTML = "";
-      const allIntro = [...common, ...roundIntro];
-      if (allIntro.length === 0) {
+      if (common.length === 0) {
         const li = document.createElement("li");
         li.className = "muted";
         li.textContent = "Вводные смотрите на общем экране (страница /screen).";
         ul.appendChild(li);
       } else {
-        allIntro.forEach((text) => {
+        common.forEach((text) => {
           const li = document.createElement("li");
           li.textContent = text;
           ul.appendChild(li);
+        });
+      }
+      const compList = document.getElementById("complicationsList");
+      compList.innerHTML = "";
+      if (roundIntro.length > 0) {
+        const head = document.createElement("p");
+        head.className = "round-title";
+        head.style.marginTop = "1rem";
+        head.textContent = "Новые условия раунда " + r + ":";
+        compList.appendChild(head);
+        roundIntro.forEach((text) => {
+          const div = document.createElement("div");
+          div.className = "complication";
+          div.textContent = text;
+          compList.appendChild(div);
         });
       }
       const btnCont = document.getElementById("coefButtons");
@@ -163,7 +201,10 @@
       const box = document.getElementById("resultBox");
       box.innerHTML = "";
       if (!res) return;
-      const dc = res.DC != null ? (typeof res.DC === "number" ? res.DC.toLocaleString("ru") : res.DC) : "—";
+      let dc = "—";
+      if (res.DC != null && res.DC !== "" && res.DC !== "+" && res.DC !== "-") {
+        dc = typeof res.DC === "number" ? res.DC.toLocaleString("ru") : String(res.DC);
+      }
       box.innerHTML = `
         <dl>
           <dt>CTE (факт)</dt><dd>${res.CTE != null ? res.CTE : "—"}</dd>
@@ -206,9 +247,23 @@
         } else {
           hide(document.getElementById("waitOpponent"));
         }
-        if (result) showResult(result);
+        if (result) {
+          showResult(result);
+          showNextStep(state.current_round, true);
+        } else {
+          hide(document.getElementById("nextStepBox"));
+        }
       } catch (_) {}
       setTimeout(pollState, 2000);
+    }
+
+    function showNextStep(roundNum, roundDone) {
+      const box = document.getElementById("nextStepBox");
+      if (!roundDone) { hide(box); return; }
+      const next = roundNum < 5 ? roundNum + 1 : null;
+      box.innerHTML = "<strong>Раунд " + roundNum + " завершён</strong><p>Ваш результат показан выше.</p><p>" +
+        (next ? "Дождитесь объявления ведущего. Когда на экране переключат на <strong>раунд " + next + "</strong> — выберите коэффициент снова." : "Игра завершена. Итоговая карта — на экране.") + "</p>";
+      show(box);
     }
 
     function reenter() {

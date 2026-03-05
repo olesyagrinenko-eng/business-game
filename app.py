@@ -110,6 +110,9 @@ def api_state():
                 res = get_scenario_result(current_round, c1, c2)
                 if res:
                     result = res["team1"] if t["role"] == 1 else res["team2"]
+                    # В данных у team2 иногда в DC попадает "+"/"-" (оценка CTE) — подменяем на None
+                    if result and result.get("DC") in ("+", "-"):
+                        result = {**result, "DC": None}
         return jsonify({
             "team_id": team_id,
             "name": t["name"],

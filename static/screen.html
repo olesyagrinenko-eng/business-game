@@ -33,6 +33,23 @@
     .quadrant.top_left { border-color: #da3633; }
     .quadrant.bottom_right { border-color: #9e6a03; }
     .quadrant.bottom_left { border-color: #8b949e; }
+    .round-badge-big { background: linear-gradient(135deg, #1a3a5c 0%, #0d2137 100%); border: 4px solid #58a6ff; border-radius: 20px; padding: 1rem 2rem; margin-bottom: 1.5rem; text-align: center; }
+    .round-badge-big .num { font-size: 3rem; font-weight: 800; letter-spacing: 0.05em; color: #58a6ff; line-height: 1; }
+    .round-badge-big .label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.15em; color: #8b949e; margin-bottom: 0.35rem; }
+    .task-box { background: linear-gradient(145deg, #1e3a5f 0%, #0f2847 50%, #161b22 100%); border: 4px solid #f0883e; border-radius: 16px; padding: 1.5rem 2rem; margin: 1.5rem 0; box-shadow: 0 0 28px rgba(240, 136, 62, 0.2); }
+    .task-box h2 { color: #f0883e !important; font-size: 1.35rem !important; }
+    .task-box p { font-size: 1.2rem; color: #e6edf3; margin: 0.5rem 0; }
+    .task-box .coef-options { font-size: 1.6rem; font-weight: 700; color: #ffb74d; margin: 0.75rem 0; letter-spacing: 0.03em; }
+    .complication { background: linear-gradient(90deg, #2d2318 0%, #252d3a 100%); border-left: 6px solid #f0883e; padding: 0.75rem 1.25rem; margin: 0.6rem 0; border-radius: 0 12px 12px 0; font-size: 1.05rem; font-weight: 500; }
+    .round-status { padding: 1rem 1.25rem; border-radius: 12px; margin-bottom: 1rem; font-size: 1.05rem; }
+    .round-status.waiting { background: linear-gradient(135deg, #3d3520 0%, #2d2a1e 100%); border: 3px solid #d4a72c; color: #f0c14b; }
+    .round-status.done { background: linear-gradient(135deg, #0d3320 0%, #1a2e1a 100%); border: 3px solid #3fb950; color: #7ee787; }
+    #nextStepHost { font-size: 1.1rem; padding: 1.25rem; border-width: 3px; }
+    #nextStepHost strong { color: #7ee787; font-size: 1.15rem; }
+    .map-selector { margin-bottom: 1rem; }
+    .map-selector select { padding: 0.5rem 0.75rem; border-radius: 8px; background: var(--card); color: var(--text); font-size: 1rem; }
+    .results-table { margin-top: 1rem; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -59,13 +76,26 @@
   </div>
 
   <div id="view-intro" class="view active card">
+    <div class="round-badge-big">
+      <div class="label">Текущий раунд</div>
+      <div class="num" id="introRoundNum">1</div>
+    </div>
     <h2>Общие вводные</h2>
     <ul id="commonIntro"></ul>
-    <h2 style="margin-top:1rem;">Доп. вводные раунда <span id="introRoundNum">1</span></h2>
-    <ul id="roundIntro"></ul>
-    <h2 style="margin-top:1rem;">Задание</h2>
-    <p>Выбрать коэффициент изменения ставки курьера за заказ на следующую неделю: <strong>-10%</strong>, <strong>0%</strong>, <strong>+20%</strong>, <strong>+40%</strong>.</p>
-    <p>Цель: удержать CTE в таргете при максимальной марже (DC).</p>
+    <h2 style="margin-top:1.25rem;">Новые условия раунда <span id="introRoundNumSmall">1</span></h2>
+    <div id="roundIntroComplications"></div>
+    <div class="task-box">
+      <h2 style="margin-top:0;">Задание</h2>
+      <p>Выбрать коэффициент изменения ставки курьера за заказ на следующую неделю:</p>
+      <p class="coef-options">-10% &nbsp; 0% &nbsp; +20% &nbsp; +40%</p>
+      <p>Цель: удержать CTE в таргете при максимальной марже (DC).</p>
+    </div>
+    <div id="roundStatusBox" class="round-status waiting">
+      <strong>Статус раунда:</strong> <span id="roundStatusText">Ожидаем ответы команд.</span>
+    </div>
+    <div id="nextStepHost" class="round-status done hidden">
+      <strong>Что делать:</strong> <span id="nextStepHostText"></span>
+    </div>
   </div>
 
   <div id="view-progress" class="view card">
@@ -79,8 +109,22 @@
   </div>
 
   <div id="view-map" class="view card">
-    <h2>Итоговая карта по квадрантам</h2>
-    <p class="muted">По результатам 5 раундов: ось X — CTE в таргете (больше половины раундов), ось Y — суммарный DC (выше медианы = верх).</p>
+    <h2>Карта по квадрантам</h2>
+    <div class="map-selector">
+      <label>Показать после раунда: </label>
+      <select id="mapRoundSelect">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5 (итог)</option>
+      </select>
+    </div>
+    <p class="muted">Ось X — CTE в таргете (больше половины сыгранных раундов), ось Y — суммарный DC (выше медианы = верх).</p>
+    <table class="results-table" id="resultsTable">
+      <thead><tr><th>Команда</th><th>Сумма DC</th><th>CTE в таргете</th><th>Квадрант</th></tr></thead>
+      <tbody id="resultsTableBody"></tbody>
+    </table>
     <div class="quadrant-map">
       <div class="quadrant top_left">
         <h3>Высокий DC, CTE вне таргета</h3>
@@ -126,12 +170,22 @@
     function renderIntro() {
       if (!data) return;
       const r = String(state.current_round);
-      document.getElementById("introRoundNum").textContent = r;
+      const introNum = document.getElementById("introRoundNum");
+      if (introNum) introNum.textContent = r;
+      const introNumSmall = document.getElementById("introRoundNumSmall");
+      if (introNumSmall) introNumSmall.textContent = r;
       document.getElementById("progressRoundNum").textContent = r;
       const common = data.common_intro || [];
       const roundIntro = (data.rounds_intro || {})[r] || [];
       document.getElementById("commonIntro").innerHTML = common.map((t) => "<li>" + t + "</li>").join("");
-      document.getElementById("roundIntro").innerHTML = roundIntro.map((t) => "<li>" + t + "</li>").join("");
+      const compEl = document.getElementById("roundIntroComplications");
+      compEl.innerHTML = "";
+      roundIntro.forEach((t) => {
+        const div = document.createElement("div");
+        div.className = "complication";
+        div.textContent = t;
+        compEl.appendChild(div);
+      });
     }
 
     document.getElementById("roundSelect").value = "1";
@@ -167,6 +221,8 @@
       }
     });
 
+    const quadrantNames = { top_right: "Высокий DC, CTE в таргете", top_left: "Высокий DC, CTE вне таргета", bottom_right: "Низкий DC, CTE в таргете", bottom_left: "Низкий DC, CTE вне таргета" };
+
     async function loadState() {
       try {
         const r = await fetch(API + "/api/state");
@@ -174,6 +230,25 @@
         state = { ...state, ...j };
         document.getElementById("roundSelect").value = String(state.current_round);
         renderIntro();
+        const statusEl = document.getElementById("roundStatusBox");
+        const statusText = document.getElementById("roundStatusText");
+        const nextHost = document.getElementById("nextStepHost");
+        const nextHostText = document.getElementById("nextStepHostText");
+        if (state.round_complete) {
+          statusEl.className = "round-status done";
+          statusText.textContent = "Все ответили. Результаты рассчитаны.";
+          nextHost.classList.remove("hidden");
+          const cr = state.current_round;
+          if (cr < 5) {
+            nextHostText.textContent = "Объясните участникам результаты раунда " + cr + ". Затем выберите раунд " + (cr + 1) + " в селекторе выше и нажмите «Применить». После этого откройте вкладку «Карта квадрантов», чтобы показать распределение после раунда " + cr + ".";
+          } else {
+            nextHostText.textContent = "Игра завершена. Объясните итоги. Покажите вкладку «Карта квадрантов» (итог после 5 раундов) и таблицу.";
+          }
+        } else {
+          statusEl.className = "round-status waiting";
+          statusText.textContent = "Ожидаем ответы команд.";
+          nextHost.classList.add("hidden");
+        }
         const tbody = document.getElementById("progressTable");
         tbody.innerHTML = "";
         const labels = { "-0.1": "-10%", "0": "0%", "0.2": "+20%", "0.4": "+40%" };
@@ -190,12 +265,14 @@
     }
 
     async function loadResults() {
+      const round = parseInt(document.getElementById("mapRoundSelect").value, 10) || 5;
       try {
-        const r = await fetch(API + "/api/results");
+        const r = await fetch(API + "/api/results?round=" + round);
         const j = await r.json();
+        const results = j.results || [];
         const list = (name) => document.getElementById(name);
         ["ql", "qr", "qlb", "qrb"].forEach((id) => { list(id).innerHTML = ""; });
-        (j.results || []).forEach((t) => {
+        results.forEach((t) => {
           let id = "ql";
           if (t.quadrant === "top_right") id = "qr";
           else if (t.quadrant === "bottom_left") id = "qlb";
@@ -206,8 +283,19 @@
             list(id).appendChild(li);
           }
         });
+        const tbody = document.getElementById("resultsTableBody");
+        tbody.innerHTML = "";
+        results.forEach((t) => {
+          const tr = document.createElement("tr");
+          const cteStr = t.rounds_played ? t.cte_ok_rounds + " из " + t.rounds_played : "—";
+          const quadStr = t.quadrant ? quadrantNames[t.quadrant] || t.quadrant : "—";
+          tr.innerHTML = "<td>" + t.name + "</td><td>" + (t.total_dc != null ? t.total_dc.toLocaleString("ru") : "—") + "</td><td>" + cteStr + "</td><td>" + quadStr + "</td>";
+          tbody.appendChild(tr);
+        });
       } catch (_) {}
     }
+
+    document.getElementById("mapRoundSelect").addEventListener("change", () => { if (document.getElementById("view-map").classList.contains("active")) loadResults(); });
 
     (async () => {
       await loadData();
