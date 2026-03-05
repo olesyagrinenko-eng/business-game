@@ -52,8 +52,14 @@
         <p id="waitOpponent" class="muted hidden" style="margin-top:1rem;">Ожидаем решение соперника...</p>
         <div id="resultBox" class="result-box hidden"></div>
       </div>
+      <p class="muted" style="text-align:center; margin-top:1rem; font-size:0.85rem;">
+        <a href="/screen" style="color:var(--accent);">Экран для проектора →</a>
+      </p>
     </div>
   </div>
+  <footer class="muted" style="text-align:center; padding:1rem; font-size:0.8rem;">
+    Экран: <a href="/screen" style="color:var(--accent);">/screen</a>
+  </footer>
 
   <script>
     const API = ""; // тот же хост
@@ -112,11 +118,19 @@
       const roundIntro = (data && data.rounds_intro && data.rounds_intro[r]) || [];
       const ul = document.getElementById("introList");
       ul.innerHTML = "";
-      [...common, ...roundIntro].forEach((text) => {
+      const allIntro = [...common, ...roundIntro];
+      if (allIntro.length === 0) {
         const li = document.createElement("li");
-        li.textContent = text;
+        li.className = "muted";
+        li.textContent = "Вводные смотрите на общем экране (страница /screen).";
         ul.appendChild(li);
-      });
+      } else {
+        allIntro.forEach((text) => {
+          const li = document.createElement("li");
+          li.textContent = text;
+          ul.appendChild(li);
+        });
+      }
       const btnCont = document.getElementById("coefButtons");
       btnCont.innerHTML = "";
       (data.coefficients || []).forEach((c) => {
@@ -163,6 +177,14 @@
         const state = await r.json();
         if (!r.ok) return;
         data = { ...(data || {}), current_round: state.current_round };
+        if (state.name) {
+          document.getElementById("teamHeading").textContent = state.name;
+          teamName = state.name;
+        }
+        if (state.role != null) {
+          document.getElementById("teamRole").textContent = state.role === 1 ? "Вы — Команда 1" : "Вы — Команда 2";
+          teamRole = state.role;
+        }
         document.getElementById("roundNum").textContent = state.current_round;
         if (state.current_round !== lastRenderedRound) {
           lastRenderedRound = state.current_round;
