@@ -43,6 +43,9 @@
       <div class="card">
         <h1 id="teamHeading">—</h1>
         <p class="role" id="teamRole">—</p>
+        <p style="margin-top:0.5rem; font-size:0.85rem;">
+          <a href="#" id="linkReenter" style="color:var(--muted);">Войти заново</a> (другая команда или новая игра)
+        </p>
       </div>
       <div class="card">
         <p class="round-title">Раунд <span id="roundNum">1</span>. Вводные</p>
@@ -59,6 +62,7 @@
   </div>
   <footer class="muted" style="text-align:center; padding:1rem; font-size:0.8rem;">
     Экран: <a href="/screen" style="color:var(--accent);">/screen</a>
+    <span id="footerReenter" class="hidden"> · <a href="#" id="linkReenterFooter" style="color:var(--accent);">Войти заново</a></span>
   </footer>
 
   <script>
@@ -207,9 +211,19 @@
       setTimeout(pollState, 2000);
     }
 
+    function reenter() {
+      localStorage.removeItem("game_team_id");
+      localStorage.removeItem("game_team_name");
+      localStorage.removeItem("game_team_role");
+      window.location.reload();
+    }
+    document.getElementById("linkReenter").addEventListener("click", (e) => { e.preventDefault(); reenter(); });
+    document.getElementById("linkReenterFooter").addEventListener("click", (e) => { e.preventDefault(); reenter(); });
+
     if (teamId && teamName) {
       hide(document.getElementById("step-register"));
       show(document.getElementById("step-game"));
+      show(document.getElementById("footerReenter"));
       loadData().then(() => {
         document.getElementById("teamHeading").textContent = teamName;
         document.getElementById("teamRole").textContent = teamRole == 1 ? "Вы — Команда 1" : "Вы — Команда 2";

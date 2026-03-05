@@ -38,7 +38,7 @@
 <body>
   <div class="header">
     <h1>Бизнес-игра — Экран для проектора</h1>
-    <div class="round-control">
+    <div class="round-control" style="flex-wrap: wrap; gap: 0.5rem;">
       <label>Раунд:</label>
       <select id="roundSelect">
         <option value="1">1</option>
@@ -48,6 +48,7 @@
         <option value="5">5</option>
       </select>
       <button id="btnSetRound">Применить</button>
+      <button id="btnReset" style="background: #da3633; border-color: #da3633;">Сбросить игру</button>
     </div>
   </div>
 
@@ -138,6 +139,18 @@
       state.current_round = parseInt(e.target.value, 10);
       renderIntro();
     });
+    document.getElementById("btnReset").addEventListener("click", async () => {
+      if (!confirm("Удалить все команды и ответы, начать игру заново? Участникам нужно будет нажать «Войти заново» на телефонах.")) return;
+      try {
+        const r = await fetch(API + "/api/reset", { method: "POST", headers: { "Content-Type": "application/json" } });
+        const j = await r.json();
+        if (r.ok) alert(j.message || "Готово.");
+        else alert(j.error || "Ошибка");
+      } catch (e) {
+        alert("Ошибка сети");
+      }
+    });
+
     document.getElementById("btnSetRound").addEventListener("click", async () => {
       const r = parseInt(document.getElementById("roundSelect").value, 10);
       try {

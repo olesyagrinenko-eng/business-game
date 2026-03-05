@@ -146,6 +146,17 @@ def api_choice():
     return jsonify({"ok": True, "round": current_round})
 
 
+@app.route("/api/reset", methods=["POST"])
+def api_reset():
+    """Сбросить игру: очистить команды, пары, ответы, раунд 1. Для ведущего с экрана."""
+    global teams, pairs, choices, current_round
+    teams = []
+    pairs = []
+    choices = {}
+    current_round = 1
+    return jsonify({"ok": True, "message": "Игра сброшена. Попросите участников нажать «Войти заново» на телефонах."})
+
+
 @app.route("/api/round", methods=["POST"])
 def api_round():
     """Переключить раунд (для ведущего с экрана)."""
