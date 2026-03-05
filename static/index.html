@@ -24,6 +24,7 @@
     .result-box dt { color: var(--muted); font-size: 0.85rem; } .result-box dd { margin: 0 0 0.5rem 0; font-size: 1.1rem; }
     .hidden { display: none; }
     .screen-link { display: block; text-align: center; margin-top: 1rem; color: var(--accent); }
+    #screenLink { color: var(--accent); }
   </style>
 </head>
 <body>
@@ -33,6 +34,9 @@
       <p class="muted">Введите название команды</p>
       <input type="text" id="teamName" placeholder="Название команды" maxlength="60">
       <button id="btnRegister">Войти в игру</button>
+      <p style="margin-top:1rem; font-size:0.9rem;">
+        <strong>Для экрана (проектор):</strong> откройте <a href="/screen" id="screenLink">эту страницу</a> на большом экране.
+      </p>
     </div>
 
     <div id="step-game" class="hidden">
