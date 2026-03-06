@@ -45,12 +45,12 @@
           "place_DC": 16
         },
         "team2": {
-          "CTE": 77.79,
-          "CPO": 268.71,
-          "DCPO": 357921.43,
-          "DC": "-",
+          "CTE": 90,
+          "CPO": 77.79,
+          "DCPO": 268.71,
+          "DC": 357921.43,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 1
         }
       },
       "0.4_0.0": {
@@ -63,12 +63,12 @@
           "place_DC": 15
         },
         "team2": {
-          "CTE": 89.54,
-          "CPO": 256.96,
-          "DCPO": 342275.14,
-          "DC": "-",
+          "CTE": 50.0,
+          "CPO": 89.54,
+          "DCPO": 256.96,
+          "DC": 342275.14,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 3
         }
       },
       "0.2_-0.1": {
@@ -81,12 +81,12 @@
           "place_DC": 12
         },
         "team2": {
-          "CTE": 85.0,
-          "CPO": 261.5,
-          "DCPO": 348321.43,
-          "DC": "-",
+          "CTE": 34.62,
+          "CPO": 85.0,
+          "DCPO": 261.5,
+          "DC": 348321.43,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 2
         }
       },
       "0.4_0.2": {
@@ -99,12 +99,12 @@
           "place_DC": 14
         },
         "team2": {
-          "CTE": 113.03,
-          "CPO": 233.47,
-          "DCPO": 310982.57,
-          "DC": "-",
+          "CTE": 26.47,
+          "CPO": 113.03,
+          "DCPO": 233.47,
+          "DC": 310982.57,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 9
         }
       },
       "0.2_0.0": {
@@ -117,12 +117,12 @@
           "place_DC": 11
         },
         "team2": {
-          "CTE": 96.74,
-          "CPO": 249.76,
-          "DCPO": 332675.14,
-          "DC": "-",
+          "CTE": 26.47,
+          "CPO": 96.74,
+          "DCPO": 249.76,
+          "DC": 332675.14,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 6
         }
       },
       "0.0_-0.1": {
@@ -135,12 +135,12 @@
           "place_DC": 8
         },
         "team2": {
-          "CTE": 92.2,
-          "CPO": 254.3,
-          "DCPO": 338721.43,
-          "DC": "-",
+          "CTE": 21.43,
+          "CPO": 92.2,
+          "DCPO": 254.3,
+          "DC": 338721.43,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 4
         }
       },
       "-0.1_-0.1": {
@@ -153,12 +153,12 @@
           "place_DC": 5
         },
         "team2": {
-          "CTE": 95.81,
-          "CPO": 250.69,
-          "DCPO": 333921.43,
-          "DC": "-",
+          "CTE": 18,
+          "CPO": 95.81,
+          "DCPO": 250.69,
+          "DC": 333921.43,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 5
         }
       },
       "0.0_0.0": {
@@ -171,12 +171,12 @@
           "place_DC": 7
         },
         "team2": {
-          "CTE": 103.95,
-          "CPO": 242.55,
-          "DCPO": 323075.14,
-          "DC": "-",
+          "CTE": 18,
+          "CPO": 103.95,
+          "DCPO": 242.55,
+          "DC": 323075.14,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 7
         }
       },
       "0.2_0.2": {
@@ -189,12 +189,12 @@
           "place_DC": 10
         },
         "team2": {
-          "CTE": 120.24,
-          "CPO": 226.26,
-          "DCPO": 301382.57,
-          "DC": "-",
+          "CTE": 18,
+          "CPO": 120.24,
+          "DCPO": 226.26,
+          "DC": 301382.57,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 10
         }
       },
       "0.4_0.4": {
@@ -207,12 +207,12 @@
           "place_DC": 13
         },
         "team2": {
-          "CTE": 136.52,
-          "CPO": 209.98,
-          "DCPO": 279690,
-          "DC": "-",
+          "CTE": 18,
+          "CPO": 136.52,
+          "DCPO": 209.98,
+          "DC": 279690,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 13
         }
       },
       "-0.1_0.0": {
@@ -225,12 +225,12 @@
           "place_DC": 4
         },
         "team2": {
-          "CTE": 107.55,
-          "CPO": 238.95,
-          "DCPO": 318275.14,
-          "DC": "-",
+          "CTE": 15.52,
+          "CPO": 107.55,
+          "DCPO": 238.95,
+          "DC": 318275.14,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 8
         }
       },
       "0.0_0.2": {
@@ -243,12 +243,12 @@
           "place_DC": 6
         },
         "team2": {
-          "CTE": 127.44,
-          "CPO": 219.06,
-          "DCPO": 291782.57,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 13.64,
+          "CPO": 127.44,
+          "DCPO": 219.06,
+          "DC": 291782.57,
+          "CTE_in_target": true,
+          "place_DC": 11
         }
       },
       "0.2_0.4": {
@@ -261,12 +261,12 @@
           "place_DC": 9
         },
         "team2": {
-          "CTE": 143.73,
-          "CPO": 202.77,
-          "DCPO": 270090,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 13.64,
+          "CPO": 143.73,
+          "DCPO": 202.77,
+          "DC": 270090,
+          "CTE_in_target": true,
+          "place_DC": 14
         }
       },
       "-0.1_0.2": {
@@ -279,12 +279,12 @@
           "place_DC": 2
         },
         "team2": {
-          "CTE": 131.05,
-          "CPO": 215.45,
-          "DCPO": 286982.57,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 12.16,
+          "CPO": 131.05,
+          "DCPO": 215.45,
+          "DC": 286982.57,
+          "CTE_in_target": true,
+          "place_DC": 12
         }
       },
       "0.0_0.4": {
@@ -297,12 +297,12 @@
           "place_DC": 3
         },
         "team2": {
-          "CTE": 150.94,
-          "CPO": 195.56,
-          "DCPO": 260490.0,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 10.98,
+          "CPO": 150.94,
+          "DCPO": 195.56,
+          "DC": 260490.0,
+          "CTE_in_target": true,
+          "place_DC": 15
         }
       },
       "-0.1_0.4": {
@@ -315,12 +315,12 @@
           "place_DC": 1
         },
         "team2": {
-          "CTE": 154.54,
-          "CPO": 191.96,
-          "DCPO": 255690.0,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 10,
+          "CPO": 154.54,
+          "DCPO": 191.96,
+          "DC": 255690.0,
+          "CTE_in_target": true,
+          "place_DC": 16
         }
       }
     },
@@ -335,12 +335,12 @@
           "place_DC": 12
         },
         "team2": {
-          "CTE": 93.29,
-          "CPO": 407.06,
-          "DCPO": 122118.09,
-          "DC": "-",
+          "CTE": 20.27,
+          "CPO": 93.29,
+          "DCPO": 407.06,
+          "DC": 122118.09,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 16
         }
       },
       "0.4_0.0": {
@@ -353,12 +353,12 @@
           "place_DC": 11
         },
         "team2": {
-          "CTE": 101.43,
-          "CPO": 330.54,
-          "DCPO": 178492.37,
-          "DC": "-",
+          "CTE": 20.27,
+          "CPO": 101.43,
+          "DCPO": 330.54,
+          "DC": 178492.37,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 15
         }
       },
       "0.2_-0.1": {
@@ -371,12 +371,12 @@
           "place_DC": 7
         },
         "team2": {
-          "CTE": 93.29,
-          "CPO": 312.39,
-          "DCPO": 243660.94,
-          "DC": "-",
+          "CTE": 20.27,
+          "CPO": 93.29,
+          "DCPO": 312.39,
+          "DC": 243660.94,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 14
         }
       },
       "0.4_0.2": {
@@ -389,12 +389,12 @@
           "place_DC": 9
         },
         "team2": {
-          "CTE": 119.59,
-          "CPO": 276.41,
-          "DCPO": 257721.6,
-          "DC": "-",
+          "CTE": 18.53,
+          "CPO": 119.59,
+          "DCPO": 276.41,
+          "DC": 257721.6,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 12
         }
       },
       "0.2_0.0": {
@@ -407,12 +407,12 @@
           "place_DC": 5
         },
         "team2": {
-          "CTE": 103.31,
-          "CPO": 292.69,
-          "DCPO": 272906.4,
-          "DC": "-",
+          "CTE": 18.53,
+          "CPO": 103.31,
+          "DCPO": 292.69,
+          "DC": 272906.4,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 9
         }
       },
       "0.0_-0.1": {
@@ -425,12 +425,12 @@
           "place_DC": 1
         },
         "team2": {
-          "CTE": 97.96,
-          "CPO": 293.73,
-          "DCPO": 299960.23,
-          "DC": "-",
+          "CTE": 16.43,
+          "CPO": 97.96,
+          "DCPO": 293.73,
+          "DC": 299960.23,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 4
         }
       },
       "-0.1_-0.1": {
@@ -443,12 +443,12 @@
           "place_DC": 2
         },
         "team2": {
-          "CTE": 100.31,
-          "CPO": 287.77,
-          "DCPO": 319421.66,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 100.31,
+          "DCPO": 287.77,
+          "DC": 319421.66,
+          "CTE_in_target": true,
+          "place_DC": 2
         }
       },
       "0.0_0.0": {
@@ -461,12 +461,12 @@
           "place_DC": 3
         },
         "team2": {
-          "CTE": 108.46,
-          "CPO": 279.62,
-          "DCPO": 310383.09,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 108.46,
+          "DCPO": 279.62,
+          "DC": 310383.09,
+          "CTE_in_target": true,
+          "place_DC": 3
         }
       },
       "0.2_0.2": {
@@ -479,12 +479,12 @@
           "place_DC": 6
         },
         "team2": {
-          "CTE": 124.74,
-          "CPO": 263.34,
-          "DCPO": 292305.94,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 124.74,
+          "DCPO": 263.34,
+          "DC": 292305.94,
+          "CTE_in_target": true,
+          "place_DC": 5
         }
       },
       "0.4_0.4": {
@@ -497,12 +497,12 @@
           "place_DC": 8
         },
         "team2": {
-          "CTE": 141.03,
-          "CPO": 247.05,
-          "DCPO": 274228.8,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 141.03,
+          "DCPO": 247.05,
+          "DC": 274228.8,
+          "CTE_in_target": true,
+          "place_DC": 8
         }
       },
       "-0.1_0.0": {
@@ -515,12 +515,12 @@
           "place_DC": 4
         },
         "team2": {
-          "CTE": 110.46,
-          "CPO": 274.54,
-          "DCPO": 329121.43,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 13.97,
+          "CPO": 110.46,
+          "DCPO": 274.54,
+          "DC": 329121.43,
+          "CTE_in_target": true,
+          "place_DC": 1
         }
       },
       "0.0_0.2": {
@@ -533,12 +533,12 @@
           "place_DC": 10
         },
         "team2": {
-          "CTE": 127.44,
-          "CPO": 219.06,
-          "DCPO": 291782.57,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 13.64,
+          "CPO": 127.44,
+          "DCPO": 219.06,
+          "DC": 291782.57,
+          "CTE_in_target": true,
+          "place_DC": 6
         }
       },
       "0.2_0.4": {
@@ -551,12 +551,12 @@
           "place_DC": 13
         },
         "team2": {
-          "CTE": 143.73,
-          "CPO": 202.77,
-          "DCPO": 270090,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 13.64,
+          "CPO": 143.73,
+          "DCPO": 202.77,
+          "DC": 270090,
+          "CTE_in_target": true,
+          "place_DC": 10
         }
       },
       "-0.1_0.2": {
@@ -569,12 +569,12 @@
           "place_DC": 14
         },
         "team2": {
-          "CTE": 131.05,
-          "CPO": 215.45,
-          "DCPO": 286982.57,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 12.16,
+          "CPO": 131.05,
+          "DCPO": 215.45,
+          "DC": 286982.57,
+          "CTE_in_target": true,
+          "place_DC": 7
         }
       },
       "0.0_0.4": {
@@ -587,12 +587,12 @@
           "place_DC": 15
         },
         "team2": {
-          "CTE": 150.94,
-          "CPO": 195.56,
-          "DCPO": 260490.0,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 10.98,
+          "CPO": 150.94,
+          "DCPO": 195.56,
+          "DC": 260490.0,
+          "CTE_in_target": true,
+          "place_DC": 11
         }
       },
       "-0.1_0.4": {
@@ -605,12 +605,12 @@
           "place_DC": 16
         },
         "team2": {
-          "CTE": 154.54,
-          "CPO": 191.96,
-          "DCPO": 255690.0,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 10,
+          "CPO": 154.54,
+          "DCPO": 191.96,
+          "DC": 255690.0,
+          "CTE_in_target": true,
+          "place_DC": 13
         }
       }
     },
@@ -625,12 +625,12 @@
           "place_DC": 10
         },
         "team2": {
-          "CTE": 93.29,
-          "CPO": -95.42,
-          "DCPO": -76333.91,
-          "DC": "-",
+          "CTE": 20.27,
+          "CPO": 93.29,
+          "DCPO": -95.42,
+          "DC": -76333.91,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 16
         }
       },
       "0.4_0.0": {
@@ -643,12 +643,12 @@
           "place_DC": 9
         },
         "team2": {
-          "CTE": 101.43,
-          "CPO": -52.07,
-          "DCPO": -54147.63,
-          "DC": "-",
+          "CTE": 20.27,
+          "CPO": 101.43,
+          "DCPO": -52.07,
+          "DC": -54147.63,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 15
         }
       },
       "0.2_-0.1": {
@@ -661,12 +661,12 @@
           "place_DC": 6
         },
         "team2": {
-          "CTE": 93.29,
-          "CPO": -1.66,
-          "DCPO": -2128.29,
-          "DC": "-",
+          "CTE": 19.59,
+          "CPO": 93.29,
+          "DCPO": -1.66,
+          "DC": -2128.29,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 14
         }
       },
       "0.4_0.2": {
@@ -679,12 +679,12 @@
           "place_DC": 8
         },
         "team2": {
-          "CTE": 119.59,
-          "CPO": 43.11,
-          "DCPO": 57422.1,
-          "DC": "-",
+          "CTE": 18.53,
+          "CPO": 119.59,
+          "DCPO": 43.11,
+          "DC": 57422.1,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 13
         }
       },
       "0.2_0.0": {
@@ -697,12 +697,12 @@
           "place_DC": 4
         },
         "team2": {
-          "CTE": 103.31,
-          "CPO": 54.51,
-          "DCPO": 72606.9,
-          "DC": "-",
+          "CTE": 17.9,
+          "CPO": 103.31,
+          "DCPO": 54.51,
+          "DC": 72606.9,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 12
         }
       },
       "0.0_-0.1": {
@@ -715,12 +715,12 @@
           "place_DC": 1
         },
         "team2": {
-          "CTE": 97.96,
-          "CPO": 107.23,
-          "DCPO": 142833.94,
-          "DC": "-",
+          "CTE": 16.1,
+          "CPO": 97.96,
+          "DCPO": 107.23,
+          "DC": 142833.94,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 11
         }
       },
       "-0.1_-0.1": {
@@ -733,12 +733,12 @@
           "place_DC": 2
         },
         "team2": {
-          "CTE": 100.31,
-          "CPO": 287.77,
-          "DCPO": 319421.66,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 100.31,
+          "DCPO": 287.77,
+          "DC": 319421.66,
+          "CTE_in_target": true,
+          "place_DC": 2
         }
       },
       "0.0_0.0": {
@@ -751,12 +751,12 @@
           "place_DC": 3
         },
         "team2": {
-          "CTE": 108.46,
-          "CPO": 279.62,
-          "DCPO": 310383.09,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 108.46,
+          "DCPO": 279.62,
+          "DC": 310383.09,
+          "CTE_in_target": true,
+          "place_DC": 3
         }
       },
       "0.2_0.2": {
@@ -769,12 +769,12 @@
           "place_DC": 5
         },
         "team2": {
-          "CTE": 124.74,
-          "CPO": 263.34,
-          "DCPO": 292305.94,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 124.74,
+          "DCPO": 263.34,
+          "DC": 292305.94,
+          "CTE_in_target": true,
+          "place_DC": 4
         }
       },
       "0.4_0.4": {
@@ -787,12 +787,12 @@
           "place_DC": 7
         },
         "team2": {
-          "CTE": 141.03,
-          "CPO": 247.05,
-          "DCPO": 274228.8,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 141.03,
+          "DCPO": 247.05,
+          "DC": 274228.8,
+          "CTE_in_target": true,
+          "place_DC": 7
         }
       },
       "-0.1_0.0": {
@@ -805,12 +805,12 @@
           "place_DC": 11
         },
         "team2": {
-          "CTE": 110.46,
-          "CPO": 274.54,
-          "DCPO": 329121.43,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 13.97,
+          "CPO": 110.46,
+          "DCPO": 274.54,
+          "DC": 329121.43,
+          "CTE_in_target": true,
+          "place_DC": 1
         }
       },
       "0.0_0.2": {
@@ -823,12 +823,12 @@
           "place_DC": 12
         },
         "team2": {
-          "CTE": 127.44,
-          "CPO": 219.06,
-          "DCPO": 291782.57,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 13.64,
+          "CPO": 127.44,
+          "DCPO": 219.06,
+          "DC": 291782.57,
+          "CTE_in_target": true,
+          "place_DC": 5
         }
       },
       "0.2_0.4": {
@@ -841,12 +841,12 @@
           "place_DC": 13
         },
         "team2": {
-          "CTE": 143.73,
-          "CPO": 202.77,
-          "DCPO": 270090,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 13.64,
+          "CPO": 143.73,
+          "DCPO": 202.77,
+          "DC": 270090,
+          "CTE_in_target": true,
+          "place_DC": 8
         }
       },
       "-0.1_0.2": {
@@ -859,12 +859,12 @@
           "place_DC": 14
         },
         "team2": {
-          "CTE": 131.05,
-          "CPO": 215.45,
-          "DCPO": 286982.57,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 12.16,
+          "CPO": 131.05,
+          "DCPO": 215.45,
+          "DC": 286982.57,
+          "CTE_in_target": true,
+          "place_DC": 6
         }
       },
       "0.0_0.4": {
@@ -877,12 +877,12 @@
           "place_DC": 15
         },
         "team2": {
-          "CTE": 150.94,
-          "CPO": 195.56,
-          "DCPO": 260490.0,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 10.98,
+          "CPO": 150.94,
+          "DCPO": 195.56,
+          "DC": 260490.0,
+          "CTE_in_target": true,
+          "place_DC": 9
         }
       },
       "-0.1_0.4": {
@@ -895,12 +895,12 @@
           "place_DC": 16
         },
         "team2": {
-          "CTE": 154.54,
-          "CPO": 191.96,
-          "DCPO": 255690.0,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 10,
+          "CPO": 154.54,
+          "DCPO": 191.96,
+          "DC": 255690.0,
+          "CTE_in_target": true,
+          "place_DC": 10
         }
       }
     },
@@ -915,12 +915,12 @@
           "place_DC": 1
         },
         "team2": {
-          "CTE": 93.29,
-          "CPO": -95.42,
-          "DCPO": -76333.91,
-          "DC": "-",
+          "CTE": 20.27,
+          "CPO": 93.29,
+          "DCPO": -95.42,
+          "DC": -76333.91,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 16
         }
       },
       "0.4_0.0": {
@@ -933,12 +933,12 @@
           "place_DC": 2
         },
         "team2": {
-          "CTE": 101.43,
-          "CPO": -52.07,
-          "DCPO": -54147.63,
-          "DC": "-",
+          "CTE": 20.27,
+          "CPO": 101.43,
+          "DCPO": -52.07,
+          "DC": -54147.63,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 15
         }
       },
       "0.2_-0.1": {
@@ -951,12 +951,12 @@
           "place_DC": 3
         },
         "team2": {
-          "CTE": 93.29,
-          "CPO": -1.66,
-          "DCPO": -2128.29,
-          "DC": "-",
+          "CTE": 20.0,
+          "CPO": 93.29,
+          "DCPO": -1.66,
+          "DC": -2128.29,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 14
         }
       },
       "0.4_0.2": {
@@ -969,12 +969,12 @@
           "place_DC": 8
         },
         "team2": {
-          "CTE": 119.59,
-          "CPO": 43.11,
-          "DCPO": 57422.1,
-          "DC": "-",
+          "CTE": 18.53,
+          "CPO": 119.59,
+          "DCPO": 43.11,
+          "DC": 57422.1,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 13
         }
       },
       "0.2_0.0": {
@@ -987,12 +987,12 @@
           "place_DC": 5
         },
         "team2": {
-          "CTE": 103.31,
-          "CPO": 54.51,
-          "DCPO": 72606.9,
-          "DC": "-",
+          "CTE": 18.34,
+          "CPO": 103.31,
+          "DCPO": 54.51,
+          "DC": 72606.9,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 12
         }
       },
       "0.0_-0.1": {
@@ -1005,12 +1005,12 @@
           "place_DC": 4
         },
         "team2": {
-          "CTE": 97.96,
-          "CPO": 107.23,
-          "DCPO": 142833.94,
-          "DC": "-",
+          "CTE": 16.35,
+          "CPO": 97.96,
+          "DCPO": 107.23,
+          "DC": 142833.94,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 11
         }
       },
       "-0.1_-0.1": {
@@ -1023,12 +1023,12 @@
           "place_DC": 6
         },
         "team2": {
-          "CTE": 100.31,
-          "CPO": 287.77,
-          "DCPO": 319421.66,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 100.31,
+          "DCPO": 287.77,
+          "DC": 319421.66,
+          "CTE_in_target": true,
+          "place_DC": 6
         }
       },
       "0.0_0.0": {
@@ -1041,12 +1041,12 @@
           "place_DC": 7
         },
         "team2": {
-          "CTE": 108.46,
-          "CPO": 279.62,
-          "DCPO": 310383.09,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 108.46,
+          "DCPO": 279.62,
+          "DC": 310383.09,
+          "CTE_in_target": true,
+          "place_DC": 7
         }
       },
       "0.2_0.2": {
@@ -1059,12 +1059,12 @@
           "place_DC": 9
         },
         "team2": {
-          "CTE": 124.74,
-          "CPO": 263.34,
-          "DCPO": 292305.94,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 124.74,
+          "DCPO": 263.34,
+          "DC": 292305.94,
+          "CTE_in_target": true,
+          "place_DC": 9
         }
       },
       "0.4_0.4": {
@@ -1077,12 +1077,12 @@
           "place_DC": 10
         },
         "team2": {
-          "CTE": 141.03,
-          "CPO": 247.05,
-          "DCPO": 274228.8,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 141.03,
+          "DCPO": 247.05,
+          "DC": 274228.8,
+          "CTE_in_target": true,
+          "place_DC": 10
         }
       },
       "-0.1_0.0": {
@@ -1095,12 +1095,12 @@
           "place_DC": 11
         },
         "team2": {
-          "CTE": 108.46,
-          "CPO": 276.54,
-          "DCPO": 356078.57,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15.0,
+          "CPO": 108.46,
+          "DCPO": 276.54,
+          "DC": 356078.57,
+          "CTE_in_target": true,
+          "place_DC": 4
         }
       },
       "0.0_0.2": {
@@ -1113,12 +1113,12 @@
           "place_DC": 12
         },
         "team2": {
-          "CTE": 124.74,
-          "CPO": 221.76,
-          "DCPO": 324920.83,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 124.74,
+          "DCPO": 221.76,
+          "DC": 324920.83,
+          "CTE_in_target": true,
+          "place_DC": 5
         }
       },
       "0.2_0.4": {
@@ -1131,12 +1131,12 @@
           "place_DC": 13
         },
         "team2": {
-          "CTE": 141.03,
-          "CPO": 205.47,
-          "DCPO": 301059,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 141.03,
+          "DCPO": 205.47,
+          "DC": 301059,
+          "CTE_in_target": true,
+          "place_DC": 8
         }
       },
       "-0.1_0.2": {
@@ -1149,12 +1149,12 @@
           "place_DC": 14
         },
         "team2": {
-          "CTE": 124.74,
-          "CPO": 221.76,
-          "DCPO": 364305.17,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15.0,
+          "CPO": 124.74,
+          "DCPO": 221.76,
+          "DC": 364305.17,
+          "CTE_in_target": true,
+          "place_DC": 3
         }
       },
       "0.0_0.4": {
@@ -1167,12 +1167,12 @@
           "place_DC": 15
         },
         "team2": {
-          "CTE": 141.03,
-          "CPO": 205.47,
-          "DCPO": 374043,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 141.03,
+          "DCPO": 205.47,
+          "DC": 374043,
+          "CTE_in_target": true,
+          "place_DC": 2
         }
       },
       "-0.1_0.4": {
@@ -1185,12 +1185,12 @@
           "place_DC": 16
         },
         "team2": {
-          "CTE": 141.03,
-          "CPO": 205.47,
-          "DCPO": 410535,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 141.03,
+          "DCPO": 205.47,
+          "DC": 410535,
+          "CTE_in_target": true,
+          "place_DC": 1
         }
       }
     },
@@ -1205,12 +1205,12 @@
           "place_DC": 4
         },
         "team2": {
-          "CTE": 93.29,
-          "CPO": -230.06,
-          "DCPO": -184044.76,
-          "DC": "-",
+          "CTE": 20.27,
+          "CPO": 93.29,
+          "DCPO": -230.06,
+          "DC": -184044.76,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 16
         }
       },
       "0.4_0.0": {
@@ -1223,12 +1223,12 @@
           "place_DC": 2
         },
         "team2": {
-          "CTE": 101.43,
-          "CPO": -116.64,
-          "DCPO": -121308.06,
-          "DC": "-",
+          "CTE": 20.27,
+          "CPO": 101.43,
+          "DCPO": -116.64,
+          "DC": -121308.06,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 15
         }
       },
       "0.2_-0.1": {
@@ -1241,12 +1241,12 @@
           "place_DC": 1
         },
         "team2": {
-          "CTE": 93.29,
-          "CPO": -43.65,
-          "DCPO": -55869.84,
-          "DC": "-",
+          "CTE": 20.17,
+          "CPO": 93.29,
+          "DCPO": -43.65,
+          "DC": -55869.84,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 14
         }
       },
       "0.4_0.2": {
@@ -1259,12 +1259,12 @@
           "place_DC": 8
         },
         "team2": {
-          "CTE": 119.59,
-          "CPO": 8.82,
-          "DCPO": 11753.53,
-          "DC": "-",
+          "CTE": 18.53,
+          "CPO": 119.59,
+          "DCPO": 8.82,
+          "DC": 11753.53,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 13
         }
       },
       "0.2_0.0": {
@@ -1277,12 +1277,12 @@
           "place_DC": 5
         },
         "team2": {
-          "CTE": 103.31,
-          "CPO": 20.22,
-          "DCPO": 26938.33,
-          "DC": "-",
+          "CTE": 18.47,
+          "CPO": 103.31,
+          "DCPO": 20.22,
+          "DC": 26938.33,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 12
         }
       },
       "0.0_-0.1": {
@@ -1295,12 +1295,12 @@
           "place_DC": 3
         },
         "team2": {
-          "CTE": 97.96,
-          "CPO": 76.27,
-          "DCPO": 101589.78,
-          "DC": "-",
+          "CTE": 16.41,
+          "CPO": 97.96,
+          "DCPO": 76.27,
+          "DC": 101589.78,
           "CTE_in_target": false,
-          "place_DC": null
+          "place_DC": 11
         }
       },
       "-0.1_-0.1": {
@@ -1313,12 +1313,12 @@
           "place_DC": 6
         },
         "team2": {
-          "CTE": 100.31,
-          "CPO": 259.54,
-          "DCPO": 288093.02,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 100.31,
+          "DCPO": 259.54,
+          "DC": 288093.02,
+          "CTE_in_target": true,
+          "place_DC": 6
         }
       },
       "0.0_0.0": {
@@ -1331,12 +1331,12 @@
           "place_DC": 7
         },
         "team2": {
-          "CTE": 108.46,
-          "CPO": 251.4,
-          "DCPO": 279054.45,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 108.46,
+          "DCPO": 251.4,
+          "DC": 279054.45,
+          "CTE_in_target": true,
+          "place_DC": 7
         }
       },
       "0.2_0.2": {
@@ -1349,12 +1349,12 @@
           "place_DC": 9
         },
         "team2": {
-          "CTE": 124.74,
-          "CPO": 235.11,
-          "DCPO": 260977.3,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 124.74,
+          "DCPO": 235.11,
+          "DC": 260977.3,
+          "CTE_in_target": true,
+          "place_DC": 9
         }
       },
       "0.4_0.4": {
@@ -1367,12 +1367,12 @@
           "place_DC": 10
         },
         "team2": {
-          "CTE": 141.03,
-          "CPO": 218.83,
-          "DCPO": 242900.16,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 141.03,
+          "DCPO": 218.83,
+          "DC": 242900.16,
+          "CTE_in_target": true,
+          "place_DC": 10
         }
       },
       "-0.1_0.0": {
@@ -1385,12 +1385,12 @@
           "place_DC": 11
         },
         "team2": {
-          "CTE": 108.46,
-          "CPO": 252.41,
-          "DCPO": 324998.57,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15.0,
+          "CPO": 108.46,
+          "DCPO": 252.41,
+          "DC": 324998.57,
+          "CTE_in_target": true,
+          "place_DC": 2
         }
       },
       "0.0_0.2": {
@@ -1403,12 +1403,12 @@
           "place_DC": 12
         },
         "team2": {
-          "CTE": 124.74,
-          "CPO": 202.67,
-          "DCPO": 296948.83,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 124.74,
+          "DCPO": 202.67,
+          "DC": 296948.83,
+          "CTE_in_target": true,
+          "place_DC": 5
         }
       },
       "0.2_0.4": {
@@ -1421,12 +1421,12 @@
           "place_DC": 13
         },
         "team2": {
-          "CTE": 141.03,
-          "CPO": 186.38,
-          "DCPO": 273087.0,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15,
+          "CPO": 141.03,
+          "DCPO": 186.38,
+          "DC": 273087.0,
+          "CTE_in_target": true,
+          "place_DC": 8
         }
       },
       "-0.1_0.2": {
@@ -1439,12 +1439,12 @@
           "place_DC": 14
         },
         "team2": {
-          "CTE": 124.74,
-          "CPO": 204.73,
-          "DCPO": 336333.17,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 15.0,
+          "CPO": 124.74,
+          "DCPO": 204.73,
+          "DC": 336333.17,
+          "CTE_in_target": true,
+          "place_DC": 1
         }
       },
       "0.0_0.4": {
@@ -1457,12 +1457,12 @@
           "place_DC": 15
         },
         "team2": {
-          "CTE": 143.55,
-          "CPO": 186.15,
-          "DCPO": 309940.5,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 13.72,
+          "CPO": 143.55,
+          "DCPO": 186.15,
+          "DC": 309940.5,
+          "CTE_in_target": true,
+          "place_DC": 3
         }
       },
       "-0.1_0.4": {
@@ -1475,12 +1475,12 @@
           "place_DC": 16
         },
         "team2": {
-          "CTE": 146.43,
-          "CPO": 183.27,
-          "DCPO": 305140.5,
-          "DC": "+",
-          "CTE_in_target": false,
-          "place_DC": null
+          "CTE": 12.5,
+          "CPO": 146.43,
+          "DCPO": 183.27,
+          "DC": 305140.5,
+          "CTE_in_target": true,
+          "place_DC": 4
         }
       }
     }

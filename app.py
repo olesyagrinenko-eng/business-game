@@ -20,6 +20,7 @@ pairs = []  # [{"team1_id": 1, "team2_id": 2}, ...]
 choices = {}  # {(team_id, round): coefficient}
 current_round = 1
 max_rounds = 5
+expected_teams = None  # ожидаемое кол-во команд (задаёт ведущий), None = не задано
 
 
 def get_pair_id(team_id):
@@ -57,13 +58,31 @@ def screen():
 
 @app.route("/api/data")
 def api_data():
-    """Общие данные: вводные, коэффициенты, количество раундов."""
+    """Общие данные: вводные, коэффициенты, количество раундов, ожидаемое кол-во команд."""
     return jsonify({
         "common_intro": DATA.get("common_intro", []),
         "rounds_intro": DATA.get("rounds_intro", {}),
         "coefficients": DATA.get("coefficients", []),
         "max_rounds": max_rounds,
+        "expected_teams": expected_teams,
+        "teams_count": len(teams),
     })
+
+
+@app.route("/api/settings", methods=["GET", "POST"])
+def api_settings():
+    """Получить или задать настройки (ожидаемое кол-во команд)."""
+    global expected_teams
+    if request.method == "POST":
+        body = request.get_json() or {}
+        n = body.get("expected_teams")
+        if n is not None:
+            n = int(n) if n else None
+            if n is not None and (n < 2 or n > 50):
+                return jsonify({"error": "Укажите число от 2 до 50 (чётное для пар)"}), 400
+            expected_teams = n
+        return jsonify({"expected_teams": expected_teams})
+    return jsonify({"expected_teams": expected_teams, "teams_count": len(teams)})
 
 
 @app.route("/api/register", methods=["POST"])
@@ -141,6 +160,8 @@ def api_state():
     return jsonify({
         "current_round": current_round,
         "round_complete": round_complete,
+        "expected_teams": expected_teams,
+        "teams_count": len(teams),
         "teams": [{"id": t["id"], "name": t["name"], "role": t["role"]} for t in teams],
         "pairs": [{"team1_id": p["team1_id"], "team2_id": p["team2_id"]} for p in pairs],
         "choices": {f"{tid}_{r}": c for (tid, r), c in choices.items()},

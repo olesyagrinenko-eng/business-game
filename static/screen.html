@@ -55,7 +55,16 @@
 <body>
   <div class="header">
     <h1>Бизнес-игра — Экран для проектора</h1>
-    <div class="round-control" style="flex-wrap: wrap; gap: 0.5rem;">
+    <div class="round-control" style="flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+      <div class="teams-count-block" style="margin-right: 0.75rem;">
+        <strong id="teamsCountText">Команд: 0</strong>
+        <span id="teamsExpectedHint" class="hidden" style="color: var(--muted); font-weight: normal;"> из <span id="teamsExpectedNum">—</span></span>
+      </div>
+      <div class="expected-teams-set" style="display: flex; align-items: center; gap: 0.35rem;">
+        <label style="font-size: 0.9rem; color: var(--muted);">Ожидаем команд:</label>
+        <input type="number" id="expectedTeamsInput" min="2" max="50" step="2" placeholder="8" style="width: 4rem; padding: 0.4rem 0.5rem; border-radius: 6px; border: 1px solid #30363d; background: var(--card); color: var(--text); font-size: 1rem;">
+        <button id="btnSetExpected">Задать</button>
+      </div>
       <label>Раунд:</label>
       <select id="roundSelect">
         <option value="1">1</option>
@@ -148,8 +157,25 @@
 
   <script>
     const API = "";
-    let state = { current_round: 1, teams: [], pairs: [], choices: {} };
+    let state = { current_round: 1, teams: [], pairs: [], choices: {}, expected_teams: null, teams_count: 0 };
     let data = null;
+
+    function updateTeamsCountDisplay() {
+      const n = state.teams_count ?? 0;
+      const expected = state.expected_teams;
+      document.getElementById("teamsCountText").textContent = "Команд: " + n;
+      const hint = document.getElementById("teamsExpectedHint");
+      const numEl = document.getElementById("teamsExpectedNum");
+      if (expected != null && expected > 0) {
+        hint.classList.remove("hidden");
+        numEl.textContent = expected;
+        if (n >= expected) {
+          document.getElementById("teamsCountText").innerHTML = "Команд: " + n + " <span style=\"color:#3fb950;\">(все в сборе)</span>";
+        }
+      } else {
+        hint.classList.add("hidden");
+      }
+    }
 
     document.querySelectorAll(".tabs button").forEach((b) => {
       b.addEventListener("click", () => {
@@ -164,8 +190,37 @@
     async function loadData() {
       const r = await fetch(API + "/api/data");
       data = await r.json();
+      if (data.expected_teams != null) {
+        document.getElementById("expectedTeamsInput").value = data.expected_teams;
+        state.expected_teams = data.expected_teams;
+      }
+      state.teams_count = data.teams_count ?? 0;
+      updateTeamsCountDisplay();
       return data;
     }
+
+    document.getElementById("btnSetExpected").addEventListener("click", async () => {
+      const val = document.getElementById("expectedTeamsInput").value.trim();
+      const n = val ? parseInt(val, 10) : null;
+      if (n != null && (n < 2 || n > 50)) {
+        alert("Укажите число от 2 до 50 (лучше чётное — команды играют парами).");
+        return;
+      }
+      try {
+        const r = await fetch(API + "/api/settings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ expected_teams: n }),
+        });
+        const j = await r.json();
+        if (!r.ok) { alert(j.error || "Ошибка"); return; }
+        state.expected_teams = j.expected_teams;
+        state.teams_count = j.teams_count ?? state.teams_count;
+        updateTeamsCountDisplay();
+      } catch (e) {
+        alert("Ошибка сети");
+      }
+    });
 
     function renderIntro() {
       if (!data) return;
@@ -229,6 +284,7 @@
         const j = await r.json();
         state = { ...state, ...j };
         document.getElementById("roundSelect").value = String(state.current_round);
+        updateTeamsCountDisplay();
         renderIntro();
         const statusEl = document.getElementById("roundStatusBox");
         const statusText = document.getElementById("roundStatusText");

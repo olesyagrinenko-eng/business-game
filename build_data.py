@@ -92,6 +92,8 @@ def main():
                 if x is None: return None
                 if isinstance(x, float) and x == int(x): return int(x)
                 return round(x, 2) if isinstance(x, float) else x
+
+            # В экспорте team2: индексы 17=CTE2, 18=CPO2, 19=DCPO2, 20=DC2, 21=+/-, 22=place (не 18–23)
             scenarios[str(r)][key] = {
                 "team1": {
                     "CTE": rv(parts[4]),
@@ -102,12 +104,12 @@ def main():
                     "place_DC": int(parts[9]) if parts[9] is not None else None,
                 },
                 "team2": {
-                    "CTE": rv(parts[18]),
-                    "CPO": rv(parts[19]),
-                    "DCPO": rv(parts[20]),
-                    "DC": rv(parts[21]),
-                    "CTE_in_target": parts[22] == "+",
-                    "place_DC": int(parts[23]) if len(parts) > 23 and parts[23] is not None else None,
+                    "CTE": rv(parts[17]),
+                    "CPO": rv(parts[18]),
+                    "DCPO": rv(parts[19]),
+                    "DC": rv(parts[20]),
+                    "CTE_in_target": parts[21] == "+" if len(parts) > 21 else False,
+                    "place_DC": int(parts[22]) if len(parts) > 22 and parts[22] is not None else None,
                 },
             }
 

@@ -43,6 +43,7 @@
   <div class="container">
     <div id="step-register" class="card">
       <h1>Бизнес-игра</h1>
+      <p id="teamsCountRegister" class="muted" style="font-size: 0.9rem; margin-bottom: 0.5rem;"></p>
       <p class="muted">Введите название команды</p>
       <input type="text" id="teamName" placeholder="Название команды" maxlength="60">
       <button id="btnRegister">Войти в игру</button>
@@ -99,7 +100,22 @@
     async function loadData() {
       const r = await fetch(API + "/api/data");
       data = await r.json();
+      updateTeamsCountOnRegister(data);
       return data;
+    }
+
+    function updateTeamsCountOnRegister(data) {
+      const el = document.getElementById("teamsCountRegister");
+      if (!el) return;
+      const n = data.teams_count ?? 0;
+      const expected = data.expected_teams;
+      if (expected != null && expected > 0) {
+        el.textContent = "Команд зарегистрировано: " + n + " из " + expected;
+        el.classList.remove("hidden");
+      } else {
+        el.textContent = "Команд зарегистрировано: " + n;
+        el.classList.remove("hidden");
+      }
     }
 
     function show(el) { el.classList.remove("hidden"); }
@@ -285,6 +301,8 @@
         renderRound();
         pollState();
       });
+    } else {
+      loadData().then(() => updateTeamsCountOnRegister(data));
     }
   </script>
 </body>
