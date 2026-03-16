@@ -6,8 +6,8 @@
   <title>Экран — Бизнес-игра</title>
   <link rel="stylesheet" href="https://yastatic.net/s3/home/fonts/ys/4/text.css" crossorigin="anonymous">
   <style>
-    /* Стиль в духе бренда Яндекс Лавка (см. Лавка.pdf в папке) */
-    :root { --bg: #f5f5f5; --card: #fff; --accent: #00c853; --accent-dark: #00a843; --text: #000000; --muted: #6b7280; --border: #e0e0e0; }
+    /* Цвета по гайду Лавка.pdf: нейтральный фон, чёрный текст, спокойный зелёный акцент */
+    :root { --bg: #f5f5f5; --card: #ffffff; --accent: #1a7f37; --accent-dark: #0d5c27; --text: #000000; --muted: #5c5c5c; --border: #d9d9d9; --task-border: #8c8c8c; }
     * { box-sizing: border-box; }
     body { font-family: 'YS Text', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; padding: 1.5rem; -webkit-font-smoothing: antialiased; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
@@ -32,21 +32,21 @@
     .quadrant h3 { font-size: 0.95rem; margin: 0 0 0.5rem 0; color: var(--muted); }
     .quadrant ul { list-style: none; padding: 0; margin: 0; }
     .quadrant li { padding: 0.35rem 0; border-bottom: 1px solid var(--border); }
-    .quadrant.top_right { border-color: var(--accent); background: #e8f5e9; }
-    .quadrant.top_left { border-color: #ff9800; background: #fff3e0; }
-    .quadrant.bottom_right { border-color: #8bc34a; background: #f1f8e9; }
+    .quadrant.top_right { border-color: var(--accent); background: #f0f7f1; }
+    .quadrant.top_left { border-color: var(--task-border); background: #f5f5f5; }
+    .quadrant.bottom_right { border-color: var(--accent); background: #f5f5f5; }
     .quadrant.bottom_left { border-color: var(--border); }
-    .round-badge-big { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 4px solid var(--accent); border-radius: 20px; padding: 1rem 2rem; margin-bottom: 1.5rem; text-align: center; }
+    .round-badge-big { background: #f5f5f5; border: 4px solid var(--accent); border-radius: 20px; padding: 1rem 2rem; margin-bottom: 1.5rem; text-align: center; }
     .round-badge-big .num { font-size: 3rem; font-weight: 800; letter-spacing: 0.05em; color: var(--accent-dark); line-height: 1; }
     .round-badge-big .label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 0.35rem; }
-    .task-box { background: linear-gradient(145deg, #fff8e1 0%, #ffecb3 50%, #fff 100%); border: 4px solid #ffb74d; border-radius: 16px; padding: 1.5rem 2rem; margin: 1.5rem 0; }
-    .task-box h2 { color: #e65100 !important; font-size: 1.35rem !important; }
+    .task-box { background: #fafafa; border: 4px solid var(--task-border); border-radius: 16px; padding: 1.5rem 2rem; margin: 1.5rem 0; }
+    .task-box h2 { color: var(--text) !important; font-size: 1.35rem !important; }
     .task-box p { font-size: 1.2rem; color: var(--text); margin: 0.5rem 0; }
-    .task-box .coef-options { font-size: 1.6rem; font-weight: 700; color: #f57c00; margin: 0.75rem 0; letter-spacing: 0.03em; }
-    .complication { background: #fff3e0; border-left: 6px solid #ff9800; padding: 0.75rem 1.25rem; margin: 0.6rem 0; border-radius: 0 12px 12px 0; font-size: 1.05rem; font-weight: 500; color: var(--text); }
+    .task-box .coef-options { font-size: 1.6rem; font-weight: 700; color: var(--text); margin: 0.75rem 0; letter-spacing: 0.03em; }
+    .complication { background: #f5f5f5; border-left: 6px solid var(--accent); padding: 0.75rem 1.25rem; margin: 0.6rem 0; border-radius: 0 12px 12px 0; font-size: 1.05rem; font-weight: 500; color: var(--text); }
     .round-status { padding: 1rem 1.25rem; border-radius: 12px; margin-bottom: 1rem; font-size: 1.05rem; }
-    .round-status.waiting { background: #fff8e1; border: 3px solid #ffc107; color: #e65100; }
-    .round-status.done { background: #e8f5e9; border: 3px solid var(--accent); color: var(--accent-dark); }
+    .round-status.waiting { background: #f5f5f5; border: 3px solid var(--muted); color: var(--text); }
+    .round-status.done { background: #f5f5f5; border: 3px solid var(--accent); color: var(--accent-dark); }
     #nextStepHost { font-size: 1.1rem; padding: 1.25rem; border-width: 3px; }
     #nextStepHost strong { color: var(--accent-dark); font-size: 1.15rem; }
     .map-selector { margin-bottom: 1rem; }
@@ -243,7 +243,7 @@
       const introNumSmall = document.getElementById("introRoundNumSmall");
       if (introNumSmall) introNumSmall.textContent = r;
       document.getElementById("progressRoundNum").textContent = r;
-      const common = data.common_intro || [];
+      const common = (data.common_intro_by_round && data.common_intro_by_round[r]) || data.common_intro || [];
       const roundIntro = (data.rounds_intro || {})[r] || [];
       document.getElementById("commonIntro").innerHTML = common.map((t) => "<li>" + t + "</li>").join("");
       const compEl = document.getElementById("roundIntroComplications");

@@ -20,10 +20,10 @@ try:
         DATA = json.load(f)
 except FileNotFoundError:
     print("ERROR: data/scenarios.json not found at", DATA_PATH, file=sys.stderr)
-    DATA = {"common_intro": [], "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
+    DATA = {"common_intro_by_round": {}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
 except Exception as e:
     print("ERROR loading scenarios.json:", e, file=sys.stderr)
-    DATA = {"common_intro": [], "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
+    DATA = {"common_intro_by_round": {}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
 
 # In-memory state (для одного мероприятия)
 teams = []  # [{"id": 1, "name": "Команда А", "role": 1|2, "pair_id": 0}, ...]
@@ -77,7 +77,7 @@ def screen():
 def api_data():
     """Общие данные: вводные, коэффициенты, количество раундов, ожидаемое кол-во команд, исходные метрики."""
     return jsonify({
-        "common_intro": DATA.get("common_intro", []),
+        "common_intro_by_round": DATA.get("common_intro_by_round", {}),
         "rounds_intro": DATA.get("rounds_intro", {}),
         "coefficients": DATA.get("coefficients", []),
         "initial_metrics": DATA.get("initial_metrics", {}),
