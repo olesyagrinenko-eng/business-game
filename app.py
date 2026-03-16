@@ -7,12 +7,23 @@
 """
 import json
 import os
+import sys
 from flask import Flask, request, jsonify, send_from_directory
 
-app = Flask(__name__, static_folder="static", static_url_path="")
-DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
-with open(os.path.join(DATA_DIR, "scenarios.json"), "r", encoding="utf-8") as f:
-    DATA = json.load(f)
+# Корень приложения (каталог, где лежит app.py) — так же работает на Render
+APP_ROOT = os.path.abspath(os.path.dirname(__file__))
+app = Flask(__name__, static_folder=os.path.join(APP_ROOT, "static"), static_url_path="")
+DATA_PATH = os.path.join(APP_ROOT, "data", "scenarios.json")
+
+try:
+    with open(DATA_PATH, "r", encoding="utf-8") as f:
+        DATA = json.load(f)
+except FileNotFoundError:
+    print("ERROR: data/scenarios.json not found at", DATA_PATH, file=sys.stderr)
+    DATA = {"common_intro": [], "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
+except Exception as e:
+    print("ERROR loading scenarios.json:", e, file=sys.stderr)
+    DATA = {"common_intro": [], "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
 
 # In-memory state (для одного мероприятия)
 teams = []  # [{"id": 1, "name": "Команда А", "role": 1|2, "pair_id": 0}, ...]
@@ -46,14 +57,20 @@ def get_scenario_result(r, coef1, coef2):
     return scenarios.get(key)
 
 
+@app.route("/health")
+def health():
+    """Проверка для Render и отладки: сервер отвечает без загрузки данных."""
+    return jsonify({"status": "ok", "data_loaded": bool(DATA.get("scenarios"))}), 200
+
+
 @app.route("/")
 def index():
-    return send_from_directory("static", "index.html")
+    return send_from_directory(app.static_folder, "index.html")
 
 
 @app.route("/screen")
 def screen():
-    return send_from_directory("static", "screen.html")
+    return send_from_directory(app.static_folder, "screen.html")
 
 
 @app.route("/api/data")
