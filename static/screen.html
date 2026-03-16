@@ -9,48 +9,49 @@
     /* Палитра: #233967, #4DAAF8, белый */
     :root { --bg: #ffffff; --card: #ffffff; --dark: #233967; --accent: #4DAAF8; --text: #233967; --muted: #233967; --border: #233967; --task-border: #233967; }
     * { box-sizing: border-box; }
+    html { font-size: 18px; }
     body { font-family: 'YS Text', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; padding: 1.5rem; -webkit-font-smoothing: antialiased; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
-    h1 { font-size: 1.75rem; margin: 0; color: var(--text); }
+    h1 { font-size: 2rem; margin: 0; color: var(--text); }
     .round-control { display: flex; align-items: center; gap: 0.5rem; }
-    .round-control select, .round-control input, .round-control button { padding: 0.5rem 0.75rem; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 1rem; }
+    .round-control select, .round-control input, .round-control button { padding: 0.6rem 0.9rem; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 1.1rem; }
     .round-control button { background: var(--dark); border-color: var(--dark); color: #fff; cursor: pointer; font-weight: 500; }
     .round-control button:hover { background: var(--accent); color: var(--dark); }
-    .card { background: var(--card); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border); }
-    .card h2 { font-size: 1.1rem; margin: 0 0 0.75rem 0; color: var(--muted); }
-    ul { padding-left: 1.5rem; margin: 0; }
-    li { margin: 0.35rem 0; }
+    .card { background: var(--card); border-radius: 16px; padding: 1.75rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border); }
+    .card h2 { font-size: 1.35rem; margin: 0 0 0.75rem 0; color: var(--muted); }
+    ul { padding-left: 1.75rem; margin: 0; font-size: 1.1rem; }
+    li { margin: 0.4rem 0; }
     .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-    .tabs button { padding: 0.5rem 1rem; border: 1px solid var(--border); background: var(--card); color: var(--text); border-radius: 12px; cursor: pointer; }
+    .tabs button { padding: 0.6rem 1.2rem; border: 1px solid var(--border); background: var(--card); color: var(--text); border-radius: 12px; cursor: pointer; font-size: 1.1rem; }
     .tabs button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
     .view { display: none; }
     .view.active { display: block; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--border); }
-    .quadrant-map { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 1rem; min-height: 360px; }
-    .quadrant { background: var(--bg); border-radius: 16px; padding: 1rem; border: 2px solid var(--border); }
-    .quadrant h3 { font-size: 0.95rem; margin: 0 0 0.5rem 0; color: var(--muted); }
-    .quadrant ul { list-style: none; padding: 0; margin: 0; }
-    .quadrant li { padding: 0.35rem 0; border-bottom: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 1.1rem; }
+    th, td { padding: 0.65rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .quadrant-map { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 1.25rem; min-height: 360px; }
+    .quadrant { background: var(--bg); border-radius: 16px; padding: 1.25rem; border: 2px solid var(--border); }
+    .quadrant h3 { font-size: 1.2rem; margin: 0 0 0.6rem 0; color: var(--muted); }
+    .quadrant ul { list-style: none; padding: 0; margin: 0; font-size: 1.1rem; }
+    .quadrant li { padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
     .quadrant.top_right { border-color: var(--accent); background: #ffffff; }
     .quadrant.top_left { border-color: var(--accent); background: #ffffff; }
     .quadrant.bottom_right { border-color: var(--dark); background: #ffffff; }
     .quadrant.bottom_left { border-color: var(--dark); background: #ffffff; }
-    .round-badge-big { background: #ffffff; border: 4px solid var(--accent); border-radius: 20px; padding: 1rem 2rem; margin-bottom: 1.5rem; text-align: center; }
-    .round-badge-big .num { font-size: 3rem; font-weight: 800; letter-spacing: 0.05em; color: var(--dark); line-height: 1; }
-    .round-badge-big .label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 0.35rem; }
-    .task-box { background: #ffffff; border: 4px solid var(--accent); border-radius: 16px; padding: 1.5rem 2rem; margin: 1.5rem 0; }
-    .task-box h2 { color: var(--dark) !important; font-size: 1.35rem !important; }
-    .task-box p { font-size: 1.2rem; color: var(--text); margin: 0.5rem 0; }
-    .task-box .coef-options { font-size: 1.6rem; font-weight: 700; color: var(--dark); margin: 0.75rem 0; letter-spacing: 0.03em; }
-    .complication { background: #ffffff; border-left: 6px solid var(--accent); padding: 0.75rem 1.25rem; margin: 0.6rem 0; border-radius: 0 12px 12px 0; font-size: 1.05rem; font-weight: 500; color: var(--text); }
-    .round-status { padding: 1rem 1.25rem; border-radius: 12px; margin-bottom: 1rem; font-size: 1.05rem; }
+    .round-badge-big { background: #ffffff; border: 4px solid var(--accent); border-radius: 20px; padding: 1.25rem 2.5rem; margin-bottom: 1.5rem; text-align: center; }
+    .round-badge-big .num { font-size: 3.5rem; font-weight: 800; letter-spacing: 0.05em; color: var(--dark); line-height: 1; }
+    .round-badge-big .label { font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 0.35rem; }
+    .task-box { background: #ffffff; border: 4px solid var(--accent); border-radius: 16px; padding: 1.75rem 2.5rem; margin: 1.5rem 0; }
+    .task-box h2 { color: var(--dark) !important; font-size: 1.6rem !important; }
+    .task-box p { font-size: 1.35rem; color: var(--text); margin: 0.6rem 0; }
+    .task-box .coef-options { font-size: 1.9rem; font-weight: 700; color: var(--dark); margin: 0.75rem 0; letter-spacing: 0.03em; }
+    .complication { background: #ffffff; border-left: 6px solid var(--accent); padding: 0.9rem 1.5rem; margin: 0.6rem 0; border-radius: 0 12px 12px 0; font-size: 1.2rem; font-weight: 500; color: var(--text); }
+    .round-status { padding: 1.2rem 1.5rem; border-radius: 12px; margin-bottom: 1rem; font-size: 1.2rem; }
     .round-status.waiting { background: #ffffff; border: 3px solid var(--accent); color: var(--text); }
     .round-status.done { background: #ffffff; border: 3px solid var(--accent); color: var(--dark); }
-    #nextStepHost { font-size: 1.1rem; padding: 1.25rem; border-width: 3px; }
-    #nextStepHost strong { color: var(--dark); font-size: 1.15rem; }
+    #nextStepHost { font-size: 1.25rem; padding: 1.25rem; border-width: 3px; }
+    #nextStepHost strong { color: var(--dark); font-size: 1.3rem; }
     .map-selector { margin-bottom: 1rem; }
-    .map-selector select { padding: 0.5rem 0.75rem; border-radius: 12px; background: var(--card); color: var(--text); font-size: 1rem; border: 1px solid var(--border); }
+    .map-selector select { padding: 0.6rem 0.9rem; border-radius: 12px; background: var(--card); color: var(--text); font-size: 1.1rem; border: 1px solid var(--border); }
     .results-table { margin-top: 1rem; }
     .hidden { display: none !important; }
   </style>
@@ -64,7 +65,7 @@
         <span id="teamsExpectedHint" class="hidden" style="color: var(--muted); font-weight: normal;"> из <span id="teamsExpectedNum">—</span></span>
       </div>
       <div class="expected-teams-set" style="display: flex; align-items: center; gap: 0.35rem;">
-        <label style="font-size: 0.9rem; color: var(--muted);">Ожидаем команд:</label>
+        <label style="font-size: 1.05rem; color: var(--muted);">Ожидаем команд:</label>
         <input type="number" id="expectedTeamsInput" min="2" max="50" step="2" placeholder="8" style="width: 4rem; padding: 0.4rem 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 1rem;">
         <button id="btnSetExpected">Задать</button>
       </div>
@@ -75,22 +76,39 @@
         <option value="3">3</option>
         <option value="4">4</option>
         <option value="5">5</option>
+        <option value="6">6</option>
       </select>
       <button id="btnSetRound">Применить</button>
       <button id="btnReset" style="background: #d32f2f; border-color: #d32f2f;">Сбросить игру</button>
+      <button id="btnManageTeams">Управление игроками</button>
     </div>
+  </div>
+
+  <div id="teamsManagePanel" class="card hidden" style="margin-bottom:1rem;">
+    <h2>Удаление команд</h2>
+    <p class="muted" style="font-size:1rem;">Удаляйте команду, если участник выбыл. После удаления команда может войти заново с тем же именем.</p>
+    <ul id="teamsManageList" style="list-style:none; padding:0;"></ul>
   </div>
 
   <div class="tabs">
     <button data-tab="intro" class="active">Вводные и задание</button>
     <button data-tab="progress">Ход игры</button>
     <button data-tab="map">Карта квадрантов</button>
+    <a href="/derevya/index.html" style="padding:0.5rem 1rem; border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:12px; text-decoration:none; display:inline-flex; align-items:center;">Деревья метрик</a>
   </div>
 
   <div id="view-intro" class="view active card">
     <div class="round-badge-big">
       <div class="label">Текущий раунд</div>
       <div class="num" id="introRoundNum">1</div>
+    </div>
+    <div id="initialMetricsBlock" class="card" style="margin-bottom:1.25rem; padding:1.25rem;">
+      <h2>Метрики на старте (исходные)</h2>
+      <p class="muted" style="margin-bottom:0.75rem;">Метрики каждой команды на старте — для справки в первом раунде.</p>
+      <table id="initialMetricsTable" style="font-size:1.05rem;">
+        <thead><tr><th>Метрика</th><th>Команда 1</th><th>Команда 2</th></tr></thead>
+        <tbody id="initialMetricsBody"></tbody>
+      </table>
     </div>
     <h2>Общие вводные</h2>
     <ul id="commonIntro"></ul>
@@ -113,13 +131,14 @@
   <div id="view-progress" class="view card">
     <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
       <h2 style="margin: 0;">Команды и ответы (раунд <span id="progressRoundNum">1</span>)</h2>
-      <label style="color: var(--muted); font-size: 0.95rem;">Показать раунд:</label>
+      <label style="color: var(--muted); font-size: 1.1rem;">Показать раунд:</label>
       <select id="progressRoundSelect">
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>
         <option value="5">5</option>
+        <option value="6">6</option>
       </select>
     </div>
     <table>
@@ -139,12 +158,13 @@
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>
-        <option value="5">5 (итог)</option>
+        <option value="5">5</option>
+        <option value="6">6 (итог)</option>
       </select>
     </div>
-    <p class="muted">Ось X — CTE в таргете (больше половины раундов). Ось Y — прирост маржи к 1-й неделе (DC после 5 раундов − DC после 1-го): выше медианы = молодцы.</p>
+    <p class="muted" style="font-size: 1.1rem;">Ось X — CTE в таргете (больше половины раундов). Ось Y — прирост маржи от исходных значений (DC после выбранного раунда − Исходный DC): выше медианы = молодцы.</p>
     <table class="results-table" id="resultsTable">
-      <thead><tr><th>Команда</th><th>DC по раундам</th><th>Сумма DC (итог 5)</th><th>Прирост маржи</th><th>CTE в таргете</th><th>Квадрант</th></tr></thead>
+      <thead><tr><th>Команда</th><th>Исх. DC</th><th>SH</th><th>Заказы</th><th>OPH</th><th>DC по раундам</th><th>Сумма DC (итог)</th><th>Прирост маржи</th><th>CTE в таргете</th><th>Квадрант</th></tr></thead>
       <tbody id="resultsTableBody"></tbody>
     </table>
     <div class="quadrant-map">
@@ -200,6 +220,27 @@
       });
     });
 
+    function renderInitialMetrics() {
+      const im = (data && data.initial_metrics) || {};
+      const t1 = im.team1 || {};
+      const t2 = im.team2 || {};
+      const rows = [
+        ["Исходный DC (DCPO)", t1.DCPO ?? t1.DC, t2.DCPO ?? t2.DC],
+        ["SH", t1.SH, t2.SH],
+        ["Заказы", t1.orders, t2.orders],
+        ["OPH", t1.OPH, t2.OPH],
+      ];
+      const tbody = document.getElementById("initialMetricsBody");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+      rows.forEach(([label, v1, v2]) => {
+        const tr = document.createElement("tr");
+        const fmt = (x) => x != null ? (typeof x === "number" && x > 1000 ? x.toLocaleString("ru") : x) : "—";
+        tr.innerHTML = "<td>" + label + "</td><td>" + fmt(v1) + "</td><td>" + fmt(v2) + "</td>";
+        tbody.appendChild(tr);
+      });
+    }
+
     async function loadData() {
       const r = await fetch(API + "/api/data");
       data = await r.json();
@@ -209,6 +250,7 @@
       }
       state.teams_count = data.teams_count ?? 0;
       updateTeamsCountDisplay();
+      renderInitialMetrics();
       return data;
     }
 
@@ -289,6 +331,45 @@
       }
     });
 
+    function fillTeamsManageList() {
+      const ul = document.getElementById("teamsManageList");
+      if (!ul) return;
+      ul.innerHTML = "";
+      (state.teams || []).forEach((t) => {
+        const li = document.createElement("li");
+        li.style.marginBottom = "0.5rem";
+        const btn = document.createElement("button");
+        btn.textContent = "Удалить";
+        btn.type = "button";
+        btn.style.width = "auto";
+        btn.style.background = "#d32f2f";
+        btn.style.borderColor = "#d32f2f";
+        btn.style.padding = "0.35rem 0.75rem";
+        btn.onclick = async () => {
+          if (!confirm("Удалить команду «" + t.name + "»? Она сможет войти снова с тем же именем.")) return;
+          try {
+            const resp = await fetch(API + "/api/teams/" + t.id, { method: "DELETE" });
+            const j = await resp.json();
+            if (resp.ok) {
+              await loadState();
+              fillTeamsManageList();
+              updateTeamsCountDisplay();
+            } else alert(j.error || "Ошибка");
+          } catch (e) {
+            alert("Ошибка сети");
+          }
+        };
+        li.appendChild(document.createTextNode(t.name + " (Команда " + t.role + ") "));
+        li.appendChild(btn);
+        ul.appendChild(li);
+      });
+    }
+    document.getElementById("btnManageTeams").addEventListener("click", () => {
+      const panel = document.getElementById("teamsManagePanel");
+      panel.classList.toggle("hidden");
+      if (!panel.classList.contains("hidden")) fillTeamsManageList();
+    });
+
     const quadrantNames = { top_right: "Рост маржи + CTE в таргете", top_left: "Рост маржи, CTE вне таргета", bottom_right: "Маржа не выросла, CTE в таргете", bottom_left: "Маржа не выросла, CTE вне таргета" };
     const coefLabels = { "-0.1": "-10%", "0": "0%", "0.2": "+20%", "0.4": "+40%" };
 
@@ -309,10 +390,11 @@
           statusText.textContent = "Все ответили. Результаты рассчитаны.";
           nextHost.classList.remove("hidden");
           const cr = state.current_round;
-          if (cr < 5) {
+          const maxR = (data && data.max_rounds) || 6;
+          if (cr < maxR) {
             nextHostText.textContent = "Объясните участникам результаты раунда " + cr + ". Затем выберите раунд " + (cr + 1) + " в селекторе выше и нажмите «Применить». После этого откройте вкладку «Карта квадрантов», чтобы показать распределение после раунда " + cr + ".";
           } else {
-            nextHostText.textContent = "Игра завершена. Объясните итоги. Покажите вкладку «Карта квадрантов» (итог после 5 раундов) и таблицу.";
+            nextHostText.textContent = "Игра завершена. Объясните итоги. Покажите вкладку «Карта квадрантов» (итог после " + maxR + " раундов) и таблицу.";
           }
         } else {
           statusEl.className = "round-status waiting";
@@ -342,7 +424,7 @@
     }
 
     async function loadResults() {
-      const round = parseInt(document.getElementById("mapRoundSelect").value, 10) || 5;
+      const round = parseInt(document.getElementById("mapRoundSelect").value, 10) || 6;
       try {
         const r = await fetch(API + "/api/results?round=" + round);
         const j = await r.json();
@@ -363,6 +445,7 @@
         });
         const tbody = document.getElementById("resultsTableBody");
         tbody.innerHTML = "";
+        const fmt = (x) => x != null ? (typeof x === "number" && x > 1000 ? x.toLocaleString("ru") : x) : "—";
         results.forEach((t) => {
           const tr = document.createElement("tr");
           const perRoundStr = (t.per_round || []).map((pr) => pr.dc != null ? pr.dc.toLocaleString("ru") : "—").join(" / ") || "—";
@@ -370,7 +453,11 @@
           const growthStr = t.dc_growth != null ? (t.dc_growth >= 0 ? "+" : "") + t.dc_growth.toLocaleString("ru") : "—";
           const cteStr = t.rounds_played ? t.cte_ok_rounds + " из " + t.rounds_played : "—";
           const quadStr = t.quadrant ? quadrantNames[t.quadrant] || t.quadrant : "—";
-          tr.innerHTML = "<td>" + t.name + "</td><td>" + perRoundStr + "</td><td>" + totalStr + "</td><td>" + growthStr + "</td><td>" + cteStr + "</td><td>" + quadStr + "</td>";
+          const initDc = fmt(t.initial_dc);
+          const initSh = fmt(t.initial_sh);
+          const initOrders = fmt(t.initial_orders);
+          const initOph = fmt(t.initial_oph);
+          tr.innerHTML = "<td>" + t.name + "</td><td>" + initDc + "</td><td>" + initSh + "</td><td>" + initOrders + "</td><td>" + initOph + "</td><td>" + perRoundStr + "</td><td>" + totalStr + "</td><td>" + growthStr + "</td><td>" + cteStr + "</td><td>" + quadStr + "</td>";
           tbody.appendChild(tr);
         });
       } catch (_) {}

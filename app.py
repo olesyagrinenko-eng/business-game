@@ -19,22 +19,30 @@ try:
     with open(DATA_PATH, "r", encoding="utf-8") as f:
         DATA = json.load(f)
     if not DATA.get("common_intro_by_round") and DATA.get("common_intro"):
-        # Старый JSON: один common_intro на все раунды
         common = DATA["common_intro"]
-        DATA["common_intro_by_round"] = {str(r): common for r in range(1, 6)}
+        DATA["common_intro_by_round"] = {str(r): common for r in range(1, 7)}
+    # Раунд 6: если в файле нет — подставляем из раунда 5
+    cbr = DATA.get("common_intro_by_round") or {}
+    if "6" not in cbr and "5" in cbr:
+        DATA["common_intro_by_round"]["6"] = cbr["5"]
+    ri = DATA.get("rounds_intro") or {}
+    if "6" not in ri and "5" in ri:
+        DATA["rounds_intro"]["6"] = ri["5"]
+    if "6" not in DATA.get("scenarios", {}):
+        DATA.setdefault("scenarios", {})["6"] = {}
 except FileNotFoundError:
     print("ERROR: data/scenarios.json not found at", DATA_PATH, file=sys.stderr)
-    DATA = {"common_intro_by_round": {"1": [], "2": [], "3": [], "4": [], "5": []}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
+    DATA = {"common_intro_by_round": {str(r): [] for r in range(1, 7)}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
 except Exception as e:
     print("ERROR loading scenarios.json:", e, file=sys.stderr)
-    DATA = {"common_intro_by_round": {"1": [], "2": [], "3": [], "4": [], "5": []}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
+    DATA = {"common_intro_by_round": {str(r): [] for r in range(1, 7)}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
 
 # In-memory state (для одного мероприятия)
 teams = []  # [{"id": 1, "name": "Команда А", "role": 1|2, "pair_id": 0}, ...]
 pairs = []  # [{"team1_id": 1, "team2_id": 2}, ...]
 choices = {}  # {(team_id, round): coefficient}
 current_round = 1
-max_rounds = 5
+max_rounds = 6
 expected_teams = None  # ожидаемое кол-во команд (задаёт ведущий), None = не задано
 
 
@@ -123,8 +131,16 @@ def api_register():
     name = (request.get_json() or {}).get("name", "").strip()
     if not name:
         return jsonify({"error": "Укажите название команды"}), 400
-    if any(t["name"] == name for t in teams):
-        return jsonify({"error": "Такое название уже занято"}), 400
+    # Разрешаем вход с тем же именем: если команда уже есть — возвращаем её id (ре-вход после вылета/обрыва)
+    existing = next((t for t in teams if t["name"] == name), None)
+    if existing:
+        return jsonify({
+            "team_id": existing["id"],
+            "name": existing["name"],
+            "role": existing["role"],
+            "pair_id": existing["pair_id"],
+            "reentered": True,
+        })
 
     team_id = len(teams) + 1
     # Чётная команда — Команда 2 в новой паре, нечётная — Команда 1
@@ -241,6 +257,26 @@ def api_choice():
     return jsonify({"ok": True, "round": current_round})
 
 
+@app.route("/api/teams/<int:team_id>", methods=["DELETE"])
+def api_remove_team(team_id):
+    """Удалить команду (например, выбывшую). Очищаем её выборы и обновляем пару."""
+    global teams, pairs, choices
+    t = next((x for x in teams if x["id"] == team_id), None)
+    if not t:
+        return jsonify({"error": "Команда не найдена"}), 404
+    teams = [x for x in teams if x["id"] != team_id]
+    choices = {k: v for k, v in choices.items() if k[0] != team_id}
+    for p in pairs:
+        if p.get("team1_id") == team_id:
+            p["team1_id"] = p.get("team2_id")
+            p["team2_id"] = None
+            break
+        if p.get("team2_id") == team_id:
+            p["team2_id"] = None
+            break
+    return jsonify({"ok": True, "message": "Команда удалена", "teams_count": len(teams)})
+
+
 @app.route("/api/reset", methods=["POST"])
 def api_reset():
     """Сбросить игру: очистить команды, пары, ответы, раунд 1. Для ведущего с экрана."""
@@ -260,18 +296,21 @@ def api_round():
     if r is not None and 1 <= r <= max_rounds:
         current_round = r
         return jsonify({"current_round": current_round})
-    return jsonify({"error": "round от 1 до 5"}), 400
+    return jsonify({"error": "round от 1 до " + str(max_rounds)}), 400
 
 
 @app.route("/api/results")
 def api_results():
-    """Итоги: по раундам 1–4 только пораундовые DC/CTE; сумма только за 5 раундов. Квадранты по приросту маржи к прошлой неделе (DC_5 - DC_1)."""
+    """Итоги: пораундовые DC/CTE; сумма по итогам max_rounds. Прирост маржи от исходных (DC_N - initial_dc). Квадранты по приросту."""
     up_to_round = request.args.get("round", type=int)
     if up_to_round is None or up_to_round < 1 or up_to_round > max_rounds:
         up_to_round = max_rounds
     rounds_consider = list(range(1, up_to_round + 1))
+    initial_metrics = DATA.get("initial_metrics", {})
     results = []
     for t in teams:
+        im = initial_metrics.get("team" + str(t["role"]), {})
+        initial_dc = im.get("DC") if im.get("DC") is not None else im.get("DCPO")
         per_round = []
         total_dc = 0
         cte_ok_count = 0
@@ -301,10 +340,12 @@ def api_results():
                 cte_ok_count += 1
             per_round.append({"round": r, "dc": round(dc, 0) if isinstance(dc, (int, float)) else None, "cte_ok": cte_ok})
         rounds_played = sum(1 for r in rounds_consider if (t["id"], r) in choices)
-        # Сумма DC показываем только по итогам 5 раундов
         show_total = up_to_round == max_rounds and rounds_played >= 1
+        # Прирост маржи от исходных значений (не от раунда 1)
         dc_growth = None
-        if 1 in dc_by_round and up_to_round in dc_by_round:
+        if up_to_round in dc_by_round and initial_dc is not None:
+            dc_growth = dc_by_round[up_to_round] - (initial_dc if isinstance(initial_dc, (int, float)) else 0)
+        elif 1 in dc_by_round and up_to_round in dc_by_round and initial_dc is None:
             dc_growth = dc_by_round[up_to_round] - dc_by_round[1]
         results.append({
             "team_id": t["id"],
@@ -315,6 +356,10 @@ def api_results():
             "cte_ok_rounds": cte_ok_count,
             "rounds_played": rounds_played,
             "dc_growth": round(dc_growth, 0) if dc_growth is not None else None,
+            "initial_dc": round(initial_dc, 0) if isinstance(initial_dc, (int, float)) else initial_dc,
+            "initial_sh": im.get("SH"),
+            "initial_orders": im.get("orders"),
+            "initial_oph": im.get("OPH"),
         })
     # Квадранты после каждого раунда: раунд 1 — по DC и медиане; раунды 2–5 — по приросту (DC_N - DC_1)
     dcs_r1 = [z["per_round"][0]["dc"] for z in results if z.get("per_round") and len(z["per_round"]) > 0 and z["per_round"][0].get("dc") is not None]
