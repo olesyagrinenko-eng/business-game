@@ -18,12 +18,16 @@ DATA_PATH = os.path.join(APP_ROOT, "data", "scenarios.json")
 try:
     with open(DATA_PATH, "r", encoding="utf-8") as f:
         DATA = json.load(f)
+    if not DATA.get("common_intro_by_round") and DATA.get("common_intro"):
+        # Старый JSON: один common_intro на все раунды
+        common = DATA["common_intro"]
+        DATA["common_intro_by_round"] = {str(r): common for r in range(1, 6)}
 except FileNotFoundError:
     print("ERROR: data/scenarios.json not found at", DATA_PATH, file=sys.stderr)
-    DATA = {"common_intro_by_round": {}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
+    DATA = {"common_intro_by_round": {"1": [], "2": [], "3": [], "4": [], "5": []}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
 except Exception as e:
     print("ERROR loading scenarios.json:", e, file=sys.stderr)
-    DATA = {"common_intro_by_round": {}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
+    DATA = {"common_intro_by_round": {"1": [], "2": [], "3": [], "4": [], "5": []}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
 
 # In-memory state (для одного мероприятия)
 teams = []  # [{"id": 1, "name": "Команда А", "role": 1|2, "pair_id": 0}, ...]
@@ -65,19 +69,29 @@ def health():
 
 @app.route("/")
 def index():
-    return send_from_directory(app.static_folder, "index.html")
+    try:
+        return send_from_directory(app.static_folder, "index.html")
+    except Exception as e:
+        print("ERROR serving index.html:", e, file=sys.stderr)
+        return f"Error: {e}", 500
 
 
 @app.route("/screen")
 def screen():
-    return send_from_directory(app.static_folder, "screen.html")
+    try:
+        return send_from_directory(app.static_folder, "screen.html")
+    except Exception as e:
+        print("ERROR serving screen.html:", e, file=sys.stderr)
+        return f"Error: {e}", 500
 
 
 @app.route("/api/data")
 def api_data():
     """Общие данные: вводные, коэффициенты, количество раундов, ожидаемое кол-во команд, исходные метрики."""
+    intro_by_round = DATA.get("common_intro_by_round") or {}
     return jsonify({
-        "common_intro_by_round": DATA.get("common_intro_by_round", {}),
+        "common_intro_by_round": intro_by_round,
+        "common_intro": intro_by_round.get("1", DATA.get("common_intro", [])),
         "rounds_intro": DATA.get("rounds_intro", {}),
         "coefficients": DATA.get("coefficients", []),
         "initial_metrics": DATA.get("initial_metrics", {}),
@@ -290,8 +304,8 @@ def api_results():
         # Сумма DC показываем только по итогам 5 раундов
         show_total = up_to_round == max_rounds and rounds_played >= 1
         dc_growth = None
-        if 1 in dc_by_round and max_rounds in dc_by_round and rounds_played >= max_rounds:
-            dc_growth = dc_by_round[max_rounds] - dc_by_round[1]
+        if 1 in dc_by_round and up_to_round in dc_by_round:
+            dc_growth = dc_by_round[up_to_round] - dc_by_round[1]
         results.append({
             "team_id": t["id"],
             "name": t["name"],
@@ -302,23 +316,26 @@ def api_results():
             "rounds_played": rounds_played,
             "dc_growth": round(dc_growth, 0) if dc_growth is not None else None,
         })
-    # Квадранты: по приросту маржи (DC_5 - DC_1). Выше медианы прироста = молодцы
-    growths = [x["dc_growth"] for x in results if x["dc_growth"] is not None]
+    # Квадранты после каждого раунда: раунд 1 — по DC и медиане; раунды 2–5 — по приросту (DC_N - DC_1)
+    dcs_r1 = [z["per_round"][0]["dc"] for z in results if z.get("per_round") and len(z["per_round"]) > 0 and z["per_round"][0].get("dc") is not None]
+    median_r1 = sorted(dcs_r1)[len(dcs_r1) // 2] if dcs_r1 else 0
+    growths = [x["dc_growth"] for x in results if x.get("dc_growth") is not None]
     median_growth = sorted(growths)[len(growths) // 2] if growths else 0
     for x in results:
         x["quadrant"] = None
-        if x["rounds_played"] < 1 or (up_to_round < max_rounds and x["rounds_played"] < up_to_round):
+        if x["rounds_played"] < 1:
             continue
-        if up_to_round < max_rounds:
-            # До 5 раунда квадрант не считаем по приросту (нет DC_5 - DC_1)
-            continue
-        high_growth = x["dc_growth"] is not None and x["dc_growth"] >= median_growth
         cte_ok = x["cte_ok_rounds"] >= (x["rounds_played"] / 2)
-        if high_growth and cte_ok:
+        if up_to_round == 1:
+            dc1 = x["per_round"][0]["dc"] if x.get("per_round") and x["per_round"] and x["per_round"][0].get("dc") is not None else 0
+            high = dc1 >= median_r1
+        else:
+            high = x.get("dc_growth") is not None and x["dc_growth"] >= median_growth
+        if high and cte_ok:
             x["quadrant"] = "top_right"
-        elif high_growth and not cte_ok:
+        elif high and not cte_ok:
             x["quadrant"] = "top_left"
-        elif not high_growth and cte_ok:
+        elif not high and cte_ok:
             x["quadrant"] = "bottom_right"
         else:
             x["quadrant"] = "bottom_left"
