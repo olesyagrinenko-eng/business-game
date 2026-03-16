@@ -224,18 +224,30 @@
       const im = (data && data.initial_metrics) || {};
       const t1 = im.team1 || {};
       const t2 = im.team2 || {};
+      const fmt = (x) => {
+        if (x == null) return "—";
+        if (typeof x === "number" && x >= 1000) return x.toLocaleString("ru");
+        if (typeof x === "number" && x < 1 && x > 0) return (x * 100).toFixed(0) + "%";
+        return x;
+      };
       const rows = [
-        ["Исходный DC (DCPO)", t1.DCPO ?? t1.DC, t2.DCPO ?? t2.DC],
+        ["MPH", t1.MPH, t2.MPH],
+        ["CPO", t1.CPO, t2.CPO],
+        ["CTE target", t1.CTE_target, t2.CTE_target],
+        ["CTE факт", t1.CTE, t2.CTE],
         ["SH", t1.SH, t2.SH],
-        ["Заказы", t1.orders, t2.orders],
         ["OPH", t1.OPH, t2.OPH],
+        ["Кол-во заказов", t1.orders, t2.orders],
+        ["Средний чек", t1.avg_check, t2.avg_check],
+        ["Ком. маржа", t1.margin, t2.margin],
+        ["DCPO", t1.DCPO, t2.DCPO],
+        ["DC (исходный)", t1.DC, t2.DC],
       ];
       const tbody = document.getElementById("initialMetricsBody");
       if (!tbody) return;
       tbody.innerHTML = "";
       rows.forEach(([label, v1, v2]) => {
         const tr = document.createElement("tr");
-        const fmt = (x) => x != null ? (typeof x === "number" && x > 1000 ? x.toLocaleString("ru") : x) : "—";
         tr.innerHTML = "<td>" + label + "</td><td>" + fmt(v1) + "</td><td>" + fmt(v2) + "</td>";
         tbody.appendChild(tr);
       });

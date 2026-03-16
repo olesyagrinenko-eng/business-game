@@ -79,10 +79,11 @@
       "orders": 1050.0,
       "avg_check": 1100.0,
       "margin": 0.33,
-      "DCPO": 253.0
+      "DCPO": 253.0,
+      "DC": 265650
     },
     "team2": {
-      "MPH": 358.9,
+      "MPH": 359,
       "CPO": 97.0,
       "CTE_target": 15.0,
       "CTE": 15.0,
@@ -91,7 +92,8 @@
       "orders": 1110.0,
       "avg_check": 1050.0,
       "margin": 0.33,
-      "DCPO": 249.5
+      "DCPO": 250,
+      "DC": 276945
     }
   },
   "scenarios": {

@@ -53,9 +53,9 @@ ROUNDS_INTRO = {
     ],
 }
 
-# Строки СВОД с исходными метриками на старте (серая строка): 12–21 — MPH, CPO, CTE target, CTE факт, SH, OPH, заказы, чек, маржа, DCPO
-INITIAL_METRICS_ROWS = list(range(12, 22))
-METRIC_KEYS = ["MPH", "CPO", "CTE_target", "CTE", "SH", "OPH", "orders", "avg_check", "margin", "DCPO"]
+# Строки СВОД с исходными метриками на старте: 12–22 — MPH, CPO, CTE target, CTE факт, SH, OPH, заказы, чек, маржа, DCPO, DC
+INITIAL_METRICS_ROWS = list(range(12, 23))
+METRIC_KEYS = ["MPH", "CPO", "CTE_target", "CTE", "SH", "OPH", "orders", "avg_check", "margin", "DCPO", "DC"]
 
 
 def parse_line(line):

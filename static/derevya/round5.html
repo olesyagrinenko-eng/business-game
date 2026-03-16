@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Дерево метрик — Раунд 5</title>
   <link rel="stylesheet" href="https://yastatic.net/s3/home/fonts/ys/4/text.css" crossorigin="anonymous">
   <style>
@@ -28,7 +31,7 @@
     .one-tree h3 { margin: 0 0 0.5rem 0; font-size: 1rem; color: var(--dark); padding: 0.35rem 0; border-bottom: 2px solid var(--accent); }
 
     /* Блок-схема: колонка 1 — только Заказы; 2 — OPH,SH,CTE,AOV,Ком.маржа; 3 — CPO до фолл; 4 — DCPO и DC друг под другом */
-    .diagram { position: relative; display: grid; grid-template-columns: minmax(90px, 0.9fr) minmax(140px, 2fr) minmax(100px, 1fr) minmax(100px, 1fr); grid-template-rows: auto auto auto auto auto auto auto; gap: 10px 14px; padding: 16px 20px; min-height: 280px; width: 100%; }
+    .diagram { position: relative; display: grid; grid-template-columns: minmax(90px, 0.9fr) minmax(140px, 2fr) minmax(100px, 1fr) minmax(100px, 1fr); grid-template-rows: auto auto auto auto auto auto auto auto; gap: 10px 14px; padding: 16px 20px; min-height: 300px; width: 100%; min-width: 720px; }
     .diagram .plashka { background: var(--card); border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 0.8rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
     .diagram .plashka .name { font-weight: 700; color: var(--dark); display: block; margin-bottom: 4px; font-size: 0.85rem; }
     .diagram .plashka .row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -43,17 +46,16 @@
     .diagram .plashka.status-green { border-color: var(--green); background: rgba(46,125,50,0.08); }
     .diagram .plashka.status-yellow { border-color: var(--yellow); background: rgba(249,168,37,0.12); }
     .diagram .plashka.status-red { border-color: var(--red); background: rgba(198,40,40,0.08); }
-    .diagram .col-left { grid-column: 1; grid-row: 1 / 6; align-self: stretch; }
-    .diagram .col-mid { grid-column: 2; }
-    .diagram .col-right { grid-column: 3; }
-    .diagram #p1_oph, .diagram #p2_oph { grid-row: 1; }
-    .diagram #p1_sh, .diagram #p2_sh { grid-row: 2; }
-    .diagram #p1_cte, .diagram #p2_cte { grid-row: 3; }
-    .diagram #p1_aov, .diagram #p2_aov { grid-row: 4; }
-    .diagram #p1_margin, .diagram #p2_margin { grid-row: 5; }
-    .diagram .block-cpo { grid-column: 3; grid-row: 1 / 3; align-self: center; }
-    .diagram .block-dcpo { grid-column: 4; grid-row: 4; }
-    .diagram .block-dc { grid-column: 4; grid-row: 5 / 7; align-self: stretch; }
+    /* Явное размещение по ID: колонка 1 — только Заказы; 2 — OPH,SH,CTE,AOV,Ком.маржа; 3 — CPO; 4 — DCPO и DC друг под другом */
+    .diagram #p1_orders, .diagram #p2_orders { grid-column: 1; grid-row: 1 / 6; align-self: stretch; background: rgba(77, 170, 248, 0.06); }
+    .diagram #p1_oph, .diagram #p2_oph { grid-column: 2; grid-row: 1; }
+    .diagram #p1_sh, .diagram #p2_sh { grid-column: 2; grid-row: 2; }
+    .diagram #p1_cte, .diagram #p2_cte { grid-column: 2; grid-row: 3; }
+    .diagram #p1_aov, .diagram #p2_aov { grid-column: 2; grid-row: 4; }
+    .diagram #p1_margin, .diagram #p2_margin { grid-column: 2; grid-row: 5; }
+    .diagram #p1_cpo, .diagram #p2_cpo { grid-column: 3; grid-row: 1 / 3; align-self: center; }
+    .diagram #p1_dcpo, .diagram #p2_dcpo { grid-column: 4; grid-row: 4; margin-bottom: 12px; }
+    .diagram #p1_dc, .diagram #p2_dc { grid-column: 4; grid-row: 6 / 8; align-self: stretch; margin-top: 4px; }
     .diagram-svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
     .diagram-svg line, .diagram-svg path { stroke: #6b7a99; stroke-width: 1.5; fill: none; }
     .shared-top { margin-bottom: 1rem; padding: 0.75rem; background: rgba(77,170,248,0.06); border-radius: 12px; border: 1px dashed var(--accent); }
@@ -113,7 +115,7 @@
           <div class="plashka col-mid" id="p1_cte"><span class="name">CTE</span><div class="row"><span class="week-prev">Прошлая: <b id="t1CTE_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1CTE_curr">—</b></span><span class="dot" id="t1CTE_dot"></span><span class="pct" id="t1CTE_pct"></span></div></div>
           <div class="plashka col-mid" id="p1_aov"><span class="name">AOV</span><div class="row"><span class="week-prev">Прошлая: <b id="t1AOV_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1AOV_curr">—</b></span><span class="dot" id="t1AOV_dot"></span><span class="pct" id="t1AOV_pct"></span></div></div>
           <div class="plashka col-mid" id="p1_margin"><span class="name">Ком.маржа</span><div class="row"><span class="week-prev">Прошлая: <b id="t1Margin_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1Margin_curr">—</b></span><span class="dot" id="t1Margin_dot"></span><span class="pct" id="t1Margin_pct"></span></div></div>
-          <div class="plashka col-right block-cpo" id="p1_cpo"><span class="name">CPO до фолл</span><div class="row"><span class="week-prev">Прошлая: <b id="t1CPO_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1CPO_curr">—</b></span><span class="dot" id="t1CPO_dot"></span><span class="pct" id="t1CPO_pct"></span></div></div>
+          <div class="plashka col-right block-cpo" id="p1_cpo"><span class="name">CPO до фолл-бэка</span><div class="row"><span class="week-prev">Прошлая: <b id="t1CPO_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1CPO_curr">—</b></span><span class="dot" id="t1CPO_dot"></span><span class="pct" id="t1CPO_pct"></span></div></div>
           <div class="plashka col-right block-dcpo" id="p1_dcpo"><span class="name">DCPO</span><div class="row"><span class="week-prev">Прошлая: <b id="t1DCPO_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1DCPO_curr">—</b></span><span class="dot" id="t1DCPO_dot"></span><span class="pct" id="t1DCPO_pct"></span></div></div>
           <div class="plashka block-dc" id="p1_dc"><span class="name">DC</span><div class="row"><span class="week-prev">Прошлая: <b id="t1DC_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1DC_curr">—</b></span><span class="dot" id="t1DC_dot"></span><span class="pct" id="t1DC_pct"></span></div></div>
         </div>
@@ -130,7 +132,7 @@
           <div class="plashka col-mid" id="p2_cte"><span class="name">CTE</span><div class="row"><span class="week-prev">Прошлая: <b id="t2CTE_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2CTE_curr">—</b></span><span class="dot" id="t2CTE_dot"></span><span class="pct" id="t2CTE_pct"></span></div></div>
           <div class="plashka col-mid" id="p2_aov"><span class="name">AOV</span><div class="row"><span class="week-prev">Прошлая: <b id="t2AOV_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2AOV_curr">—</b></span><span class="dot" id="t2AOV_dot"></span><span class="pct" id="t2AOV_pct"></span></div></div>
           <div class="plashka col-mid" id="p2_margin"><span class="name">Ком.маржа</span><div class="row"><span class="week-prev">Прошлая: <b id="t2Margin_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2Margin_curr">—</b></span><span class="dot" id="t2Margin_dot"></span><span class="pct" id="t2Margin_pct"></span></div></div>
-          <div class="plashka col-right block-cpo" id="p2_cpo"><span class="name">CPO до фолл</span><div class="row"><span class="week-prev">Прошлая: <b id="t2CPO_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2CPO_curr">—</b></span><span class="dot" id="t2CPO_dot"></span><span class="pct" id="t2CPO_pct"></span></div></div>
+          <div class="plashka col-right block-cpo" id="p2_cpo"><span class="name">CPO до фолл-бэка</span><div class="row"><span class="week-prev">Прошлая: <b id="t2CPO_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2CPO_curr">—</b></span><span class="dot" id="t2CPO_dot"></span><span class="pct" id="t2CPO_pct"></span></div></div>
           <div class="plashka col-right block-dcpo" id="p2_dcpo"><span class="name">DCPO</span><div class="row"><span class="week-prev">Прошлая: <b id="t2DCPO_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2DCPO_curr">—</b></span><span class="dot" id="t2DCPO_dot"></span><span class="pct" id="t2DCPO_pct"></span></div></div>
           <div class="plashka block-dc" id="p2_dc"><span class="name">DC</span><div class="row"><span class="week-prev">Прошлая: <b id="t2DC_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2DC_curr">—</b></span><span class="dot" id="t2DC_dot"></span><span class="pct" id="t2DC_pct"></span></div></div>
         </div>
@@ -236,14 +238,15 @@
       fillTeam(1, prev1, sc ? sc.team1 : null, sh.sh1, prev1.avg_check);
       fillTeam(2, prev2, sc ? sc.team2 : null, sh.sh2, prev2.avg_check);
     }
-    // Связи с изгибом: curve = смещение контрольной точки (dx, dy) для квадратичной кривой Безье
+    // Связи: route 'around' = обход блоков (вниз → вправо → к цели), иначе прямая или лёгкая дуга
     var arrowLinks = [
-      { from: 'orders', to: 'oph', fromSide: 'right', toSide: 'left', curve: [0, -25] },
-      { from: 'orders', to: 'dc', fromSide: 'bottom', toSide: 'topUnderStart', curve: null },
-      { from: 'aov', to: 'dcpo', fromSide: 'right', toSide: 'left', curve: [0, -20] },
-      { from: 'oph', to: 'cpo', fromSide: 'right', toSide: 'left', curve: [0, -15] },
-      { from: 'margin', to: 'dcpo', fromSide: 'right', toSide: 'left', curve: [0, 15] },
-      { from: 'dcpo', to: 'dc', fromSide: 'bottom', toSide: 'topUnderStart', curve: null }
+      { from: 'orders', to: 'oph', fromSide: 'right', toSide: 'left', route: 'line' },
+      { from: 'orders', to: 'dc', fromSide: 'bottom', toSide: 'topUnderStart', route: 'line' },
+      { from: 'aov', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'around' },
+      { from: 'oph', to: 'cpo', fromSide: 'right', toSide: 'left', route: 'line' },
+      { from: 'cpo', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'line' },
+      { from: 'margin', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'around' },
+      { from: 'dcpo', to: 'dc', fromSide: 'bottom', toSide: 'topUnderStart', route: 'line' }
     ];
     function pointOnRect(r, side, refPoint) {
       var cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
@@ -255,6 +258,14 @@
       if (side === 'bottom') return { x: cx, y: r.bottom - pad };
       return { x: cx, y: cy };
     }
+    function handDrawnWobble(d, seed) {
+      var wobble = 1.3;
+      var s = (seed * 9301 + 49297) % 233280;
+      function rnd() { s = (s * 9301 + 49297) % 233280; return (s / 233280) * 2 - 1; }
+      return d.replace(/([\d.]+)\s*,\s*([\d.]+)/g, function(m, x, y) {
+        return (parseFloat(x) + rnd() * wobble).toFixed(2) + ',' + (parseFloat(y) + rnd() * wobble).toFixed(2);
+      });
+    }
     function drawArrows(diagId, arrowsGroupId, markerUrl, prefix) {
       var diag = document.getElementById(diagId);
       var g = document.getElementById(arrowsGroupId);
@@ -263,7 +274,7 @@
       var dr = diag.getBoundingClientRect();
       svg.setAttribute('viewBox', '0 0 ' + dr.width + ' ' + dr.height);
       g.innerHTML = '';
-      arrowLinks.forEach(function(link) {
+      arrowLinks.forEach(function(link, idx) {
         var fromEl = document.getElementById(prefix + link.from);
         var toEl = document.getElementById(prefix + link.to);
         if (!fromEl || !toEl) return;
@@ -273,18 +284,24 @@
         var fromRect = { left: fr.left - dr.left, right: fr.right - dr.left, top: fr.top - dr.top, bottom: fr.bottom - dr.top };
         var p1 = pointOnRect(fromRect, link.fromSide);
         var p2 = link.toSide === 'topUnderStart' ? pointOnRect(toRect, 'topUnderStart', p1) : pointOnRect(toRect, link.toSide);
-        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         var d;
-        if (link.curve && link.curve[0] !== undefined) {
-          var cx = (p1.x + p2.x) / 2 + (link.curve[0] || 0);
-          var cy = (p1.y + p2.y) / 2 + (link.curve[1] || 0);
-          d = 'M' + p1.x + ',' + p1.y + ' Q' + cx + ',' + cy + ' ' + p2.x + ',' + p2.y;
+        if (link.route === 'around') {
+          var down = 50;
+          var w1x = p1.x + 15;
+          var w1y = p1.y + down;
+          var w2x = p2.x - 15;
+          var w2y = w1y;
+          d = 'M' + p1.x + ',' + p1.y + ' L' + (p1.x + 8) + ',' + p1.y + ' Q' + (p1.x + 8) + ',' + w1y + ' ' + w1x + ',' + w1y + ' L' + w2x + ',' + w2y + ' Q' + (p2.x - 8) + ',' + w2y + ' ' + (p2.x - 8) + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
         } else {
           d = 'M' + p1.x + ',' + p1.y + ' L' + p2.x + ',' + p2.y;
         }
+        d = handDrawnWobble(d, idx + (prefix === 'p1_' ? 0 : 10));
+        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('d', d);
         path.setAttribute('stroke', '#6b7a99');
-        path.setAttribute('stroke-width', '1.5');
+        path.setAttribute('stroke-width', '1.6');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
         path.setAttribute('fill', 'none');
         path.setAttribute('marker-end', markerUrl);
         g.appendChild(path);
