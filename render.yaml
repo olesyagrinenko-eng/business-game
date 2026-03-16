@@ -5,5 +5,6 @@ services:
     name: business-game
     runtime: python
     buildCommand: pip install -r requirements.txt
-    # Запуск через run.py: порт берётся из PORT в Python, чтобы Render точно увидел открытый порт
     startCommand: python run.py
+    # Проверка по HTTP вместо сканирования порта — тогда Render не выключит сервис
+    healthCheckPath: /health
