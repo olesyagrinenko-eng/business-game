@@ -5,5 +5,5 @@ services:
     name: business-game
     runtime: python
     buildCommand: pip install -r requirements.txt
-    # Важно: слушать 0.0.0.0 и порт из $PORT, иначе Render не увидит открытый порт
-    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 app:app
+    # Запуск через run.py: порт берётся из PORT в Python, чтобы Render точно увидел открытый порт
+    startCommand: python run.py
