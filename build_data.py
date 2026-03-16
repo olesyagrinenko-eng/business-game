@@ -17,6 +17,7 @@ ROUNDS = {
     5: list(range(140, 140 + 16)),
 }
 
+# Вводные по раундам. Чтобы убрать строку в каком-то раунде — удалите её из списка для этого раунда.
 ROUNDS_INTRO = {
     1: ["На след.неделе прогнозируют проливные дожди и рост спроса"],
     2: [
@@ -42,6 +43,10 @@ ROUNDS_INTRO = {
         "У нас не бесконечный склад (АЗ привез сток под прогноз заказов) + мы продаем скоропортящиеся товары, которые списываются",
     ],
 }
+
+# Строки СВОД с исходными метриками на старте (серая строка): 12–21 — MPH, CPO, CTE target, CTE факт, SH, OPH, заказы, чек, маржа, DCPO
+INITIAL_METRICS_ROWS = list(range(12, 22))
+METRIC_KEYS = ["MPH", "CPO", "CTE_target", "CTE", "SH", "OPH", "orders", "avg_check", "margin", "DCPO"]
 
 
 def parse_line(line):
@@ -74,6 +79,22 @@ def main():
     # В файле строка может быть "34:33 | (None, 0.4, ...)" или "33 | (...)" — берём всё после "| "
     def get_content(ln):
         return ln.split("|", 1)[-1].strip() if "|" in ln else ln.strip()
+
+    # Исходные метрики на старте (серая строка)
+    initial_metrics = {"team1": {}, "team2": {}}
+    for i, row_idx in enumerate(INITIAL_METRICS_ROWS):
+        if row_idx >= len(lines):
+            break
+        parts = parse_line(get_content(lines[row_idx]))
+        if not parts or len(parts) < 6:
+            continue
+        key = METRIC_KEYS[i] if i < len(METRIC_KEYS) else ("m%d" % i)
+        v1 = parts[2] if isinstance(parts[2], (int, float)) else None
+        v2 = parts[5] if len(parts) > 5 and isinstance(parts[5], (int, float)) else None
+        if v1 is not None:
+            initial_metrics["team1"][key] = round(v1, 2) if isinstance(v1, float) else v1
+        if v2 is not None:
+            initial_metrics["team2"][key] = round(v2, 2) if isinstance(v2, float) else v2
 
     scenarios = {}
     for r, row_indices in ROUNDS.items():
@@ -121,7 +142,8 @@ def main():
             "В стране санкции, поэтому пользователи не могут скачать приложение конкурента и сделать заказ там",
             "Задача: удержать CTE в таргете при максимальной марже (DC = Direct Contribution)",
         ],
-        "rounds_intro": ROUNDS_INTRO,
+        "rounds_intro": {str(k): v for k, v in ROUNDS_INTRO.items()},
+        "initial_metrics": initial_metrics,
         "scenarios": scenarios,
         "coefficients": [
             {"value": -0.1, "label": "-10%"},

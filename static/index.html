@@ -4,39 +4,48 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Бизнес-игра — Франчайзи</title>
+  <link rel="stylesheet" href="https://yastatic.net/s3/home/fonts/ys/4/text.css" crossorigin="anonymous">
   <style>
-    :root { --bg: #0f1419; --card: #1a2332; --accent: #3b82f6; --text: #e6edf3; --muted: #8b949e; }
+    /* Стиль в духе бренда Яндекс Лавка (см. Лавка.pdf в папке) */
+    :root { --bg: #f5f5f5; --card: #fff; --accent: #00c853; --accent-dark: #00a843; --text: #000000; --muted: #6b7280; --border: #e0e0e0; }
     * { box-sizing: border-box; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; padding: 1rem; }
+    body { font-family: 'YS Text', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; padding: 1rem; -webkit-font-smoothing: antialiased; }
     .container { max-width: 560px; margin: 0 auto; }
-    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .card { background: var(--card); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
-    input[type="text"] { width: 100%; padding: 0.75rem; border: 1px solid #30363d; border-radius: 8px; background: var(--bg); color: var(--text); font-size: 1rem; }
-    button { background: var(--accent); color: #fff; border: none; padding: 0.75rem 1.25rem; border-radius: 8px; font-size: 1rem; cursor: pointer; width: 100%; margin-top: 0.5rem; }
+    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--text); }
+    .card { background: var(--card); border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border); }
+    input[type="text"] { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 12px; background: var(--card); color: var(--text); font-size: 1rem; }
+    button { background: var(--accent); color: #fff; border: none; padding: 0.75rem 1.25rem; border-radius: 12px; font-size: 1rem; cursor: pointer; width: 100%; margin-top: 0.5rem; font-weight: 500; }
+    button:hover { background: var(--accent-dark); }
     button:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-top: 1rem; }
     .btn-group button { margin: 0; }
     .role { font-size: 0.9rem; color: var(--muted); margin-top: 0.25rem; }
     ul { padding-left: 1.25rem; margin: 0.5rem 0; }
     li { margin: 0.25rem 0; }
-    .round-title { font-weight: 600; margin-bottom: 0.5rem; }
-    .result-box { background: #161b22; border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+    .round-title { font-weight: 600; margin-bottom: 0.5rem; color: var(--text); }
+    .result-box { background: var(--bg); border-radius: 12px; padding: 1rem; margin-top: 1rem; border: 1px solid var(--border); }
     .result-box dt { color: var(--muted); font-size: 0.85rem; } .result-box dd { margin: 0 0 0.5rem 0; font-size: 1.1rem; }
     .hidden { display: none; }
     .screen-link { display: block; text-align: center; margin-top: 1rem; color: var(--accent); }
     #screenLink { color: var(--accent); }
-    .round-badge { background: linear-gradient(135deg, #1a3a5c 0%, #0d2137 100%); border: 3px solid #58a6ff; border-radius: 16px; padding: 0.75rem 1.25rem; margin-bottom: 1rem; text-align: center; }
-    .round-badge span { font-size: 1.75rem; font-weight: 800; letter-spacing: 0.08em; color: #58a6ff; }
-    .round-badge .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8b949e; margin-bottom: 0.25rem; }
-    .task-box { background: linear-gradient(145deg, #1e3a5f 0%, #0f2847 50%, #1a2332 100%); border: 3px solid #f0883e; border-radius: 16px; padding: 1.25rem 1.5rem; margin: 1.25rem 0; box-shadow: 0 0 20px rgba(240, 136, 62, 0.15); }
-    .task-box .round-title { color: #f0883e; font-size: 1.1rem; margin-bottom: 0.5rem; }
-    .task-box p { margin: 0.4rem 0; font-size: 1.1rem; color: #e6edf3; }
-    .task-box .coef-options { font-size: 1.35rem; font-weight: 700; color: #ffb74d; margin: 0.5rem 0; letter-spacing: 0.02em; }
-    .task-box .goal { color: #7ee787; font-size: 1rem; margin-top: 0.5rem; }
-    .complication { background: linear-gradient(90deg, #2d2318 0%, #252d3a 100%); border-left: 5px solid #f0883e; padding: 0.6rem 1rem; margin: 0.5rem 0; border-radius: 0 10px 10px 0; font-weight: 500; }
-    .next-step { background: linear-gradient(135deg, #0d3320 0%, #1a4729 100%); border: 3px solid #3fb950; border-radius: 16px; padding: 1.25rem; margin-top: 1.25rem; box-shadow: 0 0 24px rgba(63, 185, 80, 0.2); }
-    .next-step strong { color: #7ee787; font-size: 1.15rem; }
-    .next-step p { margin: 0.4rem 0; font-size: 1.05rem; color: #c9d1d9; }
+    .round-badge { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 2px solid var(--accent); border-radius: 16px; padding: 0.75rem 1.25rem; margin-bottom: 1rem; text-align: center; }
+    .round-badge span { font-size: 1.75rem; font-weight: 800; letter-spacing: 0.08em; color: var(--accent-dark); }
+    .round-badge .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.25rem; }
+    .task-box { background: linear-gradient(145deg, #fff8e1 0%, #ffecb3 50%, #fff 100%); border: 2px solid #ffb74d; border-radius: 16px; padding: 1.25rem 1.5rem; margin: 1.25rem 0; }
+    .task-box .round-title { color: #e65100; font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .task-box p { margin: 0.4rem 0; font-size: 1.1rem; color: var(--text); }
+    .task-box .coef-options { font-size: 1.35rem; font-weight: 700; color: #f57c00; margin: 0.5rem 0; letter-spacing: 0.02em; }
+    .task-box .goal { color: var(--accent-dark); font-size: 1rem; margin-top: 0.5rem; }
+    .complication { background: #fff3e0; border-left: 4px solid #ff9800; padding: 0.6rem 1rem; margin: 0.5rem 0; border-radius: 0 10px 10px 0; font-weight: 500; color: var(--text); }
+    .next-step { background: #e8f5e9; border: 2px solid var(--accent); border-radius: 16px; padding: 1.25rem; margin-top: 1.25rem; }
+    .next-step strong { color: var(--accent-dark); font-size: 1.15rem; }
+    .next-step p { margin: 0.4rem 0; font-size: 1.05rem; color: var(--text); }
+    .round-history { margin-top: 1rem; }
+    .round-history h3 { font-size: 1rem; margin: 0 0 0.5rem 0; color: var(--muted); }
+    .round-history .round-item { background: var(--bg); border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 0.5rem; font-size: 0.95rem; border: 1px solid var(--border); }
+    .metrics-table { width: 100%; margin-top: 0.75rem; font-size: 0.95rem; }
+    .metrics-table th, .metrics-table td { padding: 0.35rem 0.5rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .metrics-table .initial { color: var(--muted); }
   </style>
 </head>
 <body>
@@ -77,6 +86,7 @@
         <div class="btn-group" id="coefButtons"></div>
         <p id="waitOpponent" class="muted hidden" style="margin-top:1rem;">Ожидаем решение соперника...</p>
         <div id="resultBox" class="result-box hidden"></div>
+        <div id="roundHistoryBox" class="round-history hidden"></div>
         <div id="nextStepBox" class="next-step hidden"></div>
       </div>
       <p class="muted" style="text-align:center; margin-top:1rem; font-size:0.85rem;">
@@ -213,21 +223,60 @@
       }
     }
 
-    function showResult(res) {
+    const coefLabels = { "-0.1": "-10%", "0": "0%", "0.2": "+20%", "0.4": "+40%" };
+    const metricNames = { CTE: "CTE", CPO: "CPO", DCPO: "DCPO", DC: "DC" };
+
+    function showResult(res, state, data) {
       const box = document.getElementById("resultBox");
       box.innerHTML = "";
       if (!res) return;
-      let dc = "—";
-      if (res.DC != null && res.DC !== "" && res.DC !== "+" && res.DC !== "-") {
-        dc = typeof res.DC === "number" ? res.DC.toLocaleString("ru") : String(res.DC);
+      const oppLabel = state && state.opponent_choice != null ? (coefLabels[String(state.opponent_choice)] || state.opponent_choice) : null;
+      const role = (state && state.role != null) ? state.role : (teamRole === "1" ? 1 : 2);
+      const initial = (data && data.initial_metrics) ? data.initial_metrics["team" + role] : {};
+      let html = "";
+      if (oppLabel) {
+        html += "<p style=\"margin-bottom:0.75rem;\"><strong>Конкурент выбрал:</strong> " + oppLabel + "</p>";
       }
-      box.innerHTML = `
-        <dl>
-          <dt>CTE (факт)</dt><dd>${res.CTE != null ? res.CTE : "—"}</dd>
-          <dt>DC (прямой вклад)</dt><dd>${dc}</dd>
-          <dt>CTE в таргете</dt><dd>${res.CTE_in_target ? "Да" : "Нет"}</dd>
-        </dl>
-      `;
+      const metrics = ["CTE", "CPO", "DCPO", "DC"];
+      html += "<table class=\"metrics-table\"><thead><tr><th>Метрика</th><th>Исходное</th><th>Итог раунда</th></tr></thead><tbody>";
+      metrics.forEach((key) => {
+        const initVal = initial[key] != null ? (typeof initial[key] === "number" && key === "DC" ? initial[key].toLocaleString("ru") : initial[key]) : "—";
+        let resVal = res[key];
+        if (key === "DC" && (resVal === "+" || resVal === "-" || resVal === "")) resVal = null;
+        if (resVal != null && typeof resVal === "number" && key === "DC") resVal = resVal.toLocaleString("ru");
+        else if (resVal != null && typeof resVal === "number") resVal = Math.round(resVal * 100) / 100;
+        html += "<tr><td>" + (metricNames[key] || key) + "</td><td class=\"initial\">" + initVal + "</td><td>" + (resVal != null ? resVal : "—") + "</td></tr>";
+      });
+      html += "<tr><td>CTE в таргете</td><td class=\"initial\">—</td><td>" + (res.CTE_in_target ? "Да" : "Нет") + "</td></tr>";
+      html += "</tbody></table>";
+      box.innerHTML = html;
+      show(box);
+    }
+
+    function renderRoundHistory(resultsByRound) {
+      const box = document.getElementById("roundHistoryBox");
+      if (!box) return;
+      if (!resultsByRound || resultsByRound.length === 0) {
+        hide(box);
+        return;
+      }
+      const completed = resultsByRound.filter((r) => r.my_choice != null || r.result);
+      if (completed.length === 0) {
+        hide(box);
+        return;
+      }
+      let html = "<h3>История раундов</h3>";
+      completed.forEach((r) => {
+        const myL = r.my_choice != null ? (coefLabels[String(r.my_choice)] || r.my_choice) : "—";
+        const oppL = r.opponent_choice != null ? (coefLabels[String(r.opponent_choice)] || r.opponent_choice) : "—";
+        let resStr = "";
+        if (r.result) {
+          const dc = r.result.DC != null && r.result.DC !== "+" && r.result.DC !== "-" ? (typeof r.result.DC === "number" ? r.result.DC.toLocaleString("ru") : r.result.DC) : "—";
+          resStr = " CTE " + (r.result.CTE != null ? r.result.CTE : "—") + ", DC " + dc + (r.result.CTE_in_target ? ", в таргете" : "");
+        }
+        html += "<div class=\"round-item\">Раунд " + r.round + ": вы " + myL + ", конкурент " + oppL + (resStr ? ". Результат: " + resStr : "") + "</div>";
+      });
+      box.innerHTML = html;
       show(box);
     }
 
@@ -264,10 +313,15 @@
           hide(document.getElementById("waitOpponent"));
         }
         if (result) {
-          showResult(result);
+          showResult(result, state, data);
           showNextStep(state.current_round, true);
         } else {
           hide(document.getElementById("nextStepBox"));
+        }
+        if (state.results_by_round && state.results_by_round.length) {
+          renderRoundHistory(state.results_by_round);
+        } else {
+          hide(document.getElementById("roundHistoryBox"));
         }
       } catch (_) {}
       setTimeout(pollState, 2000);

@@ -58,11 +58,12 @@ def screen():
 
 @app.route("/api/data")
 def api_data():
-    """Общие данные: вводные, коэффициенты, количество раундов, ожидаемое кол-во команд."""
+    """Общие данные: вводные, коэффициенты, количество раундов, ожидаемое кол-во команд, исходные метрики."""
     return jsonify({
         "common_intro": DATA.get("common_intro", []),
         "rounds_intro": DATA.get("rounds_intro", {}),
         "coefficients": DATA.get("coefficients", []),
+        "initial_metrics": DATA.get("initial_metrics", {}),
         "max_rounds": max_rounds,
         "expected_teams": expected_teams,
         "teams_count": len(teams),
@@ -129,9 +130,32 @@ def api_state():
                 res = get_scenario_result(current_round, c1, c2)
                 if res:
                     result = res["team1"] if t["role"] == 1 else res["team2"]
-                    # В данных у team2 иногда в DC попадает "+"/"-" (оценка CTE) — подменяем на None
                     if result and result.get("DC") in ("+", "-"):
                         result = {**result, "DC": None}
+        # История раундов: что делали я и конкурент, результат по каждому
+        results_by_round = []
+        for r in range(1, current_round + 1):
+            my_c = choices.get((team_id, r))
+            opp_c = get_opponent_choice(team_id, r)
+            res_r = None
+            if my_c is not None and opp_c is not None:
+                pid = get_pair_id(team_id)
+                if pid is not None:
+                    p = pairs[pid]
+                    c1 = choices.get((p["team1_id"], r))
+                    c2 = choices.get((p["team2_id"], r))
+                    if c1 is not None and c2 is not None:
+                        sr = get_scenario_result(r, c1, c2)
+                        if sr:
+                            res_r = sr["team1"] if t["role"] == 1 else sr["team2"]
+                            if res_r and res_r.get("DC") in ("+", "-"):
+                                res_r = {**res_r, "DC": None}
+            results_by_round.append({
+                "round": r,
+                "my_choice": my_c,
+                "opponent_choice": opp_c,
+                "result": res_r,
+            })
         return jsonify({
             "team_id": team_id,
             "name": t["name"],
@@ -140,6 +164,7 @@ def api_state():
             "my_choice": my_choice,
             "opponent_choice": opp_choice,
             "result": result,
+            "results_by_round": results_by_round,
             "rounds_done": [r for r in range(1, current_round) if (team_id, r) in choices],
         })
     # Экран: общее состояние
@@ -209,15 +234,17 @@ def api_round():
 
 @app.route("/api/results")
 def api_results():
-    """Итоги: сумма DC, CTE в таргете. ?round=N — только раунды 1..N (для карты после раунда N)."""
+    """Итоги: по раундам 1–4 только пораундовые DC/CTE; сумма только за 5 раундов. Квадранты по приросту маржи к прошлой неделе (DC_5 - DC_1)."""
     up_to_round = request.args.get("round", type=int)
     if up_to_round is None or up_to_round < 1 or up_to_round > max_rounds:
         up_to_round = max_rounds
     rounds_consider = list(range(1, up_to_round + 1))
     results = []
     for t in teams:
+        per_round = []
         total_dc = 0
         cte_ok_count = 0
+        dc_by_round = {}
         for r in rounds_consider:
             c = choices.get((t["id"], r))
             if c is None:
@@ -237,36 +264,53 @@ def api_results():
             dc = side.get("DC")
             if isinstance(dc, (int, float)):
                 total_dc += dc
-            if side.get("CTE_in_target"):
+                dc_by_round[r] = dc
+            cte_ok = side.get("CTE_in_target", False)
+            if cte_ok:
                 cte_ok_count += 1
+            per_round.append({"round": r, "dc": round(dc, 0) if isinstance(dc, (int, float)) else None, "cte_ok": cte_ok})
         rounds_played = sum(1 for r in rounds_consider if (t["id"], r) in choices)
+        # Сумма DC показываем только по итогам 5 раундов
+        show_total = up_to_round == max_rounds and rounds_played >= 1
+        dc_growth = None
+        if 1 in dc_by_round and max_rounds in dc_by_round and rounds_played >= max_rounds:
+            dc_growth = dc_by_round[max_rounds] - dc_by_round[1]
         results.append({
             "team_id": t["id"],
             "name": t["name"],
             "role": t["role"],
-            "total_dc": round(total_dc, 0),
+            "per_round": per_round,
+            "total_dc": round(total_dc, 0) if show_total else None,
             "cte_ok_rounds": cte_ok_count,
             "rounds_played": rounds_played,
+            "dc_growth": round(dc_growth, 0) if dc_growth is not None else None,
         })
-    # Квадранты: по рассмотренным раундам; для отображения нужен хотя бы один сыгранный раунд
-    dcs = [x["total_dc"] for x in results if x["total_dc"]]
-    median_dc = sorted(dcs)[len(dcs) // 2] if dcs else 0
-    need_rounds = min(up_to_round, max_rounds)  # для квадранта считаем по сыгранным в этом срезе
+    # Квадранты: по приросту маржи (DC_5 - DC_1). Выше медианы прироста = молодцы
+    growths = [x["dc_growth"] for x in results if x["dc_growth"] is not None]
+    median_growth = sorted(growths)[len(growths) // 2] if growths else 0
     for x in results:
         x["quadrant"] = None
-        if x["rounds_played"] < 1:
+        if x["rounds_played"] < 1 or (up_to_round < max_rounds and x["rounds_played"] < up_to_round):
             continue
-        high_dc = x["total_dc"] >= median_dc if median_dc else False
-        cte_ok = x["cte_ok_rounds"] >= (x["rounds_played"] / 2)  # больше половины сыгранных — в таргете
-        if high_dc and cte_ok:
+        if up_to_round < max_rounds:
+            # До 5 раунда квадрант не считаем по приросту (нет DC_5 - DC_1)
+            continue
+        high_growth = x["dc_growth"] is not None and x["dc_growth"] >= median_growth
+        cte_ok = x["cte_ok_rounds"] >= (x["rounds_played"] / 2)
+        if high_growth and cte_ok:
             x["quadrant"] = "top_right"
-        elif high_dc and not cte_ok:
+        elif high_growth and not cte_ok:
             x["quadrant"] = "top_left"
-        elif not high_dc and cte_ok:
+        elif not high_growth and cte_ok:
             x["quadrant"] = "bottom_right"
         else:
             x["quadrant"] = "bottom_left"
-    return jsonify({"results": results, "median_dc": median_dc, "up_to_round": up_to_round})
+    return jsonify({
+        "results": results,
+        "median_dc_growth": median_growth,
+        "up_to_round": up_to_round,
+        "show_total_only_after_round_5": True,
+    })
 
 
 if __name__ == "__main__":

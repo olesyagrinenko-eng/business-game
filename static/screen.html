@@ -4,50 +4,53 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Экран — Бизнес-игра</title>
+  <link rel="stylesheet" href="https://yastatic.net/s3/home/fonts/ys/4/text.css" crossorigin="anonymous">
   <style>
-    :root { --bg: #0d1117; --card: #161b22; --accent: #58a6ff; --text: #c9d1d9; --muted: #8b949e; }
+    /* Стиль в духе бренда Яндекс Лавка (см. Лавка.pdf в папке) */
+    :root { --bg: #f5f5f5; --card: #fff; --accent: #00c853; --accent-dark: #00a843; --text: #000000; --muted: #6b7280; --border: #e0e0e0; }
     * { box-sizing: border-box; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; padding: 1.5rem; }
+    body { font-family: 'YS Text', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; padding: 1.5rem; -webkit-font-smoothing: antialiased; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
-    h1 { font-size: 1.75rem; margin: 0; }
+    h1 { font-size: 1.75rem; margin: 0; color: var(--text); }
     .round-control { display: flex; align-items: center; gap: 0.5rem; }
-    .round-control select, .round-control button { padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid #30363d; background: var(--card); color: var(--text); font-size: 1rem; }
-    .round-control button { background: var(--accent); border-color: var(--accent); color: #fff; cursor: pointer; }
-    .card { background: var(--card); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+    .round-control select, .round-control input, .round-control button { padding: 0.5rem 0.75rem; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 1rem; }
+    .round-control button { background: var(--accent); border-color: var(--accent); color: #fff; cursor: pointer; font-weight: 500; }
+    .round-control button:hover { background: var(--accent-dark); }
+    .card { background: var(--card); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border); }
     .card h2 { font-size: 1.1rem; margin: 0 0 0.75rem 0; color: var(--muted); }
     ul { padding-left: 1.5rem; margin: 0; }
     li { margin: 0.35rem 0; }
     .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-    .tabs button { padding: 0.5rem 1rem; border: 1px solid #30363d; background: var(--card); color: var(--text); border-radius: 8px; cursor: pointer; }
+    .tabs button { padding: 0.5rem 1rem; border: 1px solid var(--border); background: var(--card); color: var(--text); border-radius: 12px; cursor: pointer; }
     .tabs button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
     .view { display: none; }
     .view.active { display: block; }
     table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 0.5rem; text-align: left; border-bottom: 1px solid #21262d; }
+    th, td { padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--border); }
     .quadrant-map { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 1rem; min-height: 360px; }
-    .quadrant { background: #21262d; border-radius: 12px; padding: 1rem; border: 2px solid #30363d; }
+    .quadrant { background: var(--bg); border-radius: 16px; padding: 1rem; border: 2px solid var(--border); }
     .quadrant h3 { font-size: 0.95rem; margin: 0 0 0.5rem 0; color: var(--muted); }
     .quadrant ul { list-style: none; padding: 0; margin: 0; }
-    .quadrant li { padding: 0.25rem 0; border-bottom: 1px solid #30363d; }
-    .quadrant.top_right { border-color: #238636; }
-    .quadrant.top_left { border-color: #da3633; }
-    .quadrant.bottom_right { border-color: #9e6a03; }
-    .quadrant.bottom_left { border-color: #8b949e; }
-    .round-badge-big { background: linear-gradient(135deg, #1a3a5c 0%, #0d2137 100%); border: 4px solid #58a6ff; border-radius: 20px; padding: 1rem 2rem; margin-bottom: 1.5rem; text-align: center; }
-    .round-badge-big .num { font-size: 3rem; font-weight: 800; letter-spacing: 0.05em; color: #58a6ff; line-height: 1; }
-    .round-badge-big .label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.15em; color: #8b949e; margin-bottom: 0.35rem; }
-    .task-box { background: linear-gradient(145deg, #1e3a5f 0%, #0f2847 50%, #161b22 100%); border: 4px solid #f0883e; border-radius: 16px; padding: 1.5rem 2rem; margin: 1.5rem 0; box-shadow: 0 0 28px rgba(240, 136, 62, 0.2); }
-    .task-box h2 { color: #f0883e !important; font-size: 1.35rem !important; }
-    .task-box p { font-size: 1.2rem; color: #e6edf3; margin: 0.5rem 0; }
-    .task-box .coef-options { font-size: 1.6rem; font-weight: 700; color: #ffb74d; margin: 0.75rem 0; letter-spacing: 0.03em; }
-    .complication { background: linear-gradient(90deg, #2d2318 0%, #252d3a 100%); border-left: 6px solid #f0883e; padding: 0.75rem 1.25rem; margin: 0.6rem 0; border-radius: 0 12px 12px 0; font-size: 1.05rem; font-weight: 500; }
+    .quadrant li { padding: 0.35rem 0; border-bottom: 1px solid var(--border); }
+    .quadrant.top_right { border-color: var(--accent); background: #e8f5e9; }
+    .quadrant.top_left { border-color: #ff9800; background: #fff3e0; }
+    .quadrant.bottom_right { border-color: #8bc34a; background: #f1f8e9; }
+    .quadrant.bottom_left { border-color: var(--border); }
+    .round-badge-big { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 4px solid var(--accent); border-radius: 20px; padding: 1rem 2rem; margin-bottom: 1.5rem; text-align: center; }
+    .round-badge-big .num { font-size: 3rem; font-weight: 800; letter-spacing: 0.05em; color: var(--accent-dark); line-height: 1; }
+    .round-badge-big .label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 0.35rem; }
+    .task-box { background: linear-gradient(145deg, #fff8e1 0%, #ffecb3 50%, #fff 100%); border: 4px solid #ffb74d; border-radius: 16px; padding: 1.5rem 2rem; margin: 1.5rem 0; }
+    .task-box h2 { color: #e65100 !important; font-size: 1.35rem !important; }
+    .task-box p { font-size: 1.2rem; color: var(--text); margin: 0.5rem 0; }
+    .task-box .coef-options { font-size: 1.6rem; font-weight: 700; color: #f57c00; margin: 0.75rem 0; letter-spacing: 0.03em; }
+    .complication { background: #fff3e0; border-left: 6px solid #ff9800; padding: 0.75rem 1.25rem; margin: 0.6rem 0; border-radius: 0 12px 12px 0; font-size: 1.05rem; font-weight: 500; color: var(--text); }
     .round-status { padding: 1rem 1.25rem; border-radius: 12px; margin-bottom: 1rem; font-size: 1.05rem; }
-    .round-status.waiting { background: linear-gradient(135deg, #3d3520 0%, #2d2a1e 100%); border: 3px solid #d4a72c; color: #f0c14b; }
-    .round-status.done { background: linear-gradient(135deg, #0d3320 0%, #1a2e1a 100%); border: 3px solid #3fb950; color: #7ee787; }
+    .round-status.waiting { background: #fff8e1; border: 3px solid #ffc107; color: #e65100; }
+    .round-status.done { background: #e8f5e9; border: 3px solid var(--accent); color: var(--accent-dark); }
     #nextStepHost { font-size: 1.1rem; padding: 1.25rem; border-width: 3px; }
-    #nextStepHost strong { color: #7ee787; font-size: 1.15rem; }
+    #nextStepHost strong { color: var(--accent-dark); font-size: 1.15rem; }
     .map-selector { margin-bottom: 1rem; }
-    .map-selector select { padding: 0.5rem 0.75rem; border-radius: 8px; background: var(--card); color: var(--text); font-size: 1rem; }
+    .map-selector select { padding: 0.5rem 0.75rem; border-radius: 12px; background: var(--card); color: var(--text); font-size: 1rem; border: 1px solid var(--border); }
     .results-table { margin-top: 1rem; }
     .hidden { display: none !important; }
   </style>
@@ -62,7 +65,7 @@
       </div>
       <div class="expected-teams-set" style="display: flex; align-items: center; gap: 0.35rem;">
         <label style="font-size: 0.9rem; color: var(--muted);">Ожидаем команд:</label>
-        <input type="number" id="expectedTeamsInput" min="2" max="50" step="2" placeholder="8" style="width: 4rem; padding: 0.4rem 0.5rem; border-radius: 6px; border: 1px solid #30363d; background: var(--card); color: var(--text); font-size: 1rem;">
+        <input type="number" id="expectedTeamsInput" min="2" max="50" step="2" placeholder="8" style="width: 4rem; padding: 0.4rem 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 1rem;">
         <button id="btnSetExpected">Задать</button>
       </div>
       <label>Раунд:</label>
@@ -74,7 +77,7 @@
         <option value="5">5</option>
       </select>
       <button id="btnSetRound">Применить</button>
-      <button id="btnReset" style="background: #da3633; border-color: #da3633;">Сбросить игру</button>
+      <button id="btnReset" style="background: #d32f2f; border-color: #d32f2f;">Сбросить игру</button>
     </div>
   </div>
 
@@ -108,7 +111,17 @@
   </div>
 
   <div id="view-progress" class="view card">
-    <h2>Команды и ответы (раунд <span id="progressRoundNum">1</span>)</h2>
+    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+      <h2 style="margin: 0;">Команды и ответы (раунд <span id="progressRoundNum">1</span>)</h2>
+      <label style="color: var(--muted); font-size: 0.95rem;">Показать раунд:</label>
+      <select id="progressRoundSelect">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+    </div>
     <table>
       <thead>
         <tr><th>Пара</th><th>Команда 1</th><th>Команда 2</th><th>Ответ 1</th><th>Ответ 2</th></tr>
@@ -129,26 +142,26 @@
         <option value="5">5 (итог)</option>
       </select>
     </div>
-    <p class="muted">Ось X — CTE в таргете (больше половины сыгранных раундов), ось Y — суммарный DC (выше медианы = верх).</p>
+    <p class="muted">Ось X — CTE в таргете (больше половины раундов). Ось Y — прирост маржи к 1-й неделе (DC после 5 раундов − DC после 1-го): выше медианы = молодцы.</p>
     <table class="results-table" id="resultsTable">
-      <thead><tr><th>Команда</th><th>Сумма DC</th><th>CTE в таргете</th><th>Квадрант</th></tr></thead>
+      <thead><tr><th>Команда</th><th>DC по раундам</th><th>Сумма DC (итог 5)</th><th>Прирост маржи</th><th>CTE в таргете</th><th>Квадрант</th></tr></thead>
       <tbody id="resultsTableBody"></tbody>
     </table>
     <div class="quadrant-map">
       <div class="quadrant top_left">
-        <h3>Высокий DC, CTE вне таргета</h3>
+        <h3>Рост маржи, CTE вне таргета</h3>
         <ul id="ql"></ul>
       </div>
       <div class="quadrant top_right">
-        <h3>Высокий DC, CTE в таргете</h3>
+        <h3>Рост маржи, CTE в таргете</h3>
         <ul id="qr"></ul>
       </div>
       <div class="quadrant bottom_left">
-        <h3>Низкий DC, CTE вне таргета</h3>
+        <h3>Маржа не выросла, CTE вне таргета</h3>
         <ul id="qlb"></ul>
       </div>
       <div class="quadrant bottom_right">
-        <h3>Низкий DC, CTE в таргете</h3>
+        <h3>Маржа не выросла, CTE в таргете</h3>
         <ul id="qrb"></ul>
       </div>
     </div>
@@ -276,7 +289,8 @@
       }
     });
 
-    const quadrantNames = { top_right: "Высокий DC, CTE в таргете", top_left: "Высокий DC, CTE вне таргета", bottom_right: "Низкий DC, CTE в таргете", bottom_left: "Низкий DC, CTE вне таргета" };
+    const quadrantNames = { top_right: "Рост маржи + CTE в таргете", top_left: "Рост маржи, CTE вне таргета", bottom_right: "Маржа не выросла, CTE в таргете", bottom_left: "Маржа не выросла, CTE вне таргета" };
+    const coefLabels = { "-0.1": "-10%", "0": "0%", "0.2": "+20%", "0.4": "+40%" };
 
     async function loadState() {
       try {
@@ -305,19 +319,26 @@
           statusText.textContent = "Ожидаем ответы команд.";
           nextHost.classList.add("hidden");
         }
-        const tbody = document.getElementById("progressTable");
-        tbody.innerHTML = "";
-        const labels = { "-0.1": "-10%", "0": "0%", "0.2": "+20%", "0.4": "+40%" };
-        (state.pairs || []).forEach((p, i) => {
-          const t1 = (state.teams || []).find((t) => t.id === p.team1_id);
-          const t2 = (state.teams || []).find((t) => t.id === p.team2_id);
-          const c1 = state.choices && state.choices[p.team1_id + "_" + state.current_round];
-          const c2 = state.choices && state.choices[p.team2_id + "_" + state.current_round];
-          const tr = document.createElement("tr");
-          tr.innerHTML = "<td>Пара " + (i + 1) + "</td><td>" + (t1 ? t1.name : "—") + "</td><td>" + (t2 ? t2.name : "—") + "</td><td>" + (c1 != null ? labels[c1] || c1 : "—") + "</td><td>" + (c2 != null ? labels[c2] || c2 : "—") + "</td>";
-          tbody.appendChild(tr);
-        });
+        renderProgressTable();
       } catch (_) {}
+    }
+
+    function renderProgressTable() {
+      const viewRound = parseInt(document.getElementById("progressRoundSelect").value, 10) || state.current_round;
+      const numEl = document.getElementById("progressRoundNum");
+      if (numEl) numEl.textContent = viewRound;
+      const tbody = document.getElementById("progressTable");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+      (state.pairs || []).forEach((p, i) => {
+        const t1 = (state.teams || []).find((t) => t.id === p.team1_id);
+        const t2 = (state.teams || []).find((t) => t.id === p.team2_id);
+        const c1 = state.choices && state.choices[p.team1_id + "_" + viewRound];
+        const c2 = state.choices && state.choices[p.team2_id + "_" + viewRound];
+        const tr = document.createElement("tr");
+        tr.innerHTML = "<td>Пара " + (i + 1) + "</td><td>" + (t1 ? t1.name : "—") + "</td><td>" + (t2 ? t2.name : "—") + "</td><td>" + (c1 != null ? (coefLabels[c1] || c1) : "—") + "</td><td>" + (c2 != null ? (coefLabels[c2] || c2) : "—") + "</td>";
+        tbody.appendChild(tr);
+      });
     }
 
     async function loadResults() {
@@ -335,7 +356,8 @@
           else if (t.quadrant === "bottom_right") id = "qrb";
           if (t.quadrant) {
             const li = document.createElement("li");
-            li.textContent = t.name + " (DC: " + (t.total_dc || 0).toLocaleString("ru") + ")";
+            const growthStr = t.dc_growth != null ? (t.dc_growth >= 0 ? "+" : "") + t.dc_growth.toLocaleString("ru") : "—";
+            li.textContent = t.name + " (прирост: " + growthStr + ")";
             list(id).appendChild(li);
           }
         });
@@ -343,15 +365,19 @@
         tbody.innerHTML = "";
         results.forEach((t) => {
           const tr = document.createElement("tr");
+          const perRoundStr = (t.per_round || []).map((pr) => pr.dc != null ? pr.dc.toLocaleString("ru") : "—").join(" / ") || "—";
+          const totalStr = t.total_dc != null ? t.total_dc.toLocaleString("ru") : "—";
+          const growthStr = t.dc_growth != null ? (t.dc_growth >= 0 ? "+" : "") + t.dc_growth.toLocaleString("ru") : "—";
           const cteStr = t.rounds_played ? t.cte_ok_rounds + " из " + t.rounds_played : "—";
           const quadStr = t.quadrant ? quadrantNames[t.quadrant] || t.quadrant : "—";
-          tr.innerHTML = "<td>" + t.name + "</td><td>" + (t.total_dc != null ? t.total_dc.toLocaleString("ru") : "—") + "</td><td>" + cteStr + "</td><td>" + quadStr + "</td>";
+          tr.innerHTML = "<td>" + t.name + "</td><td>" + perRoundStr + "</td><td>" + totalStr + "</td><td>" + growthStr + "</td><td>" + cteStr + "</td><td>" + quadStr + "</td>";
           tbody.appendChild(tr);
         });
       } catch (_) {}
     }
 
     document.getElementById("mapRoundSelect").addEventListener("change", () => { if (document.getElementById("view-map").classList.contains("active")) loadResults(); });
+    document.getElementById("progressRoundSelect").addEventListener("change", renderProgressTable);
 
     (async () => {
       await loadData();
