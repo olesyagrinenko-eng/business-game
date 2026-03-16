@@ -223,11 +223,14 @@
       set(prefix + 'DC_prev', fmt(prev.DC)); set(prefix + 'DC_curr', curr ? fmt(curr.DC) : '—'); setDot(prefix + 'DC_dot', metricStatus(dcOk)); set(prefix + 'DC_pct', pctStr(dcPct)); setPlashka('p' + team + '_dc', 'status-' + metricStatus(dcOk));
       set(prefix + 'CPO_prev', fmt(prev.CPO)); set(prefix + 'CPO_curr', curr ? String(Math.round(curr.CPO)) : '—'); setDot(prefix + 'CPO_dot', metricStatus(cpoOk)); set(prefix + 'CPO_pct', pctStr(cpoPct)); setPlashka('p' + team + '_cpo', 'status-' + metricStatus(cpoOk));
     }
+    function scenarioKey(c1, c2) {
+      return (c1 === 0 ? '0.0' : String(c1)) + '_' + (c2 === 0 ? '0.0' : String(c2));
+    }
     function update() {
       var c1 = parseFloat(document.getElementById('coef1').value);
       var c2 = parseFloat(document.getElementById('coef2').value);
-      var key = c1 + '_' + c2;
-      var sc = SCENARIOS[key];
+      var key = scenarioKey(c1, c2);
+      var sc = SCENARIOS[key] || SCENARIOS[String(c1) + '_' + String(c2)];
       var coefLabels = { '-0.1': '-10%', '0': '0%', '0.2': '+20%', '0.4': '+40%' };
       document.getElementById('vCoef1').textContent = coefLabels[String(c1)] || c1;
       document.getElementById('vCoef2').textContent = coefLabels[String(c2)] || c2;

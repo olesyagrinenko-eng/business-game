@@ -1,982 +1,1768 @@
 {
   "rounds_intro": {
-    "1": [],
-    "2": [],
-    "3": [],
-    "4": [],
-    "5": [],
+    "1": [
+      "На след.неделе прогнозируют проливные дожди и рост спроса"
+    ],
+    "2": [
+      "На след.неделе прогнозируют проливные дожди и рост спроса",
+      "Вы с конкурентом одновременно изобрели механизм суржа, который обрезает заказы, но растит чек"
+    ],
+    "3": [
+      "На след.неделе прогнозируют проливные дожди и рост спроса",
+      "Вы с конкурентом одновременно изобрели механизм суржа, который обрезает заказы, но растит чек",
+      "На рынке появился сервис Доставки заказов, который вывозит заказы с неоптимальным CTE (макс возможность вывоза - 500 заказов)"
+    ],
+    "4": [
+      "На след.неделе прогнозируют проливные дожди и рост спроса",
+      "Вы с конкурентом одновременно изобрели механизм суржа, который обрезает заказы, но растит чек",
+      "На рынке появился сервис Доставки заказов, который вывозит заказы с неоптимальным CTE (макс возможность вывоза - 500 заказов)"
+    ],
+    "5": [
+      "На след.неделе прогнозируют проливные дожди и рост спроса",
+      "Вы с конкурентом одновременно изобрели механизм суржа, который обрезает заказы, но растит чек",
+      "На рынке появился сервис Доставки заказов, который вывозит заказы с неоптимальным CTE (макс возможность вывоза - 500 заказов)",
+      "Отключили санкции и пользователи теперь могут скачать приложение конкурента и перетекать"
+    ],
     "6": []
   },
   "scenarios": {
     "1": {
-      "0_0": {
-        "team1": {
-          "CTE": 300,
-          "CPO": 1260,
-          "DCPO": 4.2,
-          "DC": 20.4,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 105.24,
-          "orders": null,
-          "OPH": 105.24
-        },
-        "team2": {
-          "CTE": 59130,
-          "CPO": "-",
-          "DCPO": "+",
-          "DC": null,
-          "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
-        }
-      },
       "0.4_-0.1": {
         "team1": {
-          "CTE": 540,
-          "CPO": 1260,
-          "DCPO": 2.33,
-          "DC": 11.33,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 156.86,
-          "orders": null,
-          "OPH": 156.86
+          "SH": 540,
+          "orders": 1260,
+          "OPH": 2.33,
+          "CTE": 11.33,
+          "CPO": 156.86,
+          "DCPO": 206.14,
+          "DC": 259740,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": -5910,
-          "CPO": "+",
-          "DCPO": "-",
-          "DC": null,
+          "SH": 60,
+          "orders": 1332,
+          "OPH": 22.2,
+          "CTE": 90,
+          "CPO": 77.79,
+          "DCPO": 268.71,
+          "DC": 357921.43,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.4_0": {
         "team1": {
-          "CTE": 492,
-          "CPO": 1260,
-          "DCPO": 2.56,
-          "DC": 12.44,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 153.05,
-          "orders": null,
-          "OPH": 153.05
+          "SH": 492,
+          "orders": 1260,
+          "OPH": 2.56,
+          "CTE": 12.44,
+          "CPO": 153.05,
+          "DCPO": 209.95,
+          "DC": 264540,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": -1110,
-          "CPO": "+",
-          "DCPO": "-",
-          "DC": null,
+          "SH": 108,
+          "orders": 1332,
+          "OPH": 12.33,
+          "CTE": 50,
+          "CPO": 89.54,
+          "DCPO": 256.96,
+          "DC": 342275.14,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.2_-0.1": {
         "team1": {
-          "CTE": 444,
-          "CPO": 1260,
-          "DCPO": 2.84,
-          "DC": 13.78,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 132.95,
-          "orders": null,
-          "OPH": 132.95
+          "SH": 444,
+          "orders": 1260,
+          "OPH": 2.84,
+          "CTE": 13.78,
+          "CPO": 132.95,
+          "DCPO": 230.05,
+          "DC": 289860,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 24210,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 156,
+          "orders": 1332,
+          "OPH": 8.54,
+          "CTE": 34.62,
+          "CPO": 85.0,
+          "DCPO": 261.5,
+          "DC": 348321.43,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.4_0.2": {
         "team1": {
-          "CTE": 396,
-          "CPO": 1260,
-          "DCPO": 3.18,
-          "DC": 15.45,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 145.43,
-          "orders": null,
-          "OPH": 145.43
+          "SH": 396,
+          "orders": 1260,
+          "OPH": 3.18,
+          "CTE": 15.45,
+          "CPO": 145.43,
+          "DCPO": 217.57,
+          "DC": 274140,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 8490,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 204,
+          "orders": 1332,
+          "OPH": 6.53,
+          "CTE": 26.47,
+          "CPO": 113.03,
+          "DCPO": 233.47,
+          "DC": 310982.57,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.2_0": {
         "team1": {
-          "CTE": 396,
-          "CPO": 1260,
-          "DCPO": 3.18,
-          "DC": 15.45,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 129.14,
-          "orders": null,
-          "OPH": 129.14
+          "SH": 396,
+          "orders": 1260,
+          "OPH": 3.18,
+          "CTE": 15.45,
+          "CPO": 129.14,
+          "DCPO": 233.86,
+          "DC": 294660,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 29010,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 204,
+          "orders": 1332,
+          "OPH": 6.53,
+          "CTE": 26.47,
+          "CPO": 96.74,
+          "DCPO": 249.76,
+          "DC": 332675.14,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0_-0.1": {
         "team1": {
-          "CTE": 348,
-          "CPO": 1260,
-          "DCPO": 3.62,
-          "DC": 17.59,
+          "SH": 348,
+          "orders": 1260,
+          "OPH": 3.62,
+          "CTE": 17.59,
+          "CPO": 109.05,
+          "DCPO": 253.95,
+          "DC": 319980,
           "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 109.05,
-          "orders": null,
-          "OPH": 109.05
+          "place_DC": null
         },
         "team2": {
-          "CTE": 54330,
-          "CPO": "-",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 252,
+          "orders": 1332,
+          "OPH": 5.29,
+          "CTE": 21.43,
+          "CPO": 92.2,
+          "DCPO": 254.3,
+          "DC": 338721.43,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "-0.1_-0.1": {
         "team1": {
-          "CTE": 300,
-          "CPO": 1260,
-          "DCPO": 4.2,
-          "DC": 20.4,
+          "SH": 300,
+          "orders": 1260,
+          "OPH": 4.2,
+          "CTE": 20.4,
+          "CPO": 97.1,
+          "DCPO": 265.9,
+          "DC": 335040,
           "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 97.1,
-          "orders": null,
-          "OPH": 97.1
+          "place_DC": null
         },
         "team2": {
-          "CTE": 69390,
-          "CPO": "-",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 300,
+          "orders": 1332,
+          "OPH": 4.44,
+          "CTE": 18,
+          "CPO": 95.81,
+          "DCPO": 250.69,
+          "DC": 333921.43,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
+        }
+      },
+      "0_0": {
+        "team1": {
+          "SH": 300,
+          "orders": 1260,
+          "OPH": 4.2,
+          "CTE": 20.4,
+          "CPO": 105.24,
+          "DCPO": 257.76,
+          "DC": 324780,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 300,
+          "orders": 1332,
+          "OPH": 4.44,
+          "CTE": 18,
+          "CPO": 103.95,
+          "DCPO": 242.55,
+          "DC": 323075.14,
+          "CTE_in_target": false,
+          "place_DC": null
         }
       },
       "0.2_0.2": {
         "team1": {
-          "CTE": 300,
-          "CPO": 1260,
-          "DCPO": 4.2,
-          "DC": 20.4,
+          "SH": 300,
+          "orders": 1260,
+          "OPH": 4.2,
+          "CTE": 20.4,
+          "CPO": 121.52,
+          "DCPO": 241.48,
+          "DC": 304260,
           "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 121.52,
-          "orders": null,
-          "OPH": 121.52
+          "place_DC": null
         },
         "team2": {
-          "CTE": 38610,
-          "CPO": "-",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 300,
+          "orders": 1332,
+          "OPH": 4.44,
+          "CTE": 18,
+          "CPO": 120.24,
+          "DCPO": 226.26,
+          "DC": 301382.57,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.4_0.4": {
         "team1": {
-          "CTE": 300,
-          "CPO": 1260,
-          "DCPO": 4.2,
-          "DC": 20.4,
+          "SH": 300,
+          "orders": 1260,
+          "OPH": 4.2,
+          "CTE": 20.4,
+          "CPO": 137.81,
+          "DCPO": 225.19,
+          "DC": 283740,
           "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 137.81,
-          "orders": null,
-          "OPH": 137.81
+          "place_DC": null
         },
         "team2": {
-          "CTE": 18090,
-          "CPO": "-",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 300,
+          "orders": 1332,
+          "OPH": 4.44,
+          "CTE": 18,
+          "CPO": 136.52,
+          "DCPO": 209.98,
+          "DC": 279690,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
+        }
+      },
+      "-0.1_0": {
+        "team1": {
+          "SH": 252,
+          "orders": 1260,
+          "OPH": 5,
+          "CTE": 24.29,
+          "CPO": 93.29,
+          "DCPO": 269.71,
+          "DC": 339840,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 348,
+          "orders": 1332,
+          "OPH": 3.83,
+          "CTE": 15.52,
+          "CPO": 107.55,
+          "DCPO": 238.95,
+          "DC": 318275.14,
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0_0.2": {
+        "team1": {
+          "SH": 204,
+          "orders": 1260,
+          "OPH": 6.18,
+          "CTE": 30,
+          "CPO": 97.62,
+          "DCPO": 265.38,
+          "DC": 334380,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 396,
+          "orders": 1332,
+          "OPH": 3.36,
+          "CTE": 13.64,
+          "CPO": 127.44,
+          "DCPO": 219.06,
+          "DC": 291782.57,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0.2_0.4": {
+        "team1": {
+          "SH": 204,
+          "orders": 1260,
+          "OPH": 6.18,
+          "CTE": 30,
+          "CPO": 113.9,
+          "DCPO": 249.1,
+          "DC": 313860,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 396,
+          "orders": 1332,
+          "OPH": 3.36,
+          "CTE": 13.64,
+          "CPO": 143.73,
+          "DCPO": 202.77,
+          "DC": 270090,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.2": {
+        "team1": {
+          "SH": 156,
+          "orders": 1260,
+          "OPH": 8.08,
+          "CTE": 39.23,
+          "CPO": 85.67,
+          "DCPO": 277.33,
+          "DC": 349440,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 444,
+          "orders": 1332,
+          "OPH": 3,
+          "CTE": 12.16,
+          "CPO": 131.05,
+          "DCPO": 215.45,
+          "DC": 286982.57,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0_0.4": {
+        "team1": {
+          "SH": 108,
+          "orders": 1260,
+          "OPH": 11.67,
+          "CTE": 56.67,
+          "CPO": 90,
+          "DCPO": 273,
+          "DC": 343980,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 492,
+          "orders": 1332,
+          "OPH": 2.71,
+          "CTE": 10.98,
+          "CPO": 150.94,
+          "DCPO": 195.56,
+          "DC": 260490,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.4": {
+        "team1": {
+          "SH": 60,
+          "orders": 1260,
+          "OPH": 21,
+          "CTE": 102,
+          "CPO": 78.05,
+          "DCPO": 284.95,
+          "DC": 359040,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 540,
+          "orders": 1332,
+          "OPH": 2.47,
+          "CTE": 10,
+          "CPO": 154.54,
+          "DCPO": 191.96,
+          "DC": 255690,
+          "CTE_in_target": true,
+          "place_DC": null
         }
       }
     },
     "2": {
       "0_0": {
         "team1": {
-          "CTE": 300,
-          "CPO": 1050,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1232,
-          "SH": 110,
-          "orders": null,
-          "OPH": 110
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 296.56,
+          "DC": 311388,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 45738,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
-          "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 108.46,
+          "DCPO": 279.62,
+          "DC": 310383.09,
+          "CTE_in_target": true,
+          "place_DC": null
         }
       },
       "0.4_-0.1": {
         "team1": {
-          "CTE": 540,
-          "CPO": 1260,
-          "DCPO": 2.33,
-          "DC": 11.33,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 156.86,
-          "orders": null,
-          "OPH": 156.86
+          "SH": 540,
+          "orders": 1260,
+          "OPH": 2.33,
+          "CTE": 11.33,
+          "CPO": 156.86,
+          "DCPO": 206.14,
+          "DC": 259740,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": -5910,
-          "CPO": "+",
-          "DCPO": "-",
-          "DC": null,
+          "SH": 60,
+          "orders": 300,
+          "OPH": 5,
+          "CTE": 20.27,
+          "CPO": 93.29,
+          "DCPO": 407.06,
+          "DC": 122118.09,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.4_0": {
         "team1": {
-          "CTE": 492,
-          "CPO": 1260,
-          "DCPO": 2.56,
-          "DC": 12.44,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 153.05,
-          "orders": null,
-          "OPH": 153.05
+          "SH": 492,
+          "orders": 1260,
+          "OPH": 2.56,
+          "CTE": 12.44,
+          "CPO": 153.05,
+          "DCPO": 209.95,
+          "DC": 264540,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": -1110,
-          "CPO": "+",
-          "DCPO": "-",
-          "DC": null,
+          "SH": 108,
+          "orders": 540,
+          "OPH": 5,
+          "CTE": 20.27,
+          "CPO": 101.43,
+          "DCPO": 330.54,
+          "DC": 178492.37,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.2_-0.1": {
         "team1": {
-          "CTE": 444,
-          "CPO": 1260,
-          "DCPO": 2.84,
-          "DC": 13.78,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 132.95,
-          "orders": null,
-          "OPH": 132.95
+          "SH": 444,
+          "orders": 1260,
+          "OPH": 2.84,
+          "CTE": 13.78,
+          "CPO": 132.95,
+          "DCPO": 230.05,
+          "DC": 289860,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 24210,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 156,
+          "orders": 780,
+          "OPH": 5,
+          "CTE": 20.27,
+          "CPO": 93.29,
+          "DCPO": 312.39,
+          "DC": 243660.94,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.4_0.2": {
         "team1": {
-          "CTE": 396,
-          "CPO": 1260,
-          "DCPO": 3.18,
-          "DC": 15.45,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 145.43,
-          "orders": null,
-          "OPH": 145.43
+          "SH": 396,
+          "orders": 1260,
+          "OPH": 3.18,
+          "CTE": 15.45,
+          "CPO": 145.43,
+          "DCPO": 217.57,
+          "DC": 274140,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 8490,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 204,
+          "orders": 932.4,
+          "OPH": 4.57,
+          "CTE": 18.53,
+          "CPO": 119.59,
+          "DCPO": 276.41,
+          "DC": 257721.6,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.2_0": {
         "team1": {
-          "CTE": 396,
-          "CPO": 1260,
-          "DCPO": 3.18,
-          "DC": 15.45,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 129.14,
-          "orders": null,
-          "OPH": 129.14
+          "SH": 396,
+          "orders": 1260,
+          "OPH": 3.18,
+          "CTE": 15.45,
+          "CPO": 129.14,
+          "DCPO": 233.86,
+          "DC": 294660,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 29010,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 204,
+          "orders": 932.4,
+          "OPH": 4.57,
+          "CTE": 18.53,
+          "CPO": 103.31,
+          "DCPO": 292.69,
+          "DC": 272906.4,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0_-0.1": {
         "team1": {
-          "CTE": 348,
-          "CPO": 1134,
-          "DCPO": 3.26,
-          "DC": 15.83,
-          "CTE_in_target": false,
-          "place_DC": 1222,
-          "SH": 112.12,
-          "orders": null,
-          "OPH": 112.12
+          "SH": 348,
+          "orders": 1134,
+          "OPH": 3.26,
+          "CTE": 15.83,
+          "CPO": 112.12,
+          "DCPO": 291.22,
+          "DC": 330240,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 64590,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 252,
+          "orders": 1021.2,
+          "OPH": 4.05,
+          "CTE": 16.43,
+          "CPO": 97.96,
+          "DCPO": 293.73,
+          "DC": 299960.23,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "-0.1_-0.1": {
         "team1": {
-          "CTE": 300,
-          "CPO": 1050,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1232,
-          "SH": 101.86,
-          "orders": null,
-          "OPH": 101.86
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 101.86,
+          "DCPO": 304.7,
+          "DC": 319938,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 54288,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 100.31,
+          "DCPO": 287.77,
+          "DC": 319421.66,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0.2_0.2": {
+        "team1": {
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 280.27,
+          "DC": 294288,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 124.74,
+          "DCPO": 263.34,
+          "DC": 292305.94,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0.4_0.4": {
+        "team1": {
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 263.99,
+          "DC": 277188,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 141.03,
+          "DCPO": 247.05,
+          "DC": 274228.8,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "-0.1_0": {
+        "team1": {
+          "SH": 252,
+          "orders": 966,
+          "OPH": 3.83,
+          "CTE": 18.62,
+          "CPO": 99.37,
+          "DCPO": 310.98,
+          "DC": 300402,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 348,
+          "orders": 1198.8,
+          "OPH": 3.44,
+          "CTE": 13.97,
+          "CPO": 110.46,
+          "DCPO": 274.54,
+          "DC": 329121.43,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0_0.2": {
+        "team1": {
+          "SH": 204,
+          "orders": 882,
+          "OPH": 4.32,
+          "CTE": 21,
+          "CPO": 104.56,
+          "DCPO": 310.3,
+          "DC": 273684,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 396,
+          "orders": 1332,
+          "OPH": 3.36,
+          "CTE": 13.64,
+          "CPO": 127.44,
+          "DCPO": 219.06,
+          "DC": 291782.57,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0.2_0.4": {
+        "team1": {
+          "SH": 204,
+          "orders": 882,
+          "OPH": 4.32,
+          "CTE": 21,
+          "CPO": 120.84,
+          "DCPO": 294.01,
+          "DC": 259320,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 396,
+          "orders": 1332,
+          "OPH": 3.36,
+          "CTE": 13.64,
+          "CPO": 143.73,
+          "DCPO": 202.77,
+          "DC": 270090,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "-0.1_0.2": {
+        "team1": {
+          "SH": 156,
+          "orders": 780,
+          "OPH": 5,
+          "CTE": 24.29,
+          "CPO": 93.29,
+          "DCPO": 328.35,
+          "DC": 256115.14,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 444,
+          "orders": 1332,
+          "OPH": 3,
+          "CTE": 12.16,
+          "CPO": 131.05,
+          "DCPO": 215.45,
+          "DC": 286982.57,
+          "CTE_in_target": true,
+          "place_DC": null
         }
       }
     },
     "3": {
       "0_0": {
         "team1": {
-          "CTE": 300,
-          "CPO": 1050,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 110,
-          "orders": 0,
-          "OPH": 110
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 296.56,
+          "DC": 311388,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 0,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
-          "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 108.46,
+          "DCPO": 279.62,
+          "DC": 310383.09,
+          "CTE_in_target": true,
+          "place_DC": null
         }
       },
       "0.4_-0.1": {
         "team1": {
-          "CTE": 540,
-          "CPO": 1260,
-          "DCPO": 2.33,
-          "DC": 11.33,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 156.86,
-          "orders": 0,
-          "OPH": 156.86
+          "SH": 540,
+          "orders": 1260,
+          "OPH": 2.33,
+          "CTE": 11.33,
+          "CPO": 156.86,
+          "DCPO": 206.14,
+          "DC": 259740,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": -5910,
-          "CPO": "+",
-          "DCPO": "-",
-          "DC": null,
+          "SH": 60,
+          "orders": 800,
+          "OPH": 5,
+          "CTE": 20.27,
+          "CPO": 93.29,
+          "DCPO": -95.42,
+          "DC": -76333.91,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.4_0": {
         "team1": {
-          "CTE": 492,
-          "CPO": 1260,
-          "DCPO": 2.56,
-          "DC": 12.44,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 153.05,
-          "orders": 0,
-          "OPH": 153.05
+          "SH": 492,
+          "orders": 1260,
+          "OPH": 2.56,
+          "CTE": 12.44,
+          "CPO": 153.05,
+          "DCPO": 209.95,
+          "DC": 264540,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": -1110,
-          "CPO": "+",
-          "DCPO": "-",
-          "DC": null,
+          "SH": 108,
+          "orders": 1040,
+          "OPH": 5,
+          "CTE": 20.27,
+          "CPO": 101.43,
+          "DCPO": -52.07,
+          "DC": -54147.63,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.2_-0.1": {
         "team1": {
-          "CTE": 444,
-          "CPO": 1260,
-          "DCPO": 2.84,
-          "DC": 13.78,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 132.95,
-          "orders": 0,
-          "OPH": 132.95
+          "SH": 444,
+          "orders": 1260,
+          "OPH": 2.84,
+          "CTE": 13.78,
+          "CPO": 132.95,
+          "DCPO": 230.05,
+          "DC": 289860,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 24210,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 156,
+          "orders": 1280,
+          "OPH": 5,
+          "CTE": 19.59,
+          "CPO": 93.29,
+          "DCPO": -1.66,
+          "DC": -2128.29,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.4_0.2": {
         "team1": {
-          "CTE": 396,
-          "CPO": 1260,
-          "DCPO": 3.18,
-          "DC": 15.45,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 145.43,
-          "orders": 0,
-          "OPH": 145.43
+          "SH": 396,
+          "orders": 1260,
+          "OPH": 3.18,
+          "CTE": 15.45,
+          "CPO": 145.43,
+          "DCPO": 217.57,
+          "DC": 274140,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 8490,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 204,
+          "orders": 1332,
+          "OPH": 4.57,
+          "CTE": 18.53,
+          "CPO": 119.59,
+          "DCPO": 43.11,
+          "DC": 57422.1,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.2_0": {
         "team1": {
-          "CTE": 396,
-          "CPO": 1260,
-          "DCPO": 3.18,
-          "DC": 15.45,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 129.14,
-          "orders": 0,
-          "OPH": 129.14
+          "SH": 396,
+          "orders": 1260,
+          "OPH": 3.18,
+          "CTE": 15.45,
+          "CPO": 129.14,
+          "DCPO": 233.86,
+          "DC": 294660,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 29010,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 204,
+          "orders": 1332,
+          "OPH": 4.57,
+          "CTE": 17.9,
+          "CPO": 103.31,
+          "DCPO": 54.51,
+          "DC": 72606.9,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0_-0.1": {
         "team1": {
-          "CTE": 348,
-          "CPO": 1134,
-          "DCPO": 3.26,
-          "DC": 15.83,
-          "CTE_in_target": false,
-          "place_DC": 1222,
-          "SH": 112.12,
-          "orders": 0,
-          "OPH": 112.12
+          "SH": 348,
+          "orders": 1134,
+          "OPH": 3.26,
+          "CTE": 15.83,
+          "CPO": 112.12,
+          "DCPO": 291.22,
+          "DC": 330240,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 64590,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 252,
+          "orders": 1332,
+          "OPH": 4.05,
+          "CTE": 16.1,
+          "CPO": 97.96,
+          "DCPO": 107.23,
+          "DC": 142833.94,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "-0.1_-0.1": {
         "team1": {
-          "CTE": 300,
-          "CPO": 1050,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1232,
-          "SH": 101.86,
-          "orders": 0,
-          "OPH": 101.86
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 101.86,
+          "DCPO": 304.7,
+          "DC": 319938,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 54288,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 100.31,
+          "DCPO": 287.77,
+          "DC": 319421.66,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0.2_0.2": {
+        "team1": {
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 280.27,
+          "DC": 294288,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 124.74,
+          "DCPO": 263.34,
+          "DC": 292305.94,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0.4_0.4": {
+        "team1": {
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 263.99,
+          "DC": 277188,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 141.03,
+          "DCPO": 247.05,
+          "DC": 274228.8,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "-0.1_0": {
+        "team1": {
+          "SH": 252,
+          "orders": 1260,
+          "OPH": 3.83,
+          "CTE": 18.24,
+          "CPO": 99.37,
+          "DCPO": 109.58,
+          "DC": 138069.26,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 348,
+          "orders": 1198.8,
+          "OPH": 3.44,
+          "CTE": 13.97,
+          "CPO": 110.46,
+          "DCPO": 274.54,
+          "DC": 329121.43,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0_0.2": {
+        "team1": {
+          "SH": 204,
+          "orders": 1260,
+          "OPH": 4.32,
+          "CTE": 20.29,
+          "CPO": 104.56,
+          "DCPO": 52.92,
+          "DC": 66675,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 396,
+          "orders": 1332,
+          "OPH": 3.36,
+          "CTE": 13.64,
+          "CPO": 127.44,
+          "DCPO": 219.06,
+          "DC": 291782.57,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0.2_0.4": {
+        "team1": {
+          "SH": 204,
+          "orders": 1260,
+          "OPH": 4.32,
+          "CTE": 21,
+          "CPO": 120.84,
+          "DCPO": 41.52,
+          "DC": 52311,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 396,
+          "orders": 1332,
+          "OPH": 3.36,
+          "CTE": 13.64,
+          "CPO": 143.73,
+          "DCPO": 202.77,
+          "DC": 270090,
+          "CTE_in_target": true,
+          "place_DC": null
         }
       }
     },
     "4": {
       "0_0": {
         "team1": {
-          "CTE": 300,
-          "CPO": 1050,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 110,
-          "orders": 0,
-          "OPH": 110
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 296.56,
+          "DC": 311388,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 0,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
-          "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 108.46,
+          "DCPO": 279.62,
+          "DC": 310383.09,
+          "CTE_in_target": true,
+          "place_DC": null
         }
       },
       "0.4_-0.1": {
         "team1": {
-          "CTE": 540,
-          "CPO": 1890,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 142.57,
-          "orders": 0,
-          "OPH": 142.57
+          "SH": 540,
+          "orders": 1890,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 220.43,
+          "DC": 416610,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 150960,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 60,
+          "orders": 800,
+          "OPH": 5,
+          "CTE": 20.27,
+          "CPO": 93.29,
+          "DCPO": -95.42,
+          "DC": -76333.91,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.4_0": {
         "team1": {
-          "CTE": 492,
-          "CPO": 1722,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 142.57,
-          "orders": 0,
-          "OPH": 142.57
+          "SH": 492,
+          "orders": 1722,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 220.43,
+          "DC": 379578,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 113928,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 108,
+          "orders": 1040,
+          "OPH": 5,
+          "CTE": 20.27,
+          "CPO": 101.43,
+          "DCPO": -52.07,
+          "DC": -54147.63,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.2_-0.1": {
         "team1": {
-          "CTE": 444,
-          "CPO": 1554,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 126.29,
-          "orders": 0,
-          "OPH": 126.29
+          "SH": 444,
+          "orders": 1554,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 236.71,
+          "DC": 367854,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 102204,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 156,
+          "orders": 1280,
+          "OPH": 5,
+          "CTE": 20.0,
+          "CPO": 93.29,
+          "DCPO": -1.66,
+          "DC": -2128.29,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.4_0.2": {
         "team1": {
-          "CTE": 396,
-          "CPO": 1386,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 142.57,
-          "orders": 0,
-          "OPH": 142.57
+          "SH": 396,
+          "orders": 1386,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 220.43,
+          "DC": 305514,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 39864,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 204,
+          "orders": 1332,
+          "OPH": 4.57,
+          "CTE": 18.53,
+          "CPO": 119.59,
+          "DCPO": 43.11,
+          "DC": 57422.1,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.2_0": {
         "team1": {
-          "CTE": 396,
-          "CPO": 1386,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 126.29,
-          "orders": 0,
-          "OPH": 126.29
+          "SH": 396,
+          "orders": 1386,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 236.71,
+          "DC": 328086,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 62436,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 204,
+          "orders": 1332,
+          "OPH": 4.57,
+          "CTE": 18.34,
+          "CPO": 103.31,
+          "DCPO": 54.51,
+          "DC": 72606.9,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
+        }
+      },
+      "0_-0.1": {
+        "team1": {
+          "SH": 348,
+          "orders": 1218,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 293.33,
+          "DC": 357280,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 252,
+          "orders": 1332,
+          "OPH": 4.05,
+          "CTE": 16.35,
+          "CPO": 97.96,
+          "DCPO": 107.23,
+          "DC": 142833.94,
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_-0.1": {
+        "team1": {
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 101.86,
+          "DCPO": 304.7,
+          "DC": 319938,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 100.31,
+          "DCPO": 287.77,
+          "DC": 319421.66,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0.2_0.2": {
+        "team1": {
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 280.27,
+          "DC": 294288,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 124.74,
+          "DCPO": 263.34,
+          "DC": 292305.94,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0.4_0.4": {
+        "team1": {
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 263.99,
+          "DC": 277188,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 141.03,
+          "DCPO": 247.05,
+          "DC": 274228.8,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "-0.1_0": {
+        "team1": {
+          "SH": 252,
+          "orders": 1260,
+          "OPH": 3.83,
+          "CTE": 18.53,
+          "CPO": 99.37,
+          "DCPO": 109.58,
+          "DC": 138069.26,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 348,
+          "orders": 1287.6,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 108.46,
+          "DCPO": 276.54,
+          "DC": 356078.57,
+          "CTE_in_target": true,
+          "place_DC": null
         }
       }
     },
     "5": {
       "0_0": {
         "team1": {
-          "CTE": 300,
-          "CPO": 1050,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 110,
-          "orders": 0,
-          "OPH": 110
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 266.99,
+          "DC": 280341.6,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 0,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
-          "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 108.46,
+          "DCPO": 251.4,
+          "DC": 279054.45,
+          "CTE_in_target": true,
+          "place_DC": null
         }
       },
       "0.4_-0.1": {
         "team1": {
-          "CTE": 540,
-          "CPO": 1638,
-          "DCPO": 3.03,
-          "DC": 14.73,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 146.97,
-          "orders": 0,
-          "OPH": 146.97
+          "SH": 540,
+          "orders": 1638,
+          "OPH": 3.03,
+          "CTE": 14.73,
+          "CPO": 146.97,
+          "DCPO": 199.11,
+          "DC": 326142,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 60492,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 60,
+          "orders": 800,
+          "OPH": 5,
+          "CTE": 20.27,
+          "CPO": 93.29,
+          "DCPO": -230.06,
+          "DC": -184044.76,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.4_0": {
         "team1": {
-          "CTE": 492,
-          "CPO": 1638,
-          "DCPO": 3.33,
-          "DC": 16.17,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 144.04,
-          "orders": 0,
-          "OPH": 144.04
+          "SH": 492,
+          "orders": 1638,
+          "OPH": 3.33,
+          "CTE": 16.17,
+          "CPO": 144.04,
+          "DCPO": 202.04,
+          "DC": 330942,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 65292,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 108,
+          "orders": 1040,
+          "OPH": 5,
+          "CTE": 20.27,
+          "CPO": 101.43,
+          "DCPO": -116.64,
+          "DC": -121308.06,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.2_-0.1": {
         "team1": {
-          "CTE": 444,
-          "CPO": 1554,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 126.29,
-          "orders": 0,
-          "OPH": 126.29
+          "SH": 444,
+          "orders": 1554,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 218.88,
+          "DC": 340134,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 74484,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 156,
+          "orders": 1280,
+          "OPH": 5,
+          "CTE": 20.17,
+          "CPO": 93.29,
+          "DCPO": -43.65,
+          "DC": -55869.84,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.4_0.2": {
         "team1": {
-          "CTE": 396,
-          "CPO": 1386,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 142.57,
-          "orders": 0,
-          "OPH": 142.57
+          "SH": 396,
+          "orders": 1386,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 200.43,
+          "DC": 277794,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 12144,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 204,
+          "orders": 1332,
+          "OPH": 4.57,
+          "CTE": 18.53,
+          "CPO": 119.59,
+          "DCPO": 8.82,
+          "DC": 11753.53,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
         }
       },
       "0.2_0": {
         "team1": {
-          "CTE": 396,
-          "CPO": 1386,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 126.29,
-          "orders": 0,
-          "OPH": 126.29
+          "SH": 396,
+          "orders": 1386,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 216.71,
+          "DC": 300366,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 34716,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 204,
+          "orders": 1332,
+          "OPH": 4.57,
+          "CTE": 18.47,
+          "CPO": 103.31,
+          "DCPO": 20.22,
+          "DC": 26938.33,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
+        }
+      },
+      "0_-0.1": {
+        "team1": {
+          "SH": 348,
+          "orders": 1218,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 268.05,
+          "DC": 326480,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 252,
+          "orders": 1332,
+          "OPH": 4.05,
+          "CTE": 16.41,
+          "CPO": 97.96,
+          "DCPO": 76.27,
+          "DC": 101589.78,
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "-0.1_-0.1": {
+        "team1": {
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 101.86,
+          "DCPO": 275.13,
+          "DC": 288891.6,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 100.31,
+          "DCPO": 259.54,
+          "DC": 288093.02,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0.2_0.2": {
+        "team1": {
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 250.71,
+          "DC": 263241.6,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 124.74,
+          "DCPO": 235.11,
+          "DC": 260977.3,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0.4_0.4": {
+        "team1": {
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 234.42,
+          "DC": 246141.6,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 141.03,
+          "DCPO": 218.83,
+          "DC": 242900.16,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "-0.1_0": {
+        "team1": {
+          "SH": 252,
+          "orders": 1260,
+          "OPH": 3.83,
+          "CTE": 18.6,
+          "CPO": 99.37,
+          "DCPO": 77.14,
+          "DC": 97196.67,
+          "CTE_in_target": false,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 348,
+          "orders": 1287.6,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 108.46,
+          "DCPO": 252.41,
+          "DC": 324998.57,
+          "CTE_in_target": true,
+          "place_DC": null
         }
       }
     },
     "6": {
-      "-0.1_0.4": {
-        "team1": {
-          "CTE": 60,
-          "CPO": 800,
-          "DCPO": 5,
-          "DC": 24.29,
-          "CTE_in_target": false,
-          "place_DC": 1562,
-          "SH": 93.29,
-          "orders": 0.62,
-          "OPH": 636.54
-        },
-        "team2": {
-          "CTE": -467484.11,
-          "CPO": "-",
-          "DCPO": "-",
-          "DC": null,
-          "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
-        }
-      },
       "0_0": {
         "team1": {
-          "CTE": 300,
-          "CPO": 1050,
-          "DCPO": 3.5,
-          "DC": 17,
-          "CTE_in_target": false,
-          "place_DC": 1100,
-          "SH": 110,
-          "orders": 0,
-          "OPH": 110
+          "SH": 300,
+          "orders": 1050,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 253,
+          "DC": 265650,
+          "CTE_in_target": true,
+          "place_DC": null
         },
         "team2": {
-          "CTE": 0,
-          "CPO": "+",
-          "DCPO": "+",
-          "DC": null,
+          "SH": 300,
+          "orders": 1110,
+          "OPH": 3.7,
+          "CTE": 15,
+          "CPO": 97,
+          "DCPO": 249.5,
+          "DC": 276945,
+          "CTE_in_target": true,
+          "place_DC": null
+        }
+      },
+      "0.4_-0.1": {
+        "team1": {
+          "SH": 540,
+          "orders": 1638,
+          "OPH": 3.03,
+          "CTE": 14.73,
+          "CPO": 146.97,
+          "DCPO": 210.11,
+          "DC": 344160,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 60,
+          "orders": 800,
+          "OPH": 5,
+          "CTE": 20.27,
+          "CPO": 93.29,
+          "DCPO": -260.38,
+          "DC": -208303.96,
           "CTE_in_target": false,
-          "place_DC": null,
-          "SH": null,
-          "orders": null,
-          "OPH": null
+          "place_DC": null
+        }
+      },
+      "0.4_0": {
+        "team1": {
+          "SH": 492,
+          "orders": 1638,
+          "OPH": 3.33,
+          "CTE": 16.17,
+          "CPO": 144.04,
+          "DCPO": 213.04,
+          "DC": 348960,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 108,
+          "orders": 1040,
+          "OPH": 5,
+          "CTE": 20.27,
+          "CPO": 101.43,
+          "DCPO": -142.82,
+          "DC": -148535.26,
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_-0.1": {
+        "team1": {
+          "SH": 444,
+          "orders": 1554,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 218.88,
+          "DC": 340134,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 156,
+          "orders": 1280,
+          "OPH": 5,
+          "CTE": 20.23,
+          "CPO": 93.29,
+          "DCPO": -68.23,
+          "DC": -87340.11,
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.4_0.2": {
+        "team1": {
+          "SH": 396,
+          "orders": 1386,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 142.57,
+          "DCPO": 200.43,
+          "DC": 277794,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 204,
+          "orders": 1332,
+          "OPH": 4.57,
+          "CTE": 18.53,
+          "CPO": 119.59,
+          "DCPO": -3.18,
+          "DC": -4230.47,
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0.2_0": {
+        "team1": {
+          "SH": 396,
+          "orders": 1386,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 126.29,
+          "DCPO": 216.71,
+          "DC": 300366,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 204,
+          "orders": 1332,
+          "OPH": 4.57,
+          "CTE": 18.51,
+          "CPO": 103.31,
+          "DCPO": 8.22,
+          "DC": 10954.33,
+          "CTE_in_target": false,
+          "place_DC": null
+        }
+      },
+      "0_-0.1": {
+        "team1": {
+          "SH": 348,
+          "orders": 1218,
+          "OPH": 3.5,
+          "CTE": 17,
+          "CPO": 110,
+          "DCPO": 268.05,
+          "DC": 326480,
+          "CTE_in_target": true,
+          "place_DC": null
+        },
+        "team2": {
+          "SH": 252,
+          "orders": 1332,
+          "OPH": 4.05,
+          "CTE": 16.42,
+          "CPO": 97.96,
+          "DCPO": 64.4,
+          "DC": 85779.52,
+          "CTE_in_target": false,
+          "place_DC": null
         }
       }
     }

@@ -63,10 +63,15 @@ def get_opponent_choice(team_id, r):
 
 
 def get_scenario_result(r, coef1, coef2):
-    # Ключи в JSON вида "0.4_-0.1", "0.0_0.0" — приводим к float для совпадения
+    # Ключи в JSON: "0.4_-0.1", "0_0" или "0.0_0.0" — пробуем оба варианта для нуля
     key = f"{float(coef1)}_{float(coef2)}"
     scenarios = DATA.get("scenarios", {}).get(str(r), {})
-    return scenarios.get(key)
+    res = scenarios.get(key)
+    if res is None:
+        alt = key.replace("_0.0", "_0").replace("0.0_", "0_")
+        if alt != key:
+            res = scenarios.get(alt)
+    return res
 
 
 @app.route("/health")

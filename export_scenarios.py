@@ -8,14 +8,16 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 # Путь к Excel: задайте через аргумент или положите файл в родительскую папку
 DEFAULT_EXCEL = os.path.join(os.path.dirname(BASE), "Страт.сессия_бизнес кейс_03.03.26.xlsx")
 
-# Раунды 1-6: индекс первой строки данных по раунду (0-based из iter_rows). Подставьте свои, если лист другой.
+# Раунды 1-6: индекс первой строки сценариев (0-based). Строка «Прошлая неделя» — на 1 выше, не включаем.
+# Колонки по листу СВОД: team1 [4]=SH [5]=orders [6]=OPH [7]=CTE [10]=CPO [16]=DCPO [17]=DC [19]=+/-
+# team2 [28]=SH [29]=orders [30]=OPH [31]=CTE [34]=CPO [40]=DCPO [41]=DC [43]=+/-
 ROUND_DATA_START = {
-    1: 32,
-    2: 56,
-    3: 82,
-    4: 108,
-    5: 138,
-    6: 164,  # при необходимости поправьте под ваш лист СВОД
+    1: 38,   # первая строка сценариев раунда 1 (после «Прошлая неделя»)
+    2: 62,
+    3: 88,
+    4: 114,
+    5: 144,
+    6: 170,
 }
 
 def round_value(v):
@@ -68,26 +70,26 @@ def main():
                 return round_value(rw[idx])
             scenarios[str(round_num)][key] = {
                 "team1": {
-                    "CTE": round_value(row[4]),
-                    "CPO": round_value(row[5]),
-                    "DCPO": round_value(row[6]),
-                    "DC": round_value(row[7]),
-                    "CTE_in_target": row[8] == "+",
-                    "place_DC": int(row[9]) if row[9] is not None else None,
-                    "SH": opt_row(row, 10),
-                    "orders": opt_row(row, 11),
-                    "OPH": opt_row(row, 12),
+                    "SH": opt_row(row, 4),
+                    "orders": opt_row(row, 5),
+                    "OPH": opt_row(row, 6),
+                    "CTE": round_value(row[7]),
+                    "CPO": round_value(row[10]),
+                    "DCPO": round_value(row[16]),
+                    "DC": round_value(row[17]),
+                    "CTE_in_target": row[19] == "+" if len(row) > 19 else False,
+                    "place_DC": int(row[20]) if len(row) > 20 and row[20] is not None and isinstance(row[20], (int, float)) else None,
                 },
                 "team2": {
-                    "CTE": round_value(row[18]),
-                    "CPO": round_value(row[19]),
-                    "DCPO": round_value(row[20]),
-                    "DC": round_value(row[21]),
-                    "CTE_in_target": row[22] == "+",
-                    "place_DC": int(row[23]) if row[23] is not None else None,
-                    "SH": opt_row(row, 24),
-                    "orders": opt_row(row, 25),
-                    "OPH": opt_row(row, 26),
+                    "SH": opt_row(row, 28),
+                    "orders": opt_row(row, 29),
+                    "OPH": opt_row(row, 30),
+                    "CTE": round_value(row[31]),
+                    "CPO": round_value(row[34]),
+                    "DCPO": round_value(row[40]),
+                    "DC": round_value(row[41]),
+                    "CTE_in_target": row[43] == "+" if len(row) > 43 else False,
+                    "place_DC": int(row[44]) if len(row) > 44 and row[44] is not None and isinstance(row[44], (int, float)) else None,
                 },
             }
 
