@@ -123,7 +123,11 @@ def main():
                 if isinstance(x, float) and x == int(x): return int(x)
                 return round(x, 2) if isinstance(x, float) else x
 
-            # В экспорте team2: индексы 17=CTE2, 18=CPO2, 19=DCPO2, 20=DC2, 21=+/-, 22=place (не 18–23)
+            # СВОД: по сценарию есть SH, Заказы, OPH, CTE, ... Общий CPO, DCPO, DC и т.д.
+            # Текущая раскладка: 4=CTE1, 5=CPO1, 6=DCPO1, 7=DC1, 8=+/-, 9=place; 17–22=team2.
+            # Если в svod_full.txt колонки идут как SH, Заказы, OPH, CTE... — то 3=SH1, 4=orders1, 5=OPH1 или сдвиг; при необходимости поправьте индексы ниже.
+            def opt(i):
+                return rv(parts[i]) if len(parts) > i and parts[i] is not None else None
             scenarios[str(r)][key] = {
                 "team1": {
                     "CTE": rv(parts[4]),
@@ -132,6 +136,9 @@ def main():
                     "DC": rv(parts[7]),
                     "CTE_in_target": parts[8] == "+",
                     "place_DC": int(parts[9]) if parts[9] is not None else None,
+                    "SH": opt(10),
+                    "orders": opt(11),
+                    "OPH": opt(12),
                 },
                 "team2": {
                     "CTE": rv(parts[17]),
@@ -140,6 +147,9 @@ def main():
                     "DC": rv(parts[20]),
                     "CTE_in_target": parts[21] == "+" if len(parts) > 21 else False,
                     "place_DC": int(parts[22]) if len(parts) > 22 and parts[22] is not None else None,
+                    "SH": opt(23),
+                    "orders": opt(24),
+                    "OPH": opt(25),
                 },
             }
 

@@ -158,7 +158,7 @@
     });
 
     async function initGame() {
-      if (!data) await loadData();
+      await loadData();
       document.getElementById("teamHeading").textContent = teamName;
       document.getElementById("teamRole").textContent = teamRole == 1 ? "Вы — Команда 1" : "Вы — Команда 2";
       renderRound();
@@ -240,9 +240,9 @@
       }
       const metrics = ["CTE", "CPO", "DCPO", "DC"];
       const extraMetrics = [
-        ["SH", initial.SH, null],
-        ["Заказы", initial.orders, null],
-        ["OPH", initial.OPH, null],
+        ["SH", initial.SH, res.SH],
+        ["Заказы", initial.orders, res.orders],
+        ["OPH", initial.OPH, res.OPH],
       ];
       html += "<table class=\"metrics-table\"><thead><tr><th>Метрика</th><th>Исходное</th><th>Итог раунда</th></tr></thead><tbody>";
       metrics.forEach((key) => {
@@ -296,7 +296,8 @@
         const r = await fetch(API + "/api/state?team_id=" + teamId);
         const state = await r.json();
         if (!r.ok) return;
-        data = { ...(data || {}), current_round: state.current_round };
+        if (!data) data = {};
+        data.current_round = state.current_round;
         if (state.name) {
           document.getElementById("teamHeading").textContent = state.name;
           teamName = state.name;
@@ -323,6 +324,7 @@
           hide(document.getElementById("waitOpponent"));
         }
         if (result) {
+          if (!data || !data.initial_metrics) await loadData();
           showResult(result, state, data);
           showNextStep(state.current_round, true);
         } else {

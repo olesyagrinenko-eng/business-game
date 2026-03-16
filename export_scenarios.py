@@ -5,16 +5,17 @@ import json
 import os
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-EXCEL_PATH = os.path.join(os.path.dirname(BASE), "Страт.сессия_бизнес кейс_03.03.26.xlsx")
+# Путь к Excel: задайте через аргумент или положите файл в родительскую папку
+DEFAULT_EXCEL = os.path.join(os.path.dirname(BASE), "Страт.сессия_бизнес кейс_03.03.26.xlsx")
 
-# Раунды 1-5: строка заголовка таблицы и 16 строк данных (индексы в 0-based из iter_rows)
-# В файле: Раунд 1 данные с row 33 по 48 (индекс 32-47), Раунд 2 с 58 по 73, и т.д.
+# Раунды 1-6: индекс первой строки данных по раунду (0-based из iter_rows). Подставьте свои, если лист другой.
 ROUND_DATA_START = {
-    1: 32,   # 0-based: row 33
+    1: 32,
     2: 56,
     3: 82,
     4: 108,
     5: 138,
+    6: 164,  # при необходимости поправьте под ваш лист СВОД
 }
 
 def round_value(v):
@@ -25,14 +26,20 @@ def round_value(v):
     return v
 
 def main():
-    wb = openpyxl.load_workbook(EXCEL_PATH, read_only=True, data_only=True)
+    import sys
+    excel_path = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_EXCEL
+    if not os.path.isfile(excel_path):
+        print("Файл не найден:", excel_path)
+        print("Использование: python export_scenarios.py [путь/к/файлу.xlsx]")
+        sys.exit(1)
+    wb = openpyxl.load_workbook(excel_path, read_only=True, data_only=True)
     ws = wb["СВОД"]
     rows = list(ws.iter_rows(values_only=True))
     wb.close()
 
     # Доп. вводные по раундам (собираем строки между "Доп. вводные N раунда" и "Коэф.изм.")
     rounds_intro = {}
-    for r in [1, 2, 3, 4, 5]:
+    for r in ROUND_DATA_START:
         start = ROUND_DATA_START[r] - 6  # примерно где "Доп. вводные"
         intro = []
         for i in range(start, start + 6):
@@ -47,7 +54,7 @@ def main():
     scenarios = {}
     coefs = [-0.1, 0, 0.2, 0.4]
 
-    for round_num in range(1, 6):
+    for round_num in ROUND_DATA_START:
         scenarios[str(round_num)] = {}
         start = ROUND_DATA_START[round_num]
         for i in range(16):
@@ -56,6 +63,9 @@ def main():
             c1, c2 = row[1], row[2]
             if c1 not in coefs or c2 not in coefs: continue
             key = f"{c1}_{c2}"
+            def opt_row(rw, idx):
+                if not rw or len(rw) <= idx or rw[idx] is None: return None
+                return round_value(rw[idx])
             scenarios[str(round_num)][key] = {
                 "team1": {
                     "CTE": round_value(row[4]),
@@ -64,6 +74,9 @@ def main():
                     "DC": round_value(row[7]),
                     "CTE_in_target": row[8] == "+",
                     "place_DC": int(row[9]) if row[9] is not None else None,
+                    "SH": opt_row(row, 10),
+                    "orders": opt_row(row, 11),
+                    "OPH": opt_row(row, 12),
                 },
                 "team2": {
                     "CTE": round_value(row[18]),
@@ -72,6 +85,9 @@ def main():
                     "DC": round_value(row[21]),
                     "CTE_in_target": row[22] == "+",
                     "place_DC": int(row[23]) if row[23] is not None else None,
+                    "SH": opt_row(row, 24),
+                    "orders": opt_row(row, 25),
+                    "OPH": opt_row(row, 26),
                 },
             }
 
@@ -95,6 +111,15 @@ def main():
 
     out_path = os.path.join(BASE, "data", "scenarios.json")
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    # Сохраняем initial_metrics и common_intro_by_round из текущего JSON, если есть
+    if os.path.isfile(out_path):
+        try:
+            with open(out_path, "r", encoding="utf-8") as f:
+                existing = json.load(f)
+            out["initial_metrics"] = existing.get("initial_metrics", {})
+            out["common_intro_by_round"] = existing.get("common_intro_by_round", {})
+        except Exception:
+            pass
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
     print("Exported to", out_path)
