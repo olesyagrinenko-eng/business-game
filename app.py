@@ -63,14 +63,18 @@ def get_opponent_choice(team_id, r):
 
 
 def get_scenario_result(r, coef1, coef2):
-    # Ключи в JSON: "0.4_-0.1", "0_0" или "0.0_0.0" — пробуем оба варианта для нуля
-    key = f"{float(coef1)}_{float(coef2)}"
+    # Ключи в JSON: "0.4_-0.1", "0_0", "0.4_0" — нормализуем float и пробуем варианты
+    c1, c2 = float(coef1), float(coef2)
+    key = f"{c1}_{c2}"
     scenarios = DATA.get("scenarios", {}).get(str(r), {})
     res = scenarios.get(key)
     if res is None:
         alt = key.replace("_0.0", "_0").replace("0.0_", "0_")
-        if alt != key:
-            res = scenarios.get(alt)
+        res = scenarios.get(alt)
+    if res is None and (c1 == 0 or c2 == 0):
+        # ещё варианты: 0.0 -> 0
+        alt2 = f"{int(c1) if c1 == int(c1) else c1}_{int(c2) if c2 == int(c2) else c2}"
+        res = scenarios.get(alt2)
     return res
 
 

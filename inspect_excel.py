@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Просмотр структуры листа СВОД: заголовки и несколько строк данных раунда 1."""
+"""Найти индексы первых строк сценариев для раундов 1-6 (строка с коэф. в col 1,2)."""
 import openpyxl
 import os
 import sys
@@ -18,34 +18,28 @@ ws = wb["СВОД"]
 rows = list(ws.iter_rows(values_only=True))
 wb.close()
 
-# Строка заголовков таблицы (часто за 1-2 строки до данных раунда 1)
-# Раунд 1 данные обычно с строки 33 (индекс 32)
-for start in [30, 31, 32]:
-    if start >= len(rows): continue
-    print("=== Строка", start + 1, "(индекс", start, ") ===")
-    row = rows[start]
-    for i, v in enumerate(row[:35]):
-        if v is not None and str(v).strip():
-            print("  col[%d] = %s" % (i, repr(v)[:60]))
-    print()
-
-# Ищем строки с коэффициентами в колонках 1 и 2
-for start in range(32, min(60, len(rows))):
-    row = rows[start]
-    if not row or len(row) < 3: continue
+coefs = (-0.1, 0, 0.2, 0.4)
+data_rows = []
+for idx in range(len(rows)):
+    row = rows[idx]
+    if not row or len(row) < 20: continue
     v1, v2 = row[1], row[2]
-    if v1 in (-0.1, 0, 0.2, 0.4) and v2 in (-0.1, 0, 0.2, 0.4):
-        print("=== Строка", start + 1, "(индекс %d), c1=%s c2=%s ===" % (start, v1, v2))
-        for i in range(min(50, len(row))):
-            v = row[i] if i < len(row) else None
-            if v is not None and str(v).strip() != "":
-                print("  [%2d] %s" % (i, repr(v)[:55]))
-        print("--- Следующие строки (сценарии) ---")
-        for j in range(start + 1, min(start + 5, len(rows))):
-            r = rows[j]
-            if not r or len(r) < 5: continue
-            print("  Строка %d: c1=%s c2=%s  team1 DC=%s  team2 DC=%s" % (j+1, r[1], r[2], r[17] if len(r)>17 else '-', r[41] if len(r)>41 else '-'))
-        break
+    dc1 = row[17] if len(row) > 17 else None
+    if v1 in coefs and v2 in coefs and isinstance(dc1, (int, float)) and dc1 and dc1 > 10000:
+        data_rows.append((idx, v1, v2, dc1))
+print("Всего строк с данными сценариев:", len(data_rows))
+print("Первые 20: индекс, c1, c2, DC1")
+for t in data_rows[:20]:
+    print("  ", t)
+print("...")
+print("Строки 17-25:", data_rows[16:25] if len(data_rows) >= 25 else data_rows[16:])
+# Раунд 1 = 16 строк (индексы 38..53), раунд 2 = след. 16 и т.д.
+if len(data_rows) >= 32:
+    print("\nПредполагаемые старты раундов (каждые 16 сценариев):")
+    for r in range(6):
+        i = r * 16
+        if i < len(data_rows):
+            print("  Раунд %d: индекс строки %d" % (r + 1, data_rows[i][0]))
 
 # Заголовок таблицы — на 1–2 строки выше первой строки с коэф.
 for head_row in range(max(0, 32 - 3), 36):

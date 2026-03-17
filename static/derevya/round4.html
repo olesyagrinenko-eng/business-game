@@ -28,18 +28,18 @@
 
     .trees-wrapper { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem; max-width: 100%; }
     .one-tree { position: relative; width: 100%; }
-    .one-tree h3 { margin: 0 0 0.5rem 0; font-size: 1rem; color: var(--dark); padding: 0.35rem 0; border-bottom: 2px solid var(--accent); }
+    .one-tree h3 { margin: 0 0 0.5rem 0; font-size: 1.2rem; color: var(--dark); padding: 0.35rem 0; border-bottom: 2px solid var(--accent); }
 
     /* Блок-схема: колонка 1 — только Заказы; 2 — OPH,SH,CTE,AOV,Ком.маржа; 3 — CPO до фолл; 4 — DCPO и DC друг под другом */
-    .diagram { position: relative; display: grid; grid-template-columns: minmax(90px, 0.9fr) minmax(140px, 2fr) minmax(100px, 1fr) minmax(100px, 1fr); grid-template-rows: auto auto auto auto auto auto auto auto; gap: 10px 14px; padding: 16px 20px; min-height: 300px; width: 100%; min-width: 720px; }
-    .diagram .plashka { background: var(--card); border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 0.8rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-    .diagram .plashka .name { font-weight: 700; color: var(--dark); display: block; margin-bottom: 4px; font-size: 0.85rem; }
-    .diagram .plashka .row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .diagram .plashka .row span { font-size: 0.75rem; }
+    .diagram { position: relative; display: grid; grid-template-columns: minmax(90px, 0.9fr) minmax(140px, 2fr) minmax(100px, 1fr) minmax(100px, 1fr); grid-template-rows: auto auto auto auto auto auto auto auto; gap: 12px 16px; padding: 18px 22px; min-height: 320px; width: 100%; min-width: 720px; }
+    .diagram .plashka { background: var(--card); border: 2px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .diagram .plashka .name { font-weight: 700; color: var(--dark); display: block; margin-bottom: 6px; font-size: 1.1rem; }
+    .diagram .plashka .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .diagram .plashka .row span { font-size: 0.95rem; }
     .diagram .plashka .week-prev { color: var(--muted); }
     .diagram .plashka .week-curr { font-weight: 600; }
-    .diagram .plashka .pct { margin-left: 4px; font-size: 0.7rem; color: var(--muted); }
-    .diagram .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 2px; flex-shrink: 0; }
+    .diagram .plashka .pct { margin-left: 6px; font-size: 0.9rem; color: var(--muted); }
+    .diagram .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-left: 4px; flex-shrink: 0; }
     .diagram .dot.green { background: var(--green); }
     .diagram .dot.yellow { background: var(--yellow); }
     .diagram .dot.red { background: var(--red); }
@@ -58,8 +58,8 @@
     .diagram #p1_dc, .diagram #p2_dc { grid-column: 4; grid-row: 6 / 8; align-self: stretch; margin-top: 4px; }
     .diagram-svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
     .diagram-svg line, .diagram-svg path { stroke: #6b7a99; stroke-width: 1.5; fill: none; }
-    .shared-top { margin-bottom: 1rem; padding: 0.75rem; background: rgba(77,170,248,0.06); border-radius: 12px; border: 1px dashed var(--accent); }
-    .shared-top .tree-node { margin: 0; padding: 0.5rem 0.75rem; border-radius: 8px; border: 2px solid var(--border); font-size: 0.9rem; }
+    .shared-top { margin-bottom: 1rem; padding: 0.85rem; background: rgba(77,170,248,0.06); border-radius: 12px; border: 1px dashed var(--accent); }
+    .shared-top .tree-node { margin: 0; padding: 0.5rem 0.75rem; border-radius: 8px; border: 2px solid var(--border); font-size: 1.05rem; }
     .shared-top .tree-node .name { font-weight: 700; }
   </style>
 </head>
@@ -148,7 +148,7 @@
       team1: { orders: 1050, SH: 300, OPH: 3.5, CTE: 17, avg_check: 1100, margin: 0.33, DCPO: 253, DC: 265650, CPO: 110 },
       team2: { orders: 1110, SH: 300, OPH: 3.7, CTE: 15, avg_check: 1050, margin: 0.33, DCPO: 249.5, DC: 276945, CPO: 97 }
     };
-    const SCENARIOS = {"0_0": {"team1": {"CTE": 300, "CPO": 1050, "DCPO": 3.5, "DC": 17, "CTE_in_target": false, "place_DC": 1100, "SH": 110, "orders": 0, "OPH": 110}, "team2": {"CTE": 0, "CPO": "+", "DCPO": "+", "DC": null, "CTE_in_target": false, "place_DC": null, "SH": null, "orders": null, "OPH": null}}, "0.4_-0.1": {"team1": {"CTE": 540, "CPO": 1890, "DCPO": 3.5, "DC": 17, "CTE_in_target": false, "place_DC": 1100, "SH": 142.57, "orders": 0, "OPH": 142.57}, "team2": {"CTE": 150960, "CPO": "+", "DCPO": "+", "DC": null, "CTE_in_target": false, "place_DC": null, "SH": null, "orders": null, "OPH": null}}, "0.4_0": {"team1": {"CTE": 492, "CPO": 1722, "DCPO": 3.5, "DC": 17, "CTE_in_target": false, "place_DC": 1100, "SH": 142.57, "orders": 0, "OPH": 142.57}, "team2": {"CTE": 113928, "CPO": "+", "DCPO": "+", "DC": null, "CTE_in_target": false, "place_DC": null, "SH": null, "orders": null, "OPH": null}}, "0.2_-0.1": {"team1": {"CTE": 444, "CPO": 1554, "DCPO": 3.5, "DC": 17, "CTE_in_target": false, "place_DC": 1100, "SH": 126.29, "orders": 0, "OPH": 126.29}, "team2": {"CTE": 102204, "CPO": "+", "DCPO": "+", "DC": null, "CTE_in_target": false, "place_DC": null, "SH": null, "orders": null, "OPH": null}}, "0.4_0.2": {"team1": {"CTE": 396, "CPO": 1386, "DCPO": 3.5, "DC": 17, "CTE_in_target": false, "place_DC": 1100, "SH": 142.57, "orders": 0, "OPH": 142.57}, "team2": {"CTE": 39864, "CPO": "+", "DCPO": "+", "DC": null, "CTE_in_target": false, "place_DC": null, "SH": null, "orders": null, "OPH": null}}, "0.2_0": {"team1": {"CTE": 396, "CPO": 1386, "DCPO": 3.5, "DC": 17, "CTE_in_target": false, "place_DC": 1100, "SH": 126.29, "orders": 0, "OPH": 126.29}, "team2": {"CTE": 62436, "CPO": "+", "DCPO": "+", "DC": null, "CTE_in_target": false, "place_DC": null, "SH": null, "orders": null, "OPH": null}}};
+    const SCENARIOS = {"0_0": {"team1": {"SH": 300, "orders": 1050, "OPH": 3.5, "CTE": 17, "CPO": 110, "DCPO": 296.56, "DC": 311388, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 300, "orders": 1110, "OPH": 3.7, "CTE": 15, "CPO": 108.46, "DCPO": 279.62, "DC": 310383.09, "CTE_in_target": true, "place_DC": null}}, "0.4_-0.1": {"team1": {"SH": 540, "orders": 1890, "OPH": 3.5, "CTE": 17, "CPO": 142.57, "DCPO": 220.43, "DC": 416610, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 60, "orders": 800, "OPH": 5, "CTE": 20.27, "CPO": 93.29, "DCPO": -95.42, "DC": -76333.91, "CTE_in_target": false, "place_DC": null}}, "0.4_0": {"team1": {"SH": 492, "orders": 1722, "OPH": 3.5, "CTE": 17, "CPO": 142.57, "DCPO": 220.43, "DC": 379578, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 108, "orders": 1040, "OPH": 5, "CTE": 20.27, "CPO": 101.43, "DCPO": -52.07, "DC": -54147.63, "CTE_in_target": false, "place_DC": null}}, "0.2_-0.1": {"team1": {"SH": 444, "orders": 1554, "OPH": 3.5, "CTE": 17, "CPO": 126.29, "DCPO": 236.71, "DC": 367854, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 156, "orders": 1280, "OPH": 5, "CTE": 20.0, "CPO": 93.29, "DCPO": -1.66, "DC": -2128.29, "CTE_in_target": false, "place_DC": null}}, "0.4_0.2": {"team1": {"SH": 396, "orders": 1386, "OPH": 3.5, "CTE": 17, "CPO": 142.57, "DCPO": 220.43, "DC": 305514, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 204, "orders": 1332, "OPH": 4.57, "CTE": 18.53, "CPO": 119.59, "DCPO": 43.11, "DC": 57422.1, "CTE_in_target": false, "place_DC": null}}, "0.2_0": {"team1": {"SH": 396, "orders": 1386, "OPH": 3.5, "CTE": 17, "CPO": 126.29, "DCPO": 236.71, "DC": 328086, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 204, "orders": 1332, "OPH": 4.57, "CTE": 18.34, "CPO": 103.31, "DCPO": 54.51, "DC": 72606.9, "CTE_in_target": false, "place_DC": null}}, "0_-0.1": {"team1": {"SH": 348, "orders": 1218, "OPH": 3.5, "CTE": 17, "CPO": 110, "DCPO": 293.33, "DC": 357280, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 252, "orders": 1332, "OPH": 4.05, "CTE": 16.35, "CPO": 97.96, "DCPO": 107.23, "DC": 142833.94, "CTE_in_target": false, "place_DC": null}}, "-0.1_-0.1": {"team1": {"SH": 300, "orders": 1050, "OPH": 3.5, "CTE": 17, "CPO": 101.86, "DCPO": 304.7, "DC": 319938, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 300, "orders": 1110, "OPH": 3.7, "CTE": 15, "CPO": 100.31, "DCPO": 287.77, "DC": 319421.66, "CTE_in_target": true, "place_DC": null}}, "0.2_0.2": {"team1": {"SH": 300, "orders": 1050, "OPH": 3.5, "CTE": 17, "CPO": 126.29, "DCPO": 280.27, "DC": 294288, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 300, "orders": 1110, "OPH": 3.7, "CTE": 15, "CPO": 124.74, "DCPO": 263.34, "DC": 292305.94, "CTE_in_target": true, "place_DC": null}}, "0.4_0.4": {"team1": {"SH": 300, "orders": 1050, "OPH": 3.5, "CTE": 17, "CPO": 142.57, "DCPO": 263.99, "DC": 277188, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 300, "orders": 1110, "OPH": 3.7, "CTE": 15, "CPO": 141.03, "DCPO": 247.05, "DC": 274228.8, "CTE_in_target": true, "place_DC": null}}, "-0.1_0": {"team1": {"SH": 252, "orders": 1260, "OPH": 3.83, "CTE": 18.53, "CPO": 99.37, "DCPO": 109.58, "DC": 138069.26, "CTE_in_target": false, "place_DC": null}, "team2": {"SH": 348, "orders": 1287.6, "OPH": 3.7, "CTE": 15, "CPO": 108.46, "DCPO": 276.54, "DC": 356078.57, "CTE_in_target": true, "place_DC": null}}};
 
     document.getElementById('roundNum').textContent = ROUND;
     document.getElementById('roundIntro').textContent = ROUND_INTRO;
@@ -244,7 +244,7 @@
     // Связи: route 'around' = обход блоков (вниз → вправо → к цели), иначе прямая или лёгкая дуга
     var arrowLinks = [
       { from: 'orders', to: 'oph', fromSide: 'right', toSide: 'left', route: 'line' },
-      { from: 'orders', to: 'dc', fromSide: 'bottom', toSide: 'topUnderStart', route: 'line' },
+      { from: 'orders', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'ordersToDc' },
       { from: 'aov', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'around' },
       { from: 'oph', to: 'cpo', fromSide: 'right', toSide: 'left', route: 'line' },
       { from: 'cpo', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'line' },
@@ -288,7 +288,13 @@
         var p1 = pointOnRect(fromRect, link.fromSide);
         var p2 = link.toSide === 'topUnderStart' ? pointOnRect(toRect, 'topUnderStart', p1) : pointOnRect(toRect, link.toSide);
         var d;
-        if (link.route === 'around') {
+        if (link.route === 'ordersToDc') {
+          var down = 45;
+          var midY = p1.y + down;
+          var dcCx = (toRect.left + toRect.right) / 2;
+          var dcTop = toRect.top + 3;
+          d = 'M' + p1.x + ',' + p1.y + ' L' + p1.x + ',' + midY + ' L' + dcCx + ',' + midY + ' L' + dcCx + ',' + dcTop + ' L' + p2.x + ',' + p2.y;
+        } else if (link.route === 'around') {
           var down = 50;
           var w1x = p1.x + 15;
           var w1y = p1.y + down;

@@ -8,17 +8,9 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 # Путь к Excel: задайте через аргумент или положите файл в родительскую папку
 DEFAULT_EXCEL = os.path.join(os.path.dirname(BASE), "Страт.сессия_бизнес кейс_03.03.26.xlsx")
 
-# Раунды 1-6: индекс первой строки сценариев (0-based). Строка «Прошлая неделя» — на 1 выше, не включаем.
 # Колонки по листу СВОД: team1 [4]=SH [5]=orders [6]=OPH [7]=CTE [10]=CPO [16]=DCPO [17]=DC [19]=+/-
 # team2 [28]=SH [29]=orders [30]=OPH [31]=CTE [34]=CPO [40]=DCPO [41]=DC [43]=+/-
-ROUND_DATA_START = {
-    1: 38,   # первая строка сценариев раунда 1 (после «Прошлая неделя»)
-    2: 62,
-    3: 88,
-    4: 114,
-    5: 144,
-    6: 170,
-}
+# Собираем все строки с коэф. и числовым DC, затем по 16 штук на раунд (пропуская «Прошлая неделя»).
 
 def round_value(v):
     if v is None: return None
@@ -39,35 +31,39 @@ def main():
     rows = list(ws.iter_rows(values_only=True))
     wb.close()
 
-    # Доп. вводные по раундам (собираем строки между "Доп. вводные N раунда" и "Коэф.изм.")
-    rounds_intro = {}
-    for r in ROUND_DATA_START:
-        start = ROUND_DATA_START[r] - 6  # примерно где "Доп. вводные"
-        intro = []
-        for i in range(start, start + 6):
-            if i < 0: continue
-            row = rows[i]
-            if row and len(row) > 1 and row[1] and isinstance(row[1], str):
-                if "Коэф" in str(row[1]): break
-                if "Доп. вводные" in str(row[1]) or (isinstance(row[0], (int, float)) and row[1]):
-                    intro.append(str(row[1]).strip())
-        rounds_intro[r] = [x for x in intro if x and "Доп. вводные" not in x]
-
-    scenarios = {}
+    # Собираем все строки с коэффициентами и числовым DC (исключаем «Прошлая неделя» по row[0])
     coefs = [-0.1, 0, 0.2, 0.4]
+    data_rows = []
+    for idx, row in enumerate(rows):
+        if not row or len(row) < 44: continue
+        v0 = row[0]
+        if v0 and isinstance(v0, str) and "Прошлая неделя" in str(v0):
+            continue
+        c1, c2 = row[1], row[2]
+        dc1 = row[17] if len(row) > 17 else None
+        if c1 not in coefs or c2 not in coefs: continue
+        if not isinstance(dc1, (int, float)) or not dc1 or dc1 < 1000:
+            continue
+        data_rows.append(row)
 
-    for round_num in ROUND_DATA_START:
+    print("Найдено строк сценариев: %d (нужно 96 для 6 раундов по 16)" % len(data_rows))
+    if len(data_rows) < 16 * 6:
+        print("Внимание: данных меньше 96 — проверьте структуру листа СВОД.")
+
+    # По 16 сценариев на раунд
+    scenarios = {}
+    def opt_row(rw, idx):
+        if not rw or len(rw) <= idx or rw[idx] is None: return None
+        return round_value(rw[idx])
+    for round_num in range(1, 7):
         scenarios[str(round_num)] = {}
-        start = ROUND_DATA_START[round_num]
+        start_idx = (round_num - 1) * 16
         for i in range(16):
-            row = rows[start + i]
-            if not row or row[1] is None: continue
+            if start_idx + i >= len(data_rows):
+                break
+            row = data_rows[start_idx + i]
             c1, c2 = row[1], row[2]
-            if c1 not in coefs or c2 not in coefs: continue
             key = f"{c1}_{c2}"
-            def opt_row(rw, idx):
-                if not rw or len(rw) <= idx or rw[idx] is None: return None
-                return round_value(rw[idx])
             scenarios[str(round_num)][key] = {
                 "team1": {
                     "SH": opt_row(row, 4),
@@ -92,6 +88,27 @@ def main():
                     "place_DC": int(row[44]) if len(row) > 44 and row[44] is not None and isinstance(row[44], (int, float)) else None,
                 },
             }
+
+    # Доп. вводные по раундам (ищем блоки «Доп. вводные N раунда» по листу)
+    rounds_intro = {str(r): [] for r in range(1, 7)}
+    for idx, row in enumerate(rows):
+        if not row or len(row) < 2: continue
+        v1 = row[1]
+        if not v1 or not isinstance(v1, str): continue
+        if "Доп. вводные" in v1 and "раунда" in v1.lower():
+            intro = []
+            for j in range(idx + 1, min(idx + 8, len(rows))):
+                rw = rows[j]
+                if not rw or len(rw) < 2: continue
+                if rw[1] and "Коэф" in str(rw[1]): break
+                if rw[1] and isinstance(rw[1], str) and "Доп. вводные" not in rw[1]:
+                    intro.append(str(rw[1]).strip())
+            try:
+                rn = int("".join(c for c in v1 if c.isdigit()) or "1")
+                if 1 <= rn <= 6:
+                    rounds_intro[str(rn)] = [x for x in intro if x]
+            except ValueError:
+                pass
 
     out = {
         "rounds_intro": rounds_intro,
