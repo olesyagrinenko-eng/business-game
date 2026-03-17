@@ -28,18 +28,18 @@
 
     .trees-wrapper { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem; max-width: 100%; }
     .one-tree { position: relative; width: 100%; }
-    .one-tree h3 { margin: 0 0 0.5rem 0; font-size: 1.2rem; color: var(--dark); padding: 0.35rem 0; border-bottom: 2px solid var(--accent); }
+    .one-tree h3 { margin: 0 0 0.5rem 0; font-size: 1.4rem; color: var(--dark); padding: 0.35rem 0; border-bottom: 2px solid var(--accent); }
 
     /* Блок-схема: колонка 1 — только Заказы; 2 — OPH,SH,CTE,AOV,Ком.маржа; 3 — CPO до фолл; 4 — DCPO и DC друг под другом */
-    .diagram { position: relative; display: grid; grid-template-columns: minmax(90px, 0.9fr) minmax(140px, 2fr) minmax(100px, 1fr) minmax(100px, 1fr); grid-template-rows: auto auto auto auto auto auto auto auto; gap: 12px 16px; padding: 18px 22px; min-height: 320px; width: 100%; min-width: 720px; }
-    .diagram .plashka { background: var(--card); border: 2px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-    .diagram .plashka .name { font-weight: 700; color: var(--dark); display: block; margin-bottom: 6px; font-size: 1.1rem; }
-    .diagram .plashka .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .diagram .plashka .row span { font-size: 0.95rem; }
+    .diagram { position: relative; display: grid; grid-template-columns: minmax(90px, 0.9fr) minmax(140px, 2fr) minmax(100px, 1fr) minmax(100px, 1fr); grid-template-rows: auto auto auto auto auto auto auto auto; gap: 14px 18px; padding: 20px 24px; min-height: 340px; width: 100%; min-width: 720px; }
+    .diagram .plashka { background: var(--card); border: 2px solid var(--border); border-radius: 12px; padding: 12px 16px; font-size: 1.2rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .diagram .plashka .name { font-weight: 700; color: var(--dark); display: block; margin-bottom: 8px; font-size: 1.35rem; }
+    .diagram .plashka .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .diagram .plashka .row span { font-size: 1.15rem; }
     .diagram .plashka .week-prev { color: var(--muted); }
     .diagram .plashka .week-curr { font-weight: 600; }
-    .diagram .plashka .pct { margin-left: 6px; font-size: 0.9rem; color: var(--muted); }
-    .diagram .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-left: 4px; flex-shrink: 0; }
+    .diagram .plashka .pct { margin-left: 8px; font-size: 1.05rem; color: var(--muted); }
+    .diagram .dot { width: 18px; height: 18px; border-radius: 50%; display: inline-block; margin-left: 6px; flex-shrink: 0; }
     .diagram .dot.green { background: var(--green); }
     .diagram .dot.yellow { background: var(--yellow); }
     .diagram .dot.red { background: var(--red); }
@@ -59,7 +59,7 @@
     .diagram-svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
     .diagram-svg line, .diagram-svg path { stroke: #6b7a99; stroke-width: 1.5; fill: none; }
     .shared-top { margin-bottom: 1rem; padding: 0.85rem; background: rgba(77,170,248,0.06); border-radius: 12px; border: 1px dashed var(--accent); }
-    .shared-top .tree-node { margin: 0; padding: 0.5rem 0.75rem; border-radius: 8px; border: 2px solid var(--border); font-size: 1.05rem; }
+    .shared-top .tree-node { margin: 0; padding: 0.6rem 0.85rem; border-radius: 8px; border: 2px solid var(--border); font-size: 1.2rem; }
     .shared-top .tree-node .name { font-weight: 700; }
   </style>
 </head>
@@ -241,33 +241,25 @@
       fillTeam(1, prev1, sc ? sc.team1 : null, sh.sh1, prev1.avg_check);
       fillTeam(2, prev2, sc ? sc.team2 : null, sh.sh2, prev2.avg_check);
     }
-    // Связи: route 'around' = обход блоков (вниз → вправо → к цели), иначе прямая или лёгкая дуга
+    // Связи: toOffsetY — смещение конца стрелки по Y, чтобы несколько стрелок не сходились в одну точку
     var arrowLinks = [
       { from: 'orders', to: 'oph', fromSide: 'right', toSide: 'left', route: 'line' },
-      { from: 'orders', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'ordersToDc' },
-      { from: 'aov', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'around' },
+      { from: 'orders', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'ordersToDc', toOffsetY: -14 },
+      { from: 'aov', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'around', toOffsetY: -22 },
       { from: 'oph', to: 'cpo', fromSide: 'right', toSide: 'left', route: 'line' },
-      { from: 'cpo', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'line' },
-      { from: 'margin', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'around' },
-      { from: 'dcpo', to: 'dc', fromSide: 'bottom', toSide: 'topUnderStart', route: 'line' }
+      { from: 'cpo', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'line', toOffsetY: 0 },
+      { from: 'margin', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'around', toOffsetY: 22 },
+      { from: 'dcpo', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'line', toOffsetY: 14 }
     ];
     function pointOnRect(r, side, refPoint) {
       var cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
-      var pad = 3;
+      var pad = 4;
       if (side === 'topUnderStart' && refPoint) return { x: refPoint.x, y: r.top + pad };
       if (side === 'left') return { x: r.left + pad, y: cy };
       if (side === 'right') return { x: r.right - pad, y: cy };
       if (side === 'top') return { x: cx, y: r.top + pad };
       if (side === 'bottom') return { x: cx, y: r.bottom - pad };
       return { x: cx, y: cy };
-    }
-    function handDrawnWobble(d, seed) {
-      var wobble = 1.3;
-      var s = (seed * 9301 + 49297) % 233280;
-      function rnd() { s = (s * 9301 + 49297) % 233280; return (s / 233280) * 2 - 1; }
-      return d.replace(/([\d.]+)\s*,\s*([\d.]+)/g, function(m, x, y) {
-        return (parseFloat(x) + rnd() * wobble).toFixed(2) + ',' + (parseFloat(y) + rnd() * wobble).toFixed(2);
-      });
     }
     function drawArrows(diagId, arrowsGroupId, markerUrl, prefix) {
       var diag = document.getElementById(diagId);
@@ -287,24 +279,24 @@
         var fromRect = { left: fr.left - dr.left, right: fr.right - dr.left, top: fr.top - dr.top, bottom: fr.bottom - dr.top };
         var p1 = pointOnRect(fromRect, link.fromSide);
         var p2 = link.toSide === 'topUnderStart' ? pointOnRect(toRect, 'topUnderStart', p1) : pointOnRect(toRect, link.toSide);
+        if (link.toOffsetY) { p2 = { x: p2.x, y: p2.y + link.toOffsetY }; }
         var d;
         if (link.route === 'ordersToDc') {
-          var down = 45;
+          var down = 50;
           var midY = p1.y + down;
           var dcCx = (toRect.left + toRect.right) / 2;
-          var dcTop = toRect.top + 3;
-          d = 'M' + p1.x + ',' + p1.y + ' L' + p1.x + ',' + midY + ' L' + dcCx + ',' + midY + ' L' + dcCx + ',' + dcTop + ' L' + p2.x + ',' + p2.y;
+          var endY = p2.y;
+          d = 'M' + p1.x + ',' + p1.y + ' L' + p1.x + ',' + midY + ' L' + dcCx + ',' + midY + ' L' + dcCx + ',' + endY + ' L' + p2.x + ',' + p2.y;
         } else if (link.route === 'around') {
-          var down = 50;
-          var w1x = p1.x + 15;
+          var down = 55;
+          var w1x = p1.x + 18;
           var w1y = p1.y + down;
-          var w2x = p2.x - 15;
+          var w2x = p2.x - 18;
           var w2y = w1y;
-          d = 'M' + p1.x + ',' + p1.y + ' L' + (p1.x + 8) + ',' + p1.y + ' Q' + (p1.x + 8) + ',' + w1y + ' ' + w1x + ',' + w1y + ' L' + w2x + ',' + w2y + ' Q' + (p2.x - 8) + ',' + w2y + ' ' + (p2.x - 8) + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
+          d = 'M' + p1.x + ',' + p1.y + ' L' + (p1.x + 10) + ',' + p1.y + ' Q' + (p1.x + 10) + ',' + w1y + ' ' + w1x + ',' + w1y + ' L' + w2x + ',' + w2y + ' Q' + (p2.x - 10) + ',' + w2y + ' ' + (p2.x - 10) + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
         } else {
           d = 'M' + p1.x + ',' + p1.y + ' L' + p2.x + ',' + p2.y;
         }
-        d = handDrawnWobble(d, idx + (prefix === 'p1_' ? 0 : 10));
         var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('d', d);
         path.setAttribute('stroke', '#6b7a99');
