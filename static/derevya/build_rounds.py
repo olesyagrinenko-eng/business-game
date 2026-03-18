@@ -26,8 +26,8 @@ INTROS = {
 with open(os.path.join(BASE, "round1.html"), "r", encoding="utf-8") as f:
     template = f.read()
 
-# Extract the part we replace: from "const ROUND = " to "};" at end of SCENARIOS
-for r in ["2", "3", "4", "5", "6"]:
+# Extract the part we replace: from "const ROUND = " to "};" at end of SCENARIOS (включая раунд 1 — чтобы SH/OPH из scenarios.json)
+for r in ["1", "2", "3", "4", "5", "6"]:
     round_num = int(r)
     intro = INTROS.get(r) or " ".join(rounds_intro.get(r, []))
     sc = scenarios.get(r if r != "6" else "5", {})  # round 6 uses round 5 data

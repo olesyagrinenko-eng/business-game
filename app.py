@@ -38,12 +38,20 @@ except Exception as e:
     DATA = {"common_intro_by_round": {str(r): [] for r in range(1, 7)}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
 
 # In-memory state (для одного мероприятия)
-teams = []  # [{"id": 1, "name": "Команда А", "role": 1|2, "pair_id": 0}, ...]
-pairs = []  # [{"team1_id": 1, "team2_id": 2}, ...]
+# Фиксированные 10 команд: только имена "Команда 1" … "Команда 10", без дублей при ре-входе
+FIXED_TEAM_NAMES = [f"Команда {i}" for i in range(1, 11)]
+teams = []  # [{"id": 1, "name": "Команда 1", "display_name": null|str, "role": 1|2, "pair_id": 0}, ...]
+pairs = []  # 5 пар: (1,2), (3,4), (5,6), (7,8), (9,10); слоты могут быть None при удалении
 choices = {}  # {(team_id, round): coefficient}
 current_round = 1
 max_rounds = 6
-expected_teams = None  # ожидаемое кол-во команд (задаёт ведущий), None = не задано
+expected_teams = None
+
+
+def team_display_name(t):
+    """Имя команды для отображения: задаётся ведущим на экране или стандартное «Команда N»."""
+    s = (t.get("display_name") or "").strip()
+    return s if s else t["name"]
 
 
 def get_pair_id(team_id):
@@ -72,7 +80,6 @@ def get_scenario_result(r, coef1, coef2):
         alt = key.replace("_0.0", "_0").replace("0.0_", "0_")
         res = scenarios.get(alt)
     if res is None and (c1 == 0 or c2 == 0):
-        # ещё варианты: 0.0 -> 0
         alt2 = f"{int(c1) if c1 == int(c1) else c1}_{int(c2) if c2 == int(c2) else c2}"
         res = scenarios.get(alt2)
     return res
@@ -102,14 +109,50 @@ def screen():
         return f"Error: {e}", 500
 
 
+def _format_intro_bold(items):
+    """Добавляет жирное выделение в пункты вводных по правилам из ТЗ."""
+    out = []
+    for s in items:
+        if not isinstance(s, str):
+            out.append(s)
+            continue
+        s = s.replace("больше курьеров нет, мы можем", "больше курьеров <strong>в городе</strong> нет, мы можем")
+        s = s.replace("В стране санкции, поэтому пользователи не могут", "В стране санкции, поэтому <strong>в этом раунде</strong> пользователи не могут")
+        s = s.replace("за выполнения CTE", "за <strong>выполнение CTE</strong>")
+        out.append(s)
+    return out
+
+def _format_round_intro_bold(round_num, items):
+    """Жирное в доп. вводных по раундам: раунд 4, 5."""
+    out = []
+    for s in items:
+        if not isinstance(s, str):
+            out.append(s)
+            continue
+        if round_num == 4 and "Отключили санкции" in s and "перетекать" in s:
+            s = "<strong>Отключили санкции, и пользователи теперь могут скачать приложение конкурента и перетекать к нему.</strong>"
+        if round_num == 5 and "не бесконечный склад" in s:
+            s = s.replace("У нас не бесконечный склад", "У нас <strong>больше</strong> не бесконечный склад")
+        out.append(s)
+    return out
+
 @app.route("/api/data")
 def api_data():
     """Общие данные: вводные, коэффициенты, количество раундов, ожидаемое кол-во команд, исходные метрики."""
-    intro_by_round = DATA.get("common_intro_by_round") or {}
+    intro_by_round_raw = DATA.get("common_intro_by_round") or {}
+    intro_by_round = {r: _format_intro_bold(lst) for r, lst in intro_by_round_raw.items()}
+    rounds_intro_raw = DATA.get("rounds_intro") or {}
+    rounds_intro = {}
+    for r, lst in rounds_intro_raw.items():
+        try:
+            rn = int(r)
+        except ValueError:
+            rn = 1
+        rounds_intro[r] = _format_round_intro_bold(rn, lst)
     return jsonify({
         "common_intro_by_round": intro_by_round,
-        "common_intro": intro_by_round.get("1", DATA.get("common_intro", [])),
-        "rounds_intro": DATA.get("rounds_intro", {}),
+        "common_intro": intro_by_round.get("1", _format_intro_bold(DATA.get("common_intro", []))),
+        "rounds_intro": rounds_intro,
         "coefficients": DATA.get("coefficients", []),
         "initial_metrics": DATA.get("initial_metrics", {}),
         "max_rounds": max_rounds,
@@ -136,12 +179,14 @@ def api_settings():
 
 @app.route("/api/register", methods=["POST"])
 def api_register():
-    """Регистрация команды. Возвращает team_id, role (1 или 2), pair_id."""
+    """Регистрация: только «Команда 1» … «Команда 10». По имени попадаем в команду без дублей."""
     name = (request.get_json() or {}).get("name", "").strip()
     if not name:
         return jsonify({"error": "Укажите название команды"}), 400
-    # Разрешаем вход с тем же именем: если команда уже есть — возвращаем её id (ре-вход после вылета/обрыва)
-    existing = next((t for t in teams if t["name"] == name), None)
+    if name not in FIXED_TEAM_NAMES:
+        return jsonify({"error": "Допустимые названия: Команда 1, Команда 2, … Команда 10"}), 400
+    team_id = FIXED_TEAM_NAMES.index(name) + 1  # 1..10
+    existing = next((t for t in teams if t["id"] == team_id), None)
     if existing:
         return jsonify({
             "team_id": existing["id"],
@@ -151,18 +196,16 @@ def api_register():
             "reentered": True,
         })
 
-    team_id = len(teams) + 1
-    # Чётная команда — Команда 2 в новой паре, нечётная — Команда 1
-    if team_id % 2 == 1:
-        role = 1
-        pairs.append({"team1_id": team_id, "team2_id": None})
-        pair_id = len(pairs) - 1
+    pair_id = (team_id - 1) // 2
+    role = 1 if team_id % 2 == 1 else 2
+    while len(pairs) <= pair_id:
+        pairs.append({"team1_id": None, "team2_id": None})
+    if role == 1:
+        pairs[pair_id]["team1_id"] = team_id
     else:
-        role = 2
-        pair_id = len(pairs) - 1
         pairs[pair_id]["team2_id"] = team_id
 
-    teams.append({"id": team_id, "name": name, "role": role, "pair_id": pair_id})
+    teams.append({"id": team_id, "name": name, "display_name": None, "role": role, "pair_id": pair_id})
     return jsonify({"team_id": team_id, "name": name, "role": role, "pair_id": pair_id})
 
 
@@ -214,7 +257,7 @@ def api_state():
             })
         return jsonify({
             "team_id": team_id,
-            "name": t["name"],
+            "name": team_display_name(t),
             "role": t["role"],
             "current_round": current_round,
             "my_choice": my_choice,
@@ -224,15 +267,15 @@ def api_state():
             "rounds_done": [r for r in range(1, current_round) if (team_id, r) in choices],
         })
     # Экран: общее состояние
-    # Все ли пары ответили в текущем раунде
+    # Все ли пары (с двумя командами) ответили в текущем раунде
     round_complete = True
     if pairs:
         for p in pairs:
-            if p.get("team2_id") is None:
-                round_complete = False
-                break
-            c1 = choices.get((p["team1_id"], current_round))
-            c2 = choices.get((p["team2_id"], current_round))
+            t1, t2 = p.get("team1_id"), p.get("team2_id")
+            if not t1 or not t2:
+                continue
+            c1 = choices.get((t1, current_round))
+            c2 = choices.get((t2, current_round))
             if c1 is None or c2 is None:
                 round_complete = False
                 break
@@ -243,7 +286,7 @@ def api_state():
         "round_complete": round_complete,
         "expected_teams": expected_teams,
         "teams_count": len(teams),
-        "teams": [{"id": t["id"], "name": t["name"], "role": t["role"]} for t in teams],
+        "teams": [{"id": t["id"], "name": team_display_name(t), "role": t["role"]} for t in teams],
         "pairs": [{"team1_id": p["team1_id"], "team2_id": p["team2_id"]} for p in pairs],
         "choices": {f"{tid}_{r}": c for (tid, r), c in choices.items()},
     })
@@ -268,7 +311,7 @@ def api_choice():
 
 @app.route("/api/teams/<int:team_id>", methods=["DELETE"])
 def api_remove_team(team_id):
-    """Удалить команду (например, выбывшую). Очищаем её выборы и обновляем пару."""
+    """Удалить команду. Слот в паре обнуляется; при повторном входе под тем же именем — одна команда."""
     global teams, pairs, choices
     t = next((x for x in teams if x["id"] == team_id), None)
     if not t:
@@ -277,13 +320,26 @@ def api_remove_team(team_id):
     choices = {k: v for k, v in choices.items() if k[0] != team_id}
     for p in pairs:
         if p.get("team1_id") == team_id:
-            p["team1_id"] = p.get("team2_id")
-            p["team2_id"] = None
+            p["team1_id"] = None
             break
         if p.get("team2_id") == team_id:
             p["team2_id"] = None
             break
     return jsonify({"ok": True, "message": "Команда удалена", "teams_count": len(teams)})
+
+
+@app.route("/api/teams/<int:team_id>", methods=["PATCH"])
+def api_patch_team(team_id):
+    """Задать отображаемое название команды (на экране ведущего)."""
+    global teams
+    t = next((x for x in teams if x["id"] == team_id), None)
+    if not t:
+        return jsonify({"error": "Команда не найдена"}), 404
+    body = request.get_json() or {}
+    display_name = body.get("display_name")
+    if display_name is not None:
+        t["display_name"] = str(display_name).strip() or None
+    return jsonify({"ok": True, "name": team_display_name(t)})
 
 
 @app.route("/api/reset", methods=["POST"])
@@ -347,18 +403,27 @@ def api_results():
             cte_ok = side.get("CTE_in_target", False)
             if cte_ok:
                 cte_ok_count += 1
-            per_round.append({"round": r, "dc": round(dc, 0) if isinstance(dc, (int, float)) else None, "cte_ok": cte_ok})
+            per_round.append({
+                "round": r,
+                "dc": round(dc, 0) if isinstance(dc, (int, float)) else None,
+                "cte_ok": cte_ok,
+                "sh": side.get("SH"),
+                "orders": side.get("orders"),
+                "oph": side.get("OPH"),
+            })
         rounds_played = sum(1 for r in rounds_consider if (t["id"], r) in choices)
         show_total = up_to_round == max_rounds and rounds_played >= 1
-        # Прирост маржи от исходных значений (не от раунда 1)
+        # Прирост маржи от исходных значений
         dc_growth = None
         if up_to_round in dc_by_round and initial_dc is not None:
             dc_growth = dc_by_round[up_to_round] - (initial_dc if isinstance(initial_dc, (int, float)) else 0)
         elif 1 in dc_by_round and up_to_round in dc_by_round and initial_dc is None:
             dc_growth = dc_by_round[up_to_round] - dc_by_round[1]
+        # Метрики по итогам выбранного раунда (для таблицы: SH, Заказы, OPH — результат раунда, не исходные)
+        pr_up = next((p for p in per_round if p["round"] == up_to_round), None)
         results.append({
             "team_id": t["id"],
-            "name": t["name"],
+            "name": team_display_name(t),
             "role": t["role"],
             "per_round": per_round,
             "total_dc": round(total_dc, 0) if show_total else None,
@@ -369,8 +434,11 @@ def api_results():
             "initial_sh": im.get("SH"),
             "initial_orders": im.get("orders"),
             "initial_oph": im.get("OPH"),
+            "result_sh": pr_up.get("sh") if pr_up else None,
+            "result_orders": pr_up.get("orders") if pr_up else None,
+            "result_oph": pr_up.get("oph") if pr_up else None,
         })
-    # Квадранты после каждого раунда: раунд 1 — по DC и медиане; раунды 2–5 — по приросту (DC_N - DC_1)
+    # Квадранты: по выбранному раунду отдельно (CTE в таргете именно в этом раунде, не накопительно)
     dcs_r1 = [z["per_round"][0]["dc"] for z in results if z.get("per_round") and len(z["per_round"]) > 0 and z["per_round"][0].get("dc") is not None]
     median_r1 = sorted(dcs_r1)[len(dcs_r1) // 2] if dcs_r1 else 0
     growths = [x["dc_growth"] for x in results if x.get("dc_growth") is not None]
@@ -379,7 +447,9 @@ def api_results():
         x["quadrant"] = None
         if x["rounds_played"] < 1:
             continue
-        cte_ok = x["cte_ok_rounds"] >= (x["rounds_played"] / 2)
+        # CTE в таргете только в выбранном раунде (up_to_round), не накопительно
+        pr_sel = next((p for p in x.get("per_round", []) if p["round"] == up_to_round), None)
+        cte_ok = pr_sel.get("cte_ok", False) if pr_sel else False
         if up_to_round == 1:
             dc1 = x["per_round"][0]["dc"] if x.get("per_round") and x["per_round"] and x["per_round"][0].get("dc") is not None else 0
             high = dc1 >= median_r1

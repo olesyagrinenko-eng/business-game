@@ -85,8 +85,8 @@
   </div>
 
   <div id="teamsManagePanel" class="card hidden" style="margin-bottom:1rem;">
-    <h2>Удаление команд</h2>
-    <p class="muted" style="font-size:1rem;">Удаляйте команду, если участник выбыл. После удаления команда может войти заново с тем же именем.</p>
+    <h2>Команды: названия и удаление</h2>
+    <p class="muted" style="font-size:1rem;">Задайте отображаемое название для каждой команды (будет видно в таблицах и на карте). Удаляйте команду, если участник выбыл — он сможет войти заново с тем же именем (Команда 1 … Команда 10).</p>
     <ul id="teamsManageList" style="list-style:none; padding:0;"></ul>
   </div>
 
@@ -94,6 +94,7 @@
     <button data-tab="intro" class="active">Вводные и задание</button>
     <button data-tab="progress">Ход игры</button>
     <button data-tab="map">Карта квадрантов</button>
+    <button data-tab="allrounds">Итоги по всем раундам</button>
     <a href="/derevya/index.html" style="padding:0.5rem 1rem; border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:12px; text-decoration:none; display:inline-flex; align-items:center;">Деревья метрик</a>
   </div>
 
@@ -188,6 +189,26 @@
     <p style="margin-top:1rem;"><a href="/api/results" target="_blank" style="color:var(--accent)">Скачать результаты (JSON)</a></p>
   </div>
 
+  <div id="view-allrounds" class="view card">
+    <h2>Итоги по всем раундам</h2>
+    <p class="muted" style="font-size:1.1rem;">DC и CTE по каждому раунду для каждой команды.</p>
+    <div class="map-selector">
+      <label>Показать итоги после раунда: </label>
+      <select id="allRoundsRoundSelect">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+      </select>
+    </div>
+    <table class="results-table" id="allRoundsTable" style="margin-top:1rem;">
+      <thead id="allRoundsTableHead"></thead>
+      <tbody id="allRoundsTableBody"></tbody>
+    </table>
+  </div>
+
   <script>
     const API = "";
     let state = { current_round: 1, teams: [], pairs: [], choices: {}, expected_teams: null, teams_count: 0 };
@@ -215,8 +236,10 @@
         document.querySelectorAll(".tabs button").forEach((x) => x.classList.remove("active"));
         document.querySelectorAll(".view").forEach((x) => x.classList.remove("active"));
         b.classList.add("active");
-        document.getElementById("view-" + b.dataset.tab).classList.add("active");
+        const view = document.getElementById("view-" + b.dataset.tab);
+        if (view) view.classList.add("active");
         if (b.dataset.tab === "map") loadResults();
+        if (b.dataset.tab === "allrounds") loadAllRoundsResults();
       });
     });
 
@@ -305,7 +328,7 @@
       roundIntro.forEach((t) => {
         const div = document.createElement("div");
         div.className = "complication";
-        div.textContent = t;
+        div.innerHTML = t;
         compEl.appendChild(div);
       });
     }
@@ -349,16 +372,49 @@
       ul.innerHTML = "";
       (state.teams || []).forEach((t) => {
         const li = document.createElement("li");
-        li.style.marginBottom = "0.5rem";
-        const btn = document.createElement("button");
-        btn.textContent = "Удалить";
-        btn.type = "button";
-        btn.style.width = "auto";
-        btn.style.background = "#d32f2f";
-        btn.style.borderColor = "#d32f2f";
-        btn.style.padding = "0.35rem 0.75rem";
-        btn.onclick = async () => {
-          if (!confirm("Удалить команду «" + t.name + "»? Она сможет войти снова с тем же именем.")) return;
+        li.style.marginBottom = "0.75rem";
+        li.style.display = "flex";
+        li.style.flexWrap = "wrap";
+        li.style.alignItems = "center";
+        li.style.gap = "0.5rem";
+        const slotLabel = "Команда " + t.id + ":";
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "Название для экрана";
+        input.value = t.name || "";
+        input.style.width = "12rem";
+        input.style.padding = "0.4rem 0.5rem";
+        input.style.borderRadius = "8px";
+        input.style.border = "1px solid var(--border)";
+        const btnSave = document.createElement("button");
+        btnSave.textContent = "Сохранить";
+        btnSave.type = "button";
+        btnSave.style.padding = "0.35rem 0.6rem";
+        btnSave.onclick = async () => {
+          try {
+            const r = await fetch(API + "/api/teams/" + t.id, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ display_name: input.value.trim() || null }),
+            });
+            const j = await r.json();
+            if (r.ok) {
+              await loadState();
+              fillTeamsManageList();
+              input.value = j.name || "";
+            } else alert(j.error || "Ошибка");
+          } catch (e) {
+            alert("Ошибка сети");
+          }
+        };
+        const btnDel = document.createElement("button");
+        btnDel.textContent = "Удалить";
+        btnDel.type = "button";
+        btnDel.style.background = "#d32f2f";
+        btnDel.style.borderColor = "#d32f2f";
+        btnDel.style.padding = "0.35rem 0.75rem";
+        btnDel.onclick = async () => {
+          if (!confirm("Удалить команду «" + (t.name || "Команда " + t.id) + "»? Она сможет войти заново с тем же именем.")) return;
           try {
             const resp = await fetch(API + "/api/teams/" + t.id, { method: "DELETE" });
             const j = await resp.json();
@@ -371,8 +427,10 @@
             alert("Ошибка сети");
           }
         };
-        li.appendChild(document.createTextNode(t.name + " (Команда " + t.role + ") "));
-        li.appendChild(btn);
+        li.appendChild(document.createTextNode(slotLabel));
+        li.appendChild(input);
+        li.appendChild(btnSave);
+        li.appendChild(btnDel);
         ul.appendChild(li);
       });
     }
@@ -466,10 +524,11 @@
           const cteStr = t.rounds_played ? t.cte_ok_rounds + " из " + t.rounds_played : "—";
           const quadStr = t.quadrant ? quadrantNames[t.quadrant] || t.quadrant : "—";
           const initDc = fmt(t.initial_dc);
-          const initSh = fmt(t.initial_sh);
-          const initOrders = fmt(t.initial_orders);
-          const initOph = fmt(t.initial_oph);
-          tr.innerHTML = "<td>" + t.name + "</td><td>" + initDc + "</td><td>" + initSh + "</td><td>" + initOrders + "</td><td>" + initOph + "</td><td>" + perRoundStr + "</td><td>" + totalStr + "</td><td>" + growthStr + "</td><td>" + cteStr + "</td><td>" + quadStr + "</td>";
+          // SH, Заказы, OPH — по итогам выбранного раунда, не исходные
+          const shVal = fmt(t.result_sh != null ? t.result_sh : t.initial_sh);
+          const ordersVal = fmt(t.result_orders != null ? t.result_orders : t.initial_orders);
+          const ophVal = fmt(t.result_oph != null ? t.result_oph : t.initial_oph);
+          tr.innerHTML = "<td>" + t.name + "</td><td>" + initDc + "</td><td>" + shVal + "</td><td>" + ordersVal + "</td><td>" + ophVal + "</td><td>" + perRoundStr + "</td><td>" + totalStr + "</td><td>" + growthStr + "</td><td>" + cteStr + "</td><td>" + quadStr + "</td>";
           tbody.appendChild(tr);
         });
       } catch (_) {}
@@ -477,6 +536,38 @@
 
     document.getElementById("mapRoundSelect").addEventListener("change", () => { if (document.getElementById("view-map").classList.contains("active")) loadResults(); });
     document.getElementById("progressRoundSelect").addEventListener("change", renderProgressTable);
+    document.getElementById("allRoundsRoundSelect").addEventListener("change", () => { if (document.getElementById("view-allrounds").classList.contains("active")) loadAllRoundsResults(); });
+
+    async function loadAllRoundsResults() {
+      const upTo = parseInt(document.getElementById("allRoundsRoundSelect").value, 10) || 6;
+      try {
+        const r = await fetch(API + "/api/results?round=" + upTo);
+        const j = await r.json();
+        const results = j.results || [];
+        const thead = document.getElementById("allRoundsTableHead");
+        const tbody = document.getElementById("allRoundsTableBody");
+        if (!thead || !tbody) return;
+        let headHtml = "<tr><th>Команда</th>";
+        for (let i = 1; i <= upTo; i++) headHtml += "<th>Раунд " + i + "</th>";
+        headHtml += "<th>Сумма DC</th><th>CTE в таргете</th></tr>";
+        thead.innerHTML = headHtml;
+        tbody.innerHTML = "";
+        const fmt = (x) => x != null ? (typeof x === "number" && x > 1000 ? x.toLocaleString("ru") : x) : "—";
+        results.forEach((t) => {
+          const tr = document.createElement("tr");
+          let cells = "<td>" + (t.name || "—") + "</td>";
+          const perRound = t.per_round || [];
+          for (let r = 1; r <= upTo; r++) {
+            const pr = perRound.find((p) => p.round === r);
+            cells += "<td>" + (pr && pr.dc != null ? pr.dc.toLocaleString("ru") : "—") + "</td>";
+          }
+          cells += "<td>" + fmt(t.total_dc) + "</td>";
+          cells += "<td>" + (t.rounds_played ? t.cte_ok_rounds + " из " + t.rounds_played : "—") + "</td>";
+          tr.innerHTML = cells;
+          tbody.appendChild(tr);
+        });
+      } catch (_) {}
+    }
 
     (async () => {
       await loadData();

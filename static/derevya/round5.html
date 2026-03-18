@@ -201,8 +201,9 @@
     }
     function fillTeam(team, prev, curr, shCurr, aovCurr) {
       var prefix = team === 1 ? 't1' : 't2';
-      var ordersCurr = curr && curr.DCPO ? curr.DC / curr.DCPO : null;
-      var ophCurr = shCurr > 0 && ordersCurr != null ? ordersCurr / shCurr : null;
+      var ordersCurr = (curr && curr.orders != null) ? curr.orders : (curr && curr.DCPO ? curr.DC / curr.DCPO : null);
+      if (curr && curr.SH != null) shCurr = curr.SH;
+      var ophCurr = (curr && curr.OPH != null) ? curr.OPH : (shCurr > 0 && ordersCurr != null ? ordersCurr / shCurr : null);
       var ordPrev = prev.orders, shPrev = prev.SH;
       var ordPct = pctChange(ordPrev, ordersCurr); var ordOk = ordPct == null ? null : (ordPct > 0 ? true : ordPct < 0 ? false : null);
       var shPct = pctChange(shPrev, shCurr); var shOk = shPct == null ? null : (shPct > 0 ? true : shPct < 0 ? false : null);
