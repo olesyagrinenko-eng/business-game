@@ -102,6 +102,18 @@ def index():
         return f"Error: {e}", 500
 
 
+@app.route("/team/<int:n>")
+def team_page(n):
+    """Отдельный экран для команды N (1…10). Один URL — одна команда, без путаницы."""
+    if n < 1 or n > NUM_TEAMS:
+        return "Недопустимый номер команды", 404
+    try:
+        return send_from_directory(app.static_folder, "index.html")
+    except Exception as e:
+        print("ERROR serving index.html:", e, file=sys.stderr)
+        return f"Error: {e}", 500
+
+
 @app.route("/screen")
 def screen():
     try:

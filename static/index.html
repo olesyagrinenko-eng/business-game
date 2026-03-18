@@ -54,9 +54,15 @@
     <div id="step-register" class="card">
       <h1>Бизнес-игра</h1>
       <p id="teamsCountRegister" class="muted" style="font-size: 1rem; margin-bottom: 0.5rem;"></p>
-      <p class="muted">Введите название команды</p>
-      <input type="text" id="teamName" placeholder="Команда 1" maxlength="60">
-      <p class="muted" style="font-size:0.9rem; margin-top:0.35rem;">Допустимые названия: Команда 1, Команда 2, … Команда 10</p>
+      <div id="registerGeneric" class="register-block">
+        <p class="muted">Введите название команды</p>
+        <input type="text" id="teamName" placeholder="Команда 1" maxlength="60">
+        <p class="muted" style="font-size:0.9rem; margin-top:0.35rem;">Допустимые названия: Команда 1, Команда 2, … Команда 10</p>
+      </div>
+      <div id="registerFixed" class="register-block hidden">
+        <p class="muted">Этот экран закреплён за командой</p>
+        <p id="fixedTeamLabel" style="font-size:1.4rem; font-weight:700; color:var(--dark); margin:0.5rem 0;"></p>
+      </div>
       <button id="btnRegister">Войти в игру</button>
       <p style="margin-top:1rem; font-size:1.05rem;">
         <strong>Для экрана (проектор):</strong> откройте <a href="/screen" id="screenLink">эту страницу</a> на большом экране.
@@ -103,9 +109,19 @@
 
   <script>
     const API = ""; // тот же хост
+    const pathMatch = location.pathname.match(/^\/team\/([1-9]|10)$/);
+    const fixedTeamSlot = pathMatch ? parseInt(pathMatch[1], 10) : null; // 1…10 или null
     let teamId = localStorage.getItem("game_team_id");
     let teamName = localStorage.getItem("game_team_name");
     let teamRole = localStorage.getItem("game_team_role");
+    if (fixedTeamSlot && teamId && parseInt(teamId, 10) !== fixedTeamSlot) {
+      localStorage.removeItem("game_team_id");
+      localStorage.removeItem("game_team_name");
+      localStorage.removeItem("game_team_role");
+      teamId = null;
+      teamName = null;
+      teamRole = null;
+    }
     let data = null;
     let lastRenderedRound = 0;
 
@@ -133,8 +149,18 @@
     function show(el) { el.classList.remove("hidden"); }
     function hide(el) { el.classList.add("hidden"); }
 
+    (function initRegisterByUrl() {
+      if (fixedTeamSlot) {
+        document.title = "Команда " + fixedTeamSlot + " — Бизнес-игра";
+        document.getElementById("registerGeneric").classList.add("hidden");
+        document.getElementById("registerFixed").classList.remove("hidden");
+        document.getElementById("fixedTeamLabel").textContent = "Команда " + fixedTeamSlot;
+        document.getElementById("teamName").value = "Команда " + fixedTeamSlot;
+      }
+    })();
+
     document.getElementById("btnRegister").addEventListener("click", async () => {
-      const name = document.getElementById("teamName").value.trim();
+      const name = fixedTeamSlot ? ("Команда " + fixedTeamSlot) : document.getElementById("teamName").value.trim();
       if (!name) return;
       try {
         const res = await fetch(API + "/api/register", {

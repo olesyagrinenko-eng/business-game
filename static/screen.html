@@ -79,6 +79,12 @@
     </div>
   </div>
 
+  <div class="card" style="margin-bottom:1rem;">
+    <h2>Ссылки для команд (10 экранов)</h2>
+    <p class="muted" style="font-size:1rem;">Раздайте каждой команде свою ссылку — один экран на команду, путаницы не будет.</p>
+    <div id="teamLinksList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; font-size:1rem;"></div>
+  </div>
+
   <div id="teamsManagePanel" class="card hidden" style="margin-bottom:1rem;">
     <h2>Удаление команд</h2>
     <p class="muted" style="font-size:1rem;">Удаляйте команду, если участник выбыл. Он сможет войти заново с тем же именем (Команда 1 … Команда 10).</p>
@@ -563,6 +569,39 @@
         });
       } catch (_) {}
     }
+
+    function fillTeamLinks() {
+      const container = document.getElementById("teamLinksList");
+      if (!container) return;
+      const base = location.origin;
+      for (let i = 1; i <= 10; i++) {
+        const url = base + "/team/" + i;
+        const wrap = document.createElement("div");
+        wrap.style.display = "flex";
+        wrap.style.alignItems = "center";
+        wrap.style.gap = "0.5rem";
+        wrap.style.flexWrap = "wrap";
+        const a = document.createElement("a");
+        a.href = url;
+        a.textContent = "Команда " + i;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.style.color = "var(--accent)";
+        const copyBtn = document.createElement("button");
+        copyBtn.textContent = "Копировать";
+        copyBtn.type = "button";
+        copyBtn.style.width = "auto";
+        copyBtn.style.padding = "0.3rem 0.5rem";
+        copyBtn.style.fontSize = "0.9rem";
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(url).then(() => { copyBtn.textContent = "Скопировано"; setTimeout(() => { copyBtn.textContent = "Копировать"; }, 1500); });
+        };
+        wrap.appendChild(a);
+        wrap.appendChild(copyBtn);
+        container.appendChild(wrap);
+      }
+    }
+    fillTeamLinks();
 
     (async () => {
       await loadData();
