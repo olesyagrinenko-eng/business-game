@@ -62,12 +62,7 @@
     <div class="round-control" style="flex-wrap: wrap; gap: 0.5rem; align-items: center;">
       <div class="teams-count-block" style="margin-right: 0.75rem;">
         <strong id="teamsCountText">Команд: 0</strong>
-        <span id="teamsExpectedHint" class="hidden" style="color: var(--muted); font-weight: normal;"> из <span id="teamsExpectedNum">—</span></span>
-      </div>
-      <div class="expected-teams-set" style="display: flex; align-items: center; gap: 0.35rem;">
-        <label style="font-size: 1.05rem; color: var(--muted);">Ожидаем команд:</label>
-        <input type="number" id="expectedTeamsInput" min="2" max="50" step="2" placeholder="8" style="width: 4rem; padding: 0.4rem 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 1rem;">
-        <button id="btnSetExpected">Задать</button>
+        <span id="teamsExpectedHint" style="color: var(--muted); font-weight: normal;"> из 10</span>
       </div>
       <label>Раунд:</label>
       <select id="roundSelect">
@@ -84,9 +79,15 @@
     </div>
   </div>
 
+  <div class="card" style="margin-bottom:1rem;">
+    <h2>Названия команд (всегда 10)</h2>
+    <p class="muted" style="font-size:1rem;">Задайте отображаемое название для каждого слота. Эти имена будут видны в таблицах, на карте и в ходе игры. Участники входят по имени «Команда 1» … «Команда 10».</p>
+    <div id="slotNamesGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:0.5rem 1rem; align-items:center;"></div>
+  </div>
+
   <div id="teamsManagePanel" class="card hidden" style="margin-bottom:1rem;">
-    <h2>Команды: названия и удаление</h2>
-    <p class="muted" style="font-size:1rem;">Задайте отображаемое название для каждой команды (будет видно в таблицах и на карте). Удаляйте команду, если участник выбыл — он сможет войти заново с тем же именем (Команда 1 … Команда 10).</p>
+    <h2>Удаление команд</h2>
+    <p class="muted" style="font-size:1rem;">Удаляйте команду, если участник выбыл. Он сможет войти заново с тем же именем (Команда 1 … Команда 10).</p>
     <ul id="teamsManageList" style="list-style:none; padding:0;"></ul>
   </div>
 
@@ -216,18 +217,11 @@
 
     function updateTeamsCountDisplay() {
       const n = state.teams_count ?? 0;
-      const expected = state.expected_teams;
-      document.getElementById("teamsCountText").textContent = "Команд: " + n;
-      const hint = document.getElementById("teamsExpectedHint");
-      const numEl = document.getElementById("teamsExpectedNum");
-      if (expected != null && expected > 0) {
-        hint.classList.remove("hidden");
-        numEl.textContent = expected;
-        if (n >= expected) {
-          document.getElementById("teamsCountText").innerHTML = "Команд: " + n + " <span style=\"color:#3fb950;\">(все в сборе)</span>";
-        }
+      const el = document.getElementById("teamsCountText");
+      if (n >= 10) {
+        el.innerHTML = "Команд: " + n + " <span style=\"color:#3fb950;\">(все в сборе)</span>";
       } else {
-        hint.classList.add("hidden");
+        el.textContent = "Команд: " + n;
       }
     }
 
@@ -279,38 +273,12 @@
     async function loadData() {
       const r = await fetch(API + "/api/data");
       data = await r.json();
-      if (data.expected_teams != null) {
-        document.getElementById("expectedTeamsInput").value = data.expected_teams;
-        state.expected_teams = data.expected_teams;
-      }
+      state.expected_teams = 10;
       state.teams_count = data.teams_count ?? 0;
       updateTeamsCountDisplay();
       renderInitialMetrics();
       return data;
     }
-
-    document.getElementById("btnSetExpected").addEventListener("click", async () => {
-      const val = document.getElementById("expectedTeamsInput").value.trim();
-      const n = val ? parseInt(val, 10) : null;
-      if (n != null && (n < 2 || n > 50)) {
-        alert("Укажите число от 2 до 50 (лучше чётное — команды играют парами).");
-        return;
-      }
-      try {
-        const r = await fetch(API + "/api/settings", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ expected_teams: n }),
-        });
-        const j = await r.json();
-        if (!r.ok) { alert(j.error || "Ошибка"); return; }
-        state.expected_teams = j.expected_teams;
-        state.teams_count = j.teams_count ?? state.teams_count;
-        updateTeamsCountDisplay();
-      } catch (e) {
-        alert("Ошибка сети");
-      }
-    });
 
     function renderIntro() {
       if (!data) return;
@@ -366,47 +334,73 @@
       }
     });
 
+    function fillSlotNames(slotNames) {
+      const grid = document.getElementById("slotNamesGrid");
+      if (!grid) return;
+      slotNames = slotNames || {};
+      if (!grid.dataset.filled) {
+        grid.dataset.filled = "1";
+        for (let i = 1; i <= 10; i++) {
+          const wrap = document.createElement("div");
+          wrap.style.display = "flex";
+          wrap.style.alignItems = "center";
+          wrap.style.gap = "0.35rem";
+          wrap.style.flexWrap = "wrap";
+          const label = document.createElement("span");
+          label.textContent = "Команда " + i + ":";
+          label.style.minWidth = "5rem";
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = "Название для экрана";
+          input.dataset.slotId = String(i);
+          input.style.flex = "1";
+          input.style.minWidth = "8rem";
+          input.style.padding = "0.4rem 0.5rem";
+          input.style.borderRadius = "8px";
+          input.style.border = "1px solid var(--border)";
+          const btn = document.createElement("button");
+          btn.textContent = "Сохранить";
+          btn.type = "button";
+          btn.style.padding = "0.35rem 0.6rem";
+          btn.onclick = async () => {
+            try {
+              const r = await fetch(API + "/api/teams/" + i, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ display_name: input.value.trim() || null }),
+              });
+              const j = await r.json();
+              if (r.ok) {
+                state.slot_display_names = state.slot_display_names || {};
+                state.slot_display_names[String(i)] = input.value.trim() || "";
+              } else alert(j.error || "Ошибка");
+            } catch (e) {
+              alert("Ошибка сети");
+            }
+          };
+          wrap.appendChild(label);
+          wrap.appendChild(input);
+          wrap.appendChild(btn);
+          grid.appendChild(wrap);
+        }
+      }
+      grid.querySelectorAll("input[data-slot-id]").forEach((input) => {
+        const id = input.dataset.slotId;
+        if (slotNames[id] !== undefined) input.value = slotNames[id] || "";
+      });
+    }
+
     function fillTeamsManageList() {
       const ul = document.getElementById("teamsManageList");
       if (!ul) return;
       ul.innerHTML = "";
       (state.teams || []).forEach((t) => {
         const li = document.createElement("li");
-        li.style.marginBottom = "0.75rem";
+        li.style.marginBottom = "0.5rem";
         li.style.display = "flex";
-        li.style.flexWrap = "wrap";
         li.style.alignItems = "center";
         li.style.gap = "0.5rem";
-        const slotLabel = "Команда " + t.id + ":";
-        const input = document.createElement("input");
-        input.type = "text";
-        input.placeholder = "Название для экрана";
-        input.value = t.name || "";
-        input.style.width = "12rem";
-        input.style.padding = "0.4rem 0.5rem";
-        input.style.borderRadius = "8px";
-        input.style.border = "1px solid var(--border)";
-        const btnSave = document.createElement("button");
-        btnSave.textContent = "Сохранить";
-        btnSave.type = "button";
-        btnSave.style.padding = "0.35rem 0.6rem";
-        btnSave.onclick = async () => {
-          try {
-            const r = await fetch(API + "/api/teams/" + t.id, {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ display_name: input.value.trim() || null }),
-            });
-            const j = await r.json();
-            if (r.ok) {
-              await loadState();
-              fillTeamsManageList();
-              input.value = j.name || "";
-            } else alert(j.error || "Ошибка");
-          } catch (e) {
-            alert("Ошибка сети");
-          }
-        };
+        const name = t.name || ("Команда " + t.id);
         const btnDel = document.createElement("button");
         btnDel.textContent = "Удалить";
         btnDel.type = "button";
@@ -414,7 +408,7 @@
         btnDel.style.borderColor = "#d32f2f";
         btnDel.style.padding = "0.35rem 0.75rem";
         btnDel.onclick = async () => {
-          if (!confirm("Удалить команду «" + (t.name || "Команда " + t.id) + "»? Она сможет войти заново с тем же именем.")) return;
+          if (!confirm("Удалить команду «" + name + "»? Она сможет войти заново с тем же именем.")) return;
           try {
             const resp = await fetch(API + "/api/teams/" + t.id, { method: "DELETE" });
             const j = await resp.json();
@@ -427,9 +421,7 @@
             alert("Ошибка сети");
           }
         };
-        li.appendChild(document.createTextNode(slotLabel));
-        li.appendChild(input);
-        li.appendChild(btnSave);
+        li.appendChild(document.createTextNode(name + " "));
         li.appendChild(btnDel);
         ul.appendChild(li);
       });
@@ -450,6 +442,7 @@
         state = { ...state, ...j };
         document.getElementById("roundSelect").value = String(state.current_round);
         updateTeamsCountDisplay();
+        fillSlotNames(state.slot_display_names || {});
         renderIntro();
         const statusEl = document.getElementById("roundStatusBox");
         const statusText = document.getElementById("roundStatusText");

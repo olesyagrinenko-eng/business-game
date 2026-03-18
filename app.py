@@ -38,19 +38,21 @@ except Exception as e:
     DATA = {"common_intro_by_round": {str(r): [] for r in range(1, 7)}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
 
 # In-memory state (для одного мероприятия)
-# Фиксированные 10 команд: только имена "Команда 1" … "Команда 10", без дублей при ре-входе
+# Всегда 10 команд: слоты 1…10, названия задаются на экране ведущего
 FIXED_TEAM_NAMES = [f"Команда {i}" for i in range(1, 11)]
-teams = []  # [{"id": 1, "name": "Команда 1", "display_name": null|str, "role": 1|2, "pair_id": 0}, ...]
+NUM_TEAMS = 10
+slot_display_names = {}  # {1: "Название", 2: "", ...} — отображаемые имена слотов 1…10
+teams = []  # [{"id": 1, "name": "Команда 1", "role": 1|2, "pair_id": 0}, ...]
 pairs = []  # 5 пар: (1,2), (3,4), (5,6), (7,8), (9,10); слоты могут быть None при удалении
 choices = {}  # {(team_id, round): coefficient}
 current_round = 1
 max_rounds = 6
-expected_teams = None
+expected_teams = 10  # всегда 10
 
 
 def team_display_name(t):
-    """Имя команды для отображения: задаётся ведущим на экране или стандартное «Команда N»."""
-    s = (t.get("display_name") or "").strip()
+    """Имя команды для отображения: из карточки «Названия команд» на экране или «Команда N»."""
+    s = (slot_display_names.get(t["id"]) or "").strip()
     return s if s else t["name"]
 
 
@@ -205,7 +207,7 @@ def api_register():
     else:
         pairs[pair_id]["team2_id"] = team_id
 
-    teams.append({"id": team_id, "name": name, "display_name": None, "role": role, "pair_id": pair_id})
+    teams.append({"id": team_id, "name": name, "role": role, "pair_id": pair_id})
     return jsonify({"team_id": team_id, "name": name, "role": role, "pair_id": pair_id})
 
 
@@ -289,6 +291,7 @@ def api_state():
         "teams": [{"id": t["id"], "name": team_display_name(t), "role": t["role"]} for t in teams],
         "pairs": [{"team1_id": p["team1_id"], "team2_id": p["team2_id"]} for p in pairs],
         "choices": {f"{tid}_{r}": c for (tid, r), c in choices.items()},
+        "slot_display_names": {str(i): (slot_display_names.get(i) or "") for i in range(1, NUM_TEAMS + 1)},
     })
 
 
@@ -330,26 +333,28 @@ def api_remove_team(team_id):
 
 @app.route("/api/teams/<int:team_id>", methods=["PATCH"])
 def api_patch_team(team_id):
-    """Задать отображаемое название команды (на экране ведущего)."""
-    global teams
-    t = next((x for x in teams if x["id"] == team_id), None)
-    if not t:
-        return jsonify({"error": "Команда не найдена"}), 404
+    """Задать отображаемое название слота 1…10 (на экране ведущего). Команда может ещё не войти."""
+    global slot_display_names
+    if team_id < 1 or team_id > NUM_TEAMS:
+        return jsonify({"error": "Номер команды от 1 до 10"}), 400
     body = request.get_json() or {}
     display_name = body.get("display_name")
     if display_name is not None:
-        t["display_name"] = str(display_name).strip() or None
-    return jsonify({"ok": True, "name": team_display_name(t)})
+        val = str(display_name).strip() or None
+        slot_display_names[team_id] = val
+    name = (slot_display_names.get(team_id) or "").strip() or FIXED_TEAM_NAMES[team_id - 1]
+    return jsonify({"ok": True, "name": name})
 
 
 @app.route("/api/reset", methods=["POST"])
 def api_reset():
-    """Сбросить игру: очистить команды, пары, ответы, раунд 1. Для ведущего с экрана."""
+    """Сбросить игру: очистить команды, пары, ответы, раунд 1. Названия слотов сохраняются."""
     global teams, pairs, choices, current_round
     teams = []
     pairs = []
     choices = {}
     current_round = 1
+    # slot_display_names не сбрасываем — ведущий задал названия один раз
     return jsonify({"ok": True, "message": "Игра сброшена. Попросите участников нажать «Войти заново» на телефонах."})
 
 
