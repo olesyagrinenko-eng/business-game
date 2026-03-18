@@ -79,12 +79,6 @@
     </div>
   </div>
 
-  <div class="card" style="margin-bottom:1rem;">
-    <h2>Названия команд (всегда 10)</h2>
-    <p class="muted" style="font-size:1rem;">Задайте отображаемое название для каждого слота. Эти имена будут видны в таблицах, на карте и в ходе игры. Участники входят по имени «Команда 1» … «Команда 10».</p>
-    <div id="slotNamesGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:0.5rem 1rem; align-items:center;"></div>
-  </div>
-
   <div id="teamsManagePanel" class="card hidden" style="margin-bottom:1rem;">
     <h2>Удаление команд</h2>
     <p class="muted" style="font-size:1rem;">Удаляйте команду, если участник выбыл. Он сможет войти заново с тем же именем (Команда 1 … Команда 10).</p>
@@ -96,6 +90,7 @@
     <button data-tab="progress">Ход игры</button>
     <button data-tab="map">Карта квадрантов</button>
     <button data-tab="allrounds">Итоги по всем раундам</button>
+    <button data-tab="names">Названия команд</button>
     <a href="/derevya/index.html" style="padding:0.5rem 1rem; border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:12px; text-decoration:none; display:inline-flex; align-items:center;">Деревья метрик</a>
   </div>
 
@@ -190,6 +185,12 @@
     <p style="margin-top:1rem;"><a href="/api/results" target="_blank" style="color:var(--accent)">Скачать результаты (JSON)</a></p>
   </div>
 
+  <div id="view-names" class="view card">
+    <h2>Названия команд (всегда 10)</h2>
+    <p class="muted" style="font-size:1rem;">Задайте отображаемое название для каждого слота. Эти имена будут видны в таблицах, на карте и в ходе игры. Участники входят по имени «Команда 1» … «Команда 10». Нажмите «Сохранить» у нужной строки.</p>
+    <div id="slotNamesGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:0.6rem 1.25rem; align-items:center;"></div>
+  </div>
+
   <div id="view-allrounds" class="view card">
     <h2>Итоги по всем раундам</h2>
     <p class="muted" style="font-size:1.1rem;">DC и CTE по каждому раунду для каждой команды.</p>
@@ -234,6 +235,7 @@
         if (view) view.classList.add("active");
         if (b.dataset.tab === "map") loadResults();
         if (b.dataset.tab === "allrounds") loadAllRoundsResults();
+        if (b.dataset.tab === "names") fillSlotNames(state.slot_display_names || {});
       });
     });
 
@@ -353,6 +355,7 @@
           input.type = "text";
           input.placeholder = "Название для экрана";
           input.dataset.slotId = String(i);
+          input.value = slotNames[String(i)] || "";
           input.style.flex = "1";
           input.style.minWidth = "8rem";
           input.style.padding = "0.4rem 0.5rem";
@@ -373,6 +376,9 @@
               if (r.ok) {
                 state.slot_display_names = state.slot_display_names || {};
                 state.slot_display_names[String(i)] = input.value.trim() || "";
+                const oldText = btn.textContent;
+                btn.textContent = "Сохранено";
+                setTimeout(() => { btn.textContent = oldText; }, 1500);
               } else alert(j.error || "Ошибка");
             } catch (e) {
               alert("Ошибка сети");
@@ -384,10 +390,7 @@
           grid.appendChild(wrap);
         }
       }
-      grid.querySelectorAll("input[data-slot-id]").forEach((input) => {
-        const id = input.dataset.slotId;
-        if (slotNames[id] !== undefined) input.value = slotNames[id] || "";
-      });
+      // Не перезаписываем значения полей при каждом опросе — иначе ввод слетает
     }
 
     function fillTeamsManageList() {
@@ -442,7 +445,6 @@
         state = { ...state, ...j };
         document.getElementById("roundSelect").value = String(state.current_round);
         updateTeamsCountDisplay();
-        fillSlotNames(state.slot_display_names || {});
         renderIntro();
         const statusEl = document.getElementById("roundStatusBox");
         const statusText = document.getElementById("roundStatusText");
