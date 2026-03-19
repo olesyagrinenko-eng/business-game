@@ -56,6 +56,20 @@ def main():
     def opt_row(rw, idx):
         if not rw or len(rw) <= idx or rw[idx] is None: return None
         return round_value(rw[idx])
+    # Индексы колонок листа «СВОД» (0-based), как в scripts/import_svod_xlsx.py:
+    # К1: E..U + K CPO, L/M фоллбэк+общий CPO, N списания, O роялти; К2: AC..AS + AI..AM и т.д.
+    def surge_pct_cell(v):
+        """Сурж в % для дерева (как build_data.surge_pct)."""
+        if v is None or not isinstance(v, (int, float)):
+            return None
+        if v == 0:
+            return 0
+        if v == 1:
+            return 1
+        if 0 < v < 1:
+            return round(float(v) * 100, 2)
+        return round_value(v)
+
     for round_num in range(1, 7):
         scenarios[str(round_num)] = {}
         start_idx = (round_num - 1) * 16
@@ -65,30 +79,48 @@ def main():
             row = data_rows[start_idx + i]
             c1, c2 = row[1], row[2]
             key = f"{c1}_{c2}"
-            scenarios[str(round_num)][key] = {
-                "team1": {
-                    "SH": opt_row(row, 4),
-                    "orders": opt_row(row, 5),
-                    "OPH": opt_row(row, 6),
-                    "CTE": round_value(row[7]),
-                    "CPO": round_value(row[10]),
-                    "DCPO": round_value(row[16]),
-                    "DC": round_value(row[17]),
-                    "CTE_in_target": row[19] == "+" if len(row) > 19 else False,
-                    "place_DC": int(row[20]) if len(row) > 20 and row[20] is not None and isinstance(row[20], (int, float)) else None,
-                },
-                "team2": {
-                    "SH": opt_row(row, 28),
-                    "orders": opt_row(row, 29),
-                    "OPH": opt_row(row, 30),
-                    "CTE": round_value(row[31]),
-                    "CPO": round_value(row[34]),
-                    "DCPO": round_value(row[40]),
-                    "DC": round_value(row[41]),
-                    "CTE_in_target": row[43] == "+" if len(row) > 43 else False,
-                    "place_DC": int(row[44]) if len(row) > 44 and row[44] is not None and isinstance(row[44], (int, float)) else None,
-                },
+            sp1 = surge_pct_cell(row[8]) if len(row) > 8 else None
+            sp2 = surge_pct_cell(row[32]) if len(row) > 32 else None
+            team1 = {
+                "SH": opt_row(row, 4),
+                "orders": opt_row(row, 5),
+                "OPH": opt_row(row, 6),
+                "CTE": round_value(row[7]),
+                "CPO": round_value(row[10]),
+                "DCPO": round_value(row[16]),
+                "DC": round_value(row[17]),
+                "CTE_in_target": row[19] == "+" if len(row) > 19 else False,
+                "place_DC": int(row[20]) if len(row) > 20 and row[20] is not None and isinstance(row[20], (int, float)) else None,
+                "surge_prev": sp1,
+                "surge_curr": sp1,
             }
+            team2 = {
+                "SH": opt_row(row, 28),
+                "orders": opt_row(row, 29),
+                "OPH": opt_row(row, 30),
+                "CTE": round_value(row[31]),
+                "CPO": round_value(row[34]),
+                "DCPO": round_value(row[40]),
+                "DC": round_value(row[41]),
+                "CTE_in_target": row[43] == "+" if len(row) > 43 else False,
+                "place_DC": int(row[44]) if len(row) > 44 and row[44] is not None and isinstance(row[44], (int, float)) else None,
+                "surge_prev": sp2,
+                "surge_curr": sp2,
+            }
+            if round_num >= 3:
+                team1["fallback_share"] = opt_row(row, 11)
+                team1["cpo_total"] = opt_row(row, 12)
+                team2["fallback_share"] = opt_row(row, 35)
+                team2["cpo_total"] = opt_row(row, 36)
+            if round_num >= 5:
+                w1 = opt_row(row, 13)
+                w2 = opt_row(row, 37)
+                team1["writeoffs"] = 0 if w1 is None else w1
+                team2["writeoffs"] = 0 if w2 is None else w2
+            if round_num >= 6:
+                team1["royalty_curr"] = opt_row(row, 14)
+                team2["royalty_curr"] = opt_row(row, 38)
+            scenarios[str(round_num)][key] = {"team1": team1, "team2": team2}
 
     # Доп. вводные по раундам (ищем блоки «Доп. вводные N раунда» по листу)
     rounds_intro = {str(r): [] for r in range(1, 7)}

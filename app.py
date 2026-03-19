@@ -575,7 +575,9 @@ def api_results():
         elif effective_dc_round is not None and 1 in dc_by_round and initial_dc is None:
             dc_growth = dc_by_round[effective_dc_round] - dc_by_round[1]
         # Сумма изменений маржи между соседними сыгранными этапами: (DC_r1−I)+(DC_r2−DC_r1)+… = DC_last−I
+        # (телескопическая сумма — численно совпадает с dc_growth, если последний этап с DC = max(dc_by_round))
         dc_growth_sum_round_deltas = None
+        dc_step_deltas = []
         _ordered = sorted(dc_by_round.keys())
         if _ordered:
             _prev = float(initial_dc) if isinstance(initial_dc, (int, float)) else None
@@ -586,9 +588,13 @@ def api_results():
                     continue
                 _fv = float(_cur)
                 if _prev is not None:
-                    _acc += _fv - _prev
+                    _d = _fv - _prev
+                    _acc += _d
+                    dc_step_deltas.append({"round": _rk, "delta": round(_d, 0)})
                 _prev = _fv
             dc_growth_sum_round_deltas = _acc
+        # Последний этап, вошедший в ΣΔ (для подписи на вкладке «Итоги»: если < up_to — игра не доведена до N)
+        delta_sum_last_round = max(dc_by_round.keys()) if dc_by_round else None
         # SH / Заказы / OPH — по последнему раунду с данными ≤ up_to, не только строго N
         pr_up = None
         for p in reversed(per_round):
@@ -605,6 +611,8 @@ def api_results():
             "rounds_played": rounds_played,
             "dc_growth": round(dc_growth, 0) if dc_growth is not None else None,
             "dc_growth_sum_round_deltas": round(dc_growth_sum_round_deltas, 0) if dc_growth_sum_round_deltas is not None else None,
+            "dc_step_deltas": dc_step_deltas,
+            "delta_sum_last_round": delta_sum_last_round,
             "rounds_with_result": len(per_round),
             "initial_dc": round(initial_dc, 0) if isinstance(initial_dc, (int, float)) else initial_dc,
             "initial_sh": im.get("SH"),
@@ -647,6 +655,7 @@ def api_results():
         "results": results,
         "median_dc_growth": None,
         "up_to_round": up_to_round,
+        "max_rounds": max_rounds,
         "show_total_only_after_round_5": True,
     })
 

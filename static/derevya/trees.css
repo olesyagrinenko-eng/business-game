@@ -1,7 +1,21 @@
 :root { --bg: #fff; --card: #fff; --dark: #233967; --accent: #4DAAF8; --text: #233967; --muted: #6b7a99; --border: #233967; --green: #2e7d32; --yellow: #f9a825; --red: #c62828; }
 * { box-sizing: border-box; }
 body { font-family: 'YS Text', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; padding: 0.45rem clamp(0.45rem, 1.2vw, 1rem); -webkit-font-smoothing: antialiased; }
-.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem 0.75rem; }
+/* Логотип в шапке страниц раундов (round*.html) */
+.round-page-logo {
+  flex: 0 0 auto;
+  height: 38px;
+  width: auto;
+  max-width: min(96px, 22vw);
+  object-fit: contain;
+  object-position: left top;
+  align-self: flex-start;
+  margin-top: 0.1rem;
+}
+@media (max-width: 520px) {
+  .round-page-logo { height: 30px; max-width: 72px; }
+}
 h1 { font-size: 1.35rem; margin: 0; color: var(--text); }
 .round-badge { background: var(--card); border: 4px solid var(--accent); border-radius: 16px; padding: 0.5rem 1.25rem; text-align: center; }
 .round-badge .num { font-size: 1.75rem; font-weight: 800; color: var(--dark); }
@@ -10,7 +24,18 @@ h1 { font-size: 1.35rem; margin: 0; color: var(--text); }
 .inputs-row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
 .inputs-row label { font-weight: 600; color: var(--muted); font-size: 0.9rem; }
 .inputs-row select { padding: 0.45rem 0.65rem; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 0.95rem; min-width: 100px; }
-a.back { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+.trees-drag-controls { margin-top: -0.35rem; padding-top: 0.35rem; border-top: 1px dashed rgba(35,57,103,0.15); }
+.drag-layout-label { display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; user-select: none; font-size: 0.88rem; color: var(--dark); }
+.drag-layout-label input { width: 1rem; height: 1rem; accent-color: var(--accent); cursor: pointer; }
+.btn-layout-reset {
+  padding: 0.35rem 0.65rem; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--card); color: var(--text); font-size: 0.85rem; cursor: pointer; font-family: inherit;
+}
+.btn-layout-reset:hover { border-color: var(--accent); background: rgba(77, 170, 248, 0.08); }
+/* Режим перетаскивания: плашки поверх SVG-стрелок */
+.diagram.drag-layout-active .plashka { cursor: grab; touch-action: none; }
+.diagram.drag-layout-active .plashka:active { cursor: grabbing; }
+.diagram .plashka.is-dragging { z-index: 30 !important; box-shadow: 0 4px 14px rgba(35,57,103,0.18); }
 .imgs { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
 .imgs img { width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent); }
 .imgs img.blob { border-radius: 40% 60% 70% 30% / 50% 50% 50% 50%; }

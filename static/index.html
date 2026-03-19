@@ -96,6 +96,7 @@
       <div class="card">
         <h1 id="teamHeading">—</h1>
         <p class="role" id="teamRole">—</p>
+        <p id="pairColumnsHint" class="muted" style="font-size:0.92rem; margin-top:0.35rem; line-height:1.35;">На экране ведущего в таблице пар те же колонки: <strong>Конкурент 1</strong> и <strong>Конкурент 2</strong> — это вы и второй участник пары.</p>
         <p style="margin-top:0.5rem; font-size:0.95rem;">
           <a href="#" id="linkReenter" style="color:var(--muted);">Войти заново</a> (другая команда или новая игра)
         </p>
@@ -113,8 +114,9 @@
           <p class="coef-options">-10% &nbsp; 0% &nbsp; +20% &nbsp; +40%</p>
           <p class="goal">Цель: удержать CTE в таргете при максимальной марже (DC).</p>
         </div>
+        <p id="yourAnswerHint" class="muted" style="font-size:0.95rem; margin-top:0.75rem;">Ваш ответ в раунде — как у соответствующего конкурента в строке пары на экране ведущего.</p>
         <div class="btn-group" id="coefButtons"></div>
-        <p id="waitOpponent" class="muted hidden" style="margin-top:1rem;">Ожидаем решение соперника...</p>
+        <p id="waitOpponent" class="muted hidden" style="margin-top:1rem;">Ожидаем ответ конкурента в паре…</p>
         <details id="resultsAccordion" class="results-accordion">
           <summary>Результаты и история раундов (нажмите, чтобы раскрыть или скрыть)</summary>
           <div id="resultBox" class="result-box hidden"></div>
@@ -219,7 +221,7 @@
     async function initGame() {
       await loadData();
       document.getElementById("teamHeading").textContent = teamName;
-      document.getElementById("teamRole").textContent = teamRole == 1 ? "Вы — Команда 1" : "Вы — Команда 2";
+      document.getElementById("teamRole").textContent = teamRole == 1 ? "Вы — Конкурент 1" : "Вы — Конкурент 2";
       renderRound();
       pollState();
     }
@@ -421,7 +423,7 @@
           const dc = r.result.DC != null && r.result.DC !== "+" && r.result.DC !== "-" ? (typeof r.result.DC === "number" ? r.result.DC.toLocaleString("ru") : r.result.DC) : "—";
           resStr = " CTE " + (r.result.CTE != null ? r.result.CTE : "—") + ", DC " + dc + (r.result.CTE_in_target ? ", в таргете" : "");
         }
-        html += "<div class=\"round-item\" data-history-round=\"" + r.round + "\">Раунд " + r.round + ": вы " + myL + ", конкурент " + oppL + (resStr ? ". Результат: " + resStr : "") + "</div>";
+        html += "<div class=\"round-item\" data-history-round=\"" + r.round + "\">Раунд " + r.round + ": ваш ответ " + myL + ", ответ конкурента " + oppL + (resStr ? ". Результат: " + resStr : "") + "</div>";
       });
       box.innerHTML = html;
       show(box);
@@ -440,7 +442,7 @@
           teamName = state.name;
         }
         if (state.role != null) {
-          document.getElementById("teamRole").textContent = state.role === 1 ? "Вы — Команда 1" : "Вы — Команда 2";
+          document.getElementById("teamRole").textContent = state.role === 1 ? "Вы — Конкурент 1" : "Вы — Конкурент 2";
           teamRole = state.role;
         }
         document.getElementById("roundNum").textContent = state.current_round;
@@ -504,7 +506,7 @@
       show(document.getElementById("footerReenter"));
       loadData().then(() => {
         document.getElementById("teamHeading").textContent = teamName;
-        document.getElementById("teamRole").textContent = teamRole == 1 ? "Вы — Команда 1" : "Вы — Команда 2";
+        document.getElementById("teamRole").textContent = teamRole == 1 ? "Вы — Конкурент 1" : "Вы — Конкурент 2";
         renderRound();
         pollState();
       });

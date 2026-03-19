@@ -84,6 +84,13 @@
     if (x >= 0 && x <= 1) return pctPlain(x * 100);
     return fmt(x) + '%';
   }
+  /** Списания в процентах: доля 0…1 из Excel → «2%»; уже в % (5) → «5%»; −1…0 — доля отрицательная */
+  function fmtWriteoffsPct(x) {
+    if (x == null || typeof x !== 'number' || !isFinite(x)) return '—';
+    if (x >= 0 && x <= 1) return pctPlain(x * 100);
+    if (x < 0 && x >= -1) return pctPlain(x * 100);
+    return fmt(x) + '%';
+  }
   /** Роялти в процентах для отображения (число в JSON — как в СВОД: 5 или 0,05) */
   function fmtRoyaltyPct(x) {
     if (x == null || typeof x !== 'number' || !isFinite(x)) return '—';
@@ -146,8 +153,8 @@
     var woCurr = curr == null ? null : (curr.writeoffs != null ? curr.writeoffs : 0);
     var woPct = pctChange(woPrev, woCurr);
     var woOk = woPct == null ? null : (woPct < 0 ? true : woPct > 0 ? false : null);
-    set(prefix + 'Writeoffs_prev', woPrev != null && woPrev !== undefined ? fmt(woPrev) : '—');
-    set(prefix + 'Writeoffs_curr', woCurr != null && woCurr !== undefined ? fmt(woCurr) : '—');
+    set(prefix + 'Writeoffs_prev', woPrev != null && woPrev !== undefined ? fmtWriteoffsPct(Number(woPrev)) : '—');
+    set(prefix + 'Writeoffs_curr', woCurr != null && woCurr !== undefined ? fmtWriteoffsPct(Number(woCurr)) : '—');
     setDot(prefix + 'Writeoffs_dot', woOk == null ? 'yellow' : metricStatus(woOk));
     set(prefix + 'Writeoffs_pct', pctStr(woPct));
     setPlashka('p' + team + '_writeoffs', woOk == null ? 'status-yellow' : 'status-' + metricStatus(woOk));
@@ -448,6 +455,49 @@
     return 'M' + p1.x + ',' + p1.y + ' L' + xBus + ',' + p1.y + ' L' + xBus + ',' + p2.y + ' L' + xin + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
   }
 
+  /** Горизонталь на y пересекает осью X отрезок [xl, xr] прямоугольник rect */
+  function horizontalHitsRect(y, xl, xr, rect) {
+    if (!rect || !isFinite(y)) return false;
+    if (y < rect.top || y > rect.bottom) return false;
+    var lo = Math.min(xl, xr);
+    var hi = Math.max(xl, xr);
+    return hi > rect.left && lo < rect.right;
+  }
+
+  /** Заказы → DCPO: как left bus, но горизонталь к левому краю DCPO не режет AOV — сначала ниже AOV */
+  function pathOrdersDcpoLeftBusAvoidAov(p1, p2, xBus, aovRect, stub) {
+    stub = stub || AR_PAD;
+    var xin = p2.x - stub;
+    if (!aovRect || !horizontalHitsRect(p2.y, xBus, xin, aovRect)) {
+      return pathOrdersBottomLeftBus(p1, p2, xBus, stub);
+    }
+    var yDown = aovRect.bottom + stub;
+    if (yDown < p1.y) yDown = p1.y + stub;
+    return 'M' + p1.x + ',' + p1.y +
+      ' L' + xBus + ',' + p1.y +
+      ' L' + xBus + ',' + yDown +
+      ' L' + xin + ',' + yDown +
+      ' L' + xin + ',' + p2.y +
+      ' L' + p2.x + ',' + p2.y;
+  }
+
+  /** Заказы → DC: левее автобуса DCPO; сначала ниже AOV и DCPO, затем вправо и вверх к левому краю DC */
+  function pathOrdersDcLeftBusAvoidMid(p1, p2, xBus, aovRect, dcpoRect, stub) {
+    stub = stub || AR_PAD;
+    var xin = p2.x - stub;
+    if (!aovRect && !dcpoRect) return pathOrdersBottomLeftBus(p1, p2, xBus, stub);
+    var yLow = p2.y;
+    if (aovRect) yLow = Math.max(yLow, aovRect.bottom + stub);
+    if (dcpoRect) yLow = Math.max(yLow, dcpoRect.bottom + stub);
+    if (yLow < p1.y) yLow = p1.y + stub;
+    return 'M' + p1.x + ',' + p1.y +
+      ' L' + xBus + ',' + p1.y +
+      ' L' + xBus + ',' + yLow +
+      ' L' + xin + ',' + yLow +
+      ' L' + xin + ',' + p2.y +
+      ' L' + p2.x + ',' + p2.y;
+  }
+
   /** AOV → DCPO: к верхней части левого края DCPO (сначала по вертикали у правого края AOV, затем горизонталь); p2 = leftUpper */
   function pathAovToDcpoUpper(fromRect, p2, stub) {
     stub = stub || AR_PAD;
@@ -456,7 +506,7 @@
     return 'M' + x1 + ',' + y1 + ' L' + x1 + ',' + p2.y + ' L' + (p2.x - stub) + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
   }
 
-  /** Коридор между OPH и CTE (одинаковая y для OPH→CPO и OPH→Доля фоллбэка) */
+  /** Коридор между OPH и CTE — одна горизонталь OPH → Общий CPO */
   function yCorridorOphCte(fromRect, dr, cteEl) {
     var ophBtm = fromRect.bottom;
     var cteTop = cteEl && cteEl.offsetParent !== null
@@ -466,9 +516,36 @@
     return Math.max(ophBtm + 3, Math.min(cteTop - 3, y));
   }
 
+  /** OPH → Доля фоллбэка: ниже полосы OPH–CTE, чтобы не дублировать линию к Общему CPO */
+  function yCorridorOphToFallback(ophRect, dr, cteEl, aovEl) {
+    var cteB = cteEl && cteEl.offsetParent !== null
+      ? (cteEl.getBoundingClientRect().bottom - dr.top)
+      : ophRect.bottom + 24;
+    var aovT = aovEl && aovEl.offsetParent !== null
+      ? (aovEl.getBoundingClientRect().top - dr.top)
+      : cteB + 48;
+    var y = (cteB + aovT) / 2;
+    return Math.max(cteB + AR_PAD, Math.min(aovT - AR_PAD, y));
+  }
+
   /** Одна горизонталь (коридор между строками или к col3) */
   function pathHorizontalStraight(p1, p2) {
     return 'M' + p1.x + ',' + p1.y + ' L' + p2.x + ',' + p2.y;
+  }
+
+  /**
+   * Стрелка строго между точками крепления на плашках (p1, p2 из getBoundingClientRect).
+   * Без отдельных «висящих» отрезков в фиксированных коридорах — при смещении плашек линия остаётся с ними.
+   */
+  function pathAnchoredToPlashkas(p1, p2) {
+    var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
+    if (Math.abs(x1 - x2) < 2 && Math.abs(y1 - y2) < 2) {
+      return 'M' + x1 + ',' + y1 + ' L' + x2 + ',' + y2;
+    }
+    if (Math.abs(x2 - x1) >= Math.abs(y2 - y1)) {
+      return 'M' + x1 + ',' + y1 + ' L' + x2 + ',' + y1 + ' L' + x2 + ',' + y2;
+    }
+    return 'M' + x1 + ',' + y1 + ' L' + x1 + ',' + y2 + ' L' + x2 + ',' + y2;
   }
 
   /** Правая колонка cpo-stack: обход по внешнему коридору g34 (ортогонально) */
@@ -503,11 +580,12 @@
     return 'M' + x1 + ',' + y1 + ' L' + xb2 + ',' + y1 + ' L' + xg + ',' + y1 + ' L' + xg + ',' + y2 + ' L' + xc2 + ',' + y2 + ' L' + x2 + ',' + y2;
   }
 
-  /** Ком.маржа → DCPO: вправо к правому краю mid, вдоль него к уровню DCPO, к левому краю DCPO (не через Общий CPO) */
-  function pathMarginToDcpoEdge(p1, p2, mR, stub) {
+  /** Ком.маржа → DCPO: вправо в коридор g23 (между mid и CPO), по вертикали к leftLower DCPO */
+  function pathMarginToDcpoViaG23(p1, p2, g23, mR, stub) {
     stub = stub || AR_PAD;
-    var xEdge = mR + stub + 4;
-    return 'M' + p1.x + ',' + p1.y + ' L' + xEdge + ',' + p1.y + ' L' + xEdge + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
+    var xG = (isFinite(g23) && g23 > mR + stub * 2) ? g23 : (mR + stub + 6);
+    xG = Math.max(xG, mR + stub + 2);
+    return 'M' + p1.x + ',' + p1.y + ' L' + xG + ',' + p1.y + ' L' + xG + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
   }
 
   /** Колонка 1 -> 3: коридоры g12 и g23, полоса над/под mid */
@@ -546,9 +624,6 @@
     dr = diag.getBoundingClientRect();
     svg.setAttribute('viewBox', '0 0 ' + dr.width + ' ' + dr.height);
     g.innerHTML = '';
-    resetLanes();
-    var gutters = getColumnGutters(diag, dr);
-    var midBand = gutters ? { top: gutters.midTop, bottom: gutters.midBottom } : null;
     getArrowLinks().forEach(function (link) {
       var fromEl = document.getElementById(prefix + link.from);
       var toEl = document.getElementById(prefix + link.to);
@@ -562,73 +637,13 @@
       var p2 = pointOnRect(toRect, link.toSide);
       var d;
       var route = link.route;
+      /* Вертикаль в одной колонке и SH→Заказы — только по прямоугольникам блоков; остальное — ортогональ между p1 и p2 */
       if (route === 'stack-v' || route === 'cpo-total-dcpo-v') {
         d = pathStackVerticalStrictBetween(fromRect, toRect, AR_PAD);
       } else if (route === 'sh-orders-h') {
         d = pathSHtoOrdersHorizontal(fromRect, toRect);
-      } else if (route === 'orders-oph-left' && gutters) {
-        /* FULL_TREE: самый правый из трёх левых автобусов (ближе к колонкам), без захода на SH */
-        var xBusOph = gutters.gLeft + 14;
-        d = pathOrdersBottomLeftBus(p1, p2, xBusOph, AR_PAD);
-      } else if (route === 'orders-dcpo-leftbus' && gutters) {
-        var xBusDcpo = gutters.gLeft + 6;
-        d = pathOrdersBottomLeftBus(p1, p2, xBusDcpo, AR_PAD);
-      } else if (route === 'orders-dc-leftbus' && gutters) {
-        var xBusDc = Math.max(AR_PAD + 2, gutters.gLeft - 4);
-        d = pathOrdersBottomLeftBus(p1, p2, xBusDc, AR_PAD);
-      } else if ((route === 'oph-cpo-h' || route === 'oph-cpo-total-h') && gutters) {
-        var cteEl0 = document.getElementById(prefix + 'cte');
-        var yOphCte = yCorridorOphCte(fromRect, dr, cteEl0);
-        var pOph = { x: fromRect.right, y: yOphCte };
-        var pTgt = { x: toRect.left, y: yOphCte };
-        d = pathHorizontalStraight(pOph, pTgt);
-      } else if (route === 'oph-fallback-h' && gutters) {
-        var cteEl1 = document.getElementById(prefix + 'cte');
-        var yLaneFb = yCorridorOphCte(fromRect, dr, cteEl1) + 3;
-        var pOphF = { x: fromRect.right, y: yLaneFb };
-        var pFb = { x: toRect.left, y: yLaneFb };
-        d = pathHorizontalStraight(pOphF, pFb);
-      } else if (route === 'aov-dcpo-h' && gutters) {
-        d = pathAovToDcpoUpper(fromRect, p2, AR_PAD);
-      } else if (route === 'margin-dcpo-edge' && gutters) {
-        d = pathMarginToDcpoEdge(p1, p2, gutters.mR, AR_PAD);
-      } else if (route === 'col3' && gutters) {
-        d = pathCol3RightCorridor(p1, p2, gutters.g34 + laneOffset('g34'), AR_PAD);
-      } else if (route === 'elbow' && gutters) {
-        var cf = linkColumn(link.from);
-        var ct = linkColumn(link.to);
-        if (cf === 2 && ct === 1 && link.fromSide === 'left' && link.toSide === 'right') {
-          d = pathMidLeftToOrdersRight(p1, p2, gutters.g12 + laneOffset('g12'), gutters.midTop);
-        } else if (cf === ct) {
-          var xgSame = cf === 2 ? gutters.g23 + laneOffset('g23') : (cf === 3 ? gutters.g34 + laneOffset('g34') : gutters.g12 + laneOffset('g12'));
-          if (cf === 2 && gutters.mR != null) xgSame = Math.max(xgSame, gutters.mR + AR_PAD + 2);
-          d = pathViaOneGutter(p1, p2, xgSame, AR_PAD);
-        } else if (Math.abs(cf - ct) === 1) {
-          var lo = Math.min(cf, ct);
-          var hi = Math.max(cf, ct);
-          var xgOne = (lo === 1 && hi === 2)
-            ? gutters.g12 + laneOffset('g12')
-            : (lo === 2 && hi === 3)
-              ? Math.max(gutters.g23 + laneOffset('g23'), (gutters.mR != null ? gutters.mR : 0) + AR_PAD + 2)
-              : gutters.g34 + laneOffset('g34');
-          d = pathViaOneGutter(p1, p2, xgOne, AR_PAD);
-        } else if (cf === 1 && ct === 3) {
-          var o12 = laneOffset('g12');
-          var o23 = laneOffset('g23');
-          d = pathCol1to3OutsideMid(
-            p1,
-            p2,
-            gutters.g12 + o12,
-            gutters.g23 + o23,
-            midBand ? midBand.top : NaN,
-            midBand ? midBand.bottom : NaN,
-            dr.height
-          );
-        } else {
-          d = pathViaOneGutter(p1, p2, gutters.g12 + laneOffset('g12'), AR_PAD);
-        }
       } else {
-        d = pathViaOneGutter(p1, p2, (p1.x + p2.x) / 2, AR_PAD);
+        d = pathAnchoredToPlashkas(p1, p2);
       }
       var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('d', d);
@@ -643,9 +658,146 @@
     drawArrows('diag2', 'arrows2', 'url(#arr2)', 'p2_');
   }
 
+  /** Сохранённые смещения плашек (localStorage) — стрелки пересчитываются по getBoundingClientRect */
+  function layoutStorageKey(diagId) {
+    return 'derevyaDragLayout_r' + ROUND + '_' + diagId;
+  }
+  function loadLayoutMap(diagId) {
+    try {
+      var raw = localStorage.getItem(layoutStorageKey(diagId));
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+  function saveLayoutMap(diagId, map) {
+    try {
+      localStorage.setItem(layoutStorageKey(diagId), JSON.stringify(map));
+    } catch (e) {}
+  }
+  function setPlashkaOffset(el, tx, ty) {
+    el.dataset.tx = String(tx);
+    el.dataset.ty = String(ty);
+    el.style.transform = 'translate(' + tx + 'px,' + ty + 'px)';
+  }
+  function applyLayoutToDiagram(diagEl, map) {
+    if (!diagEl) return;
+    var pls = diagEl.querySelectorAll('.plashka');
+    for (var i = 0; i < pls.length; i++) {
+      var el = pls[i];
+      var id = el.id;
+      if (!id) continue;
+      var o = map[id];
+      if (o && (o.tx || o.ty)) {
+        setPlashkaOffset(el, Number(o.tx) || 0, Number(o.ty) || 0);
+      } else {
+        el.style.transform = '';
+        delete el.dataset.tx;
+        delete el.dataset.ty;
+      }
+    }
+  }
+  function collectLayoutFromDiagram(diagEl) {
+    var map = {};
+    var pls = diagEl.querySelectorAll('.plashka');
+    for (var i = 0; i < pls.length; i++) {
+      var el = pls[i];
+      if (!el.id) continue;
+      var tx = parseFloat(el.dataset.tx || '0', 10) || 0;
+      var ty = parseFloat(el.dataset.ty || '0', 10) || 0;
+      if (tx !== 0 || ty !== 0) map[el.id] = { tx: tx, ty: ty };
+    }
+    return map;
+  }
+  function applySavedLayouts() {
+    applyLayoutToDiagram(document.getElementById('diag1'), loadLayoutMap('diag1'));
+    applyLayoutToDiagram(document.getElementById('diag2'), loadLayoutMap('diag2'));
+  }
+  var rafDragArrows = null;
+  function redrawAllArrowsThrottledDrag() {
+    if (rafDragArrows) cancelAnimationFrame(rafDragArrows);
+    rafDragArrows = requestAnimationFrame(function () {
+      rafDragArrows = null;
+      redrawAllArrows();
+    });
+  }
+  function initDragLayout() {
+    var modeChk = document.getElementById('dragLayoutMode');
+    var resetBtn = document.getElementById('dragLayoutReset');
+    if (!modeChk || !resetBtn) return;
+
+    function setDiagramMode(on) {
+      var d1 = document.getElementById('diag1');
+      var d2 = document.getElementById('diag2');
+      if (d1) d1.classList.toggle('drag-layout-active', on);
+      if (d2) d2.classList.toggle('drag-layout-active', on);
+    }
+    modeChk.addEventListener('change', function () {
+      setDiagramMode(modeChk.checked);
+    });
+
+    resetBtn.addEventListener('click', function () {
+      try {
+        localStorage.removeItem(layoutStorageKey('diag1'));
+        localStorage.removeItem(layoutStorageKey('diag2'));
+      } catch (e) {}
+      applyLayoutToDiagram(document.getElementById('diag1'), {});
+      applyLayoutToDiagram(document.getElementById('diag2'), {});
+      redrawAllArrows();
+    });
+
+    var wrap = document.querySelector('.trees-wrapper');
+    if (!wrap) return;
+
+    var dragState = null;
+
+    function onMove(e) {
+      if (!dragState) return;
+      var tx = dragState.origTx + (e.clientX - dragState.startX);
+      var ty = dragState.origTy + (e.clientY - dragState.startY);
+      setPlashkaOffset(dragState.el, tx, ty);
+      redrawAllArrowsThrottledDrag();
+    }
+    function onUp(e) {
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+      document.removeEventListener('pointercancel', onUp);
+      if (!dragState) return;
+      dragState.el.classList.remove('is-dragging');
+      var diag = document.getElementById(dragState.diagId);
+      if (diag) saveLayoutMap(dragState.diagId, collectLayoutFromDiagram(diag));
+      dragState = null;
+      redrawAllArrows();
+    }
+
+    wrap.addEventListener('pointerdown', function (e) {
+      if (!modeChk.checked) return;
+      var pl = e.target.closest('.plashka');
+      if (!pl || !pl.id) return;
+      var diag = pl.closest('.diagram');
+      if (!diag || !diag.id) return;
+      if (e.target.closest('a, button, input, select, textarea')) return;
+      e.preventDefault();
+      dragState = {
+        el: pl,
+        diagId: diag.id,
+        startX: e.clientX,
+        startY: e.clientY,
+        origTx: parseFloat(pl.dataset.tx || '0', 10) || 0,
+        origTy: parseFloat(pl.dataset.ty || '0', 10) || 0
+      };
+      pl.classList.add('is-dragging');
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+      document.addEventListener('pointercancel', onUp);
+    });
+  }
+
+  applySavedLayouts();
   document.getElementById('coef1').addEventListener('change', update);
   document.getElementById('coef2').addEventListener('change', update);
   update();
   setTimeout(redrawAllArrows, 0);
   window.addEventListener('resize', redrawAllArrows);
+  initDragLayout();
 })();

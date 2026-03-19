@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Импорт scenarios.json напрямую из Excel (лист СВОД) без openpyxl.
 
+Колонки (команда 1 / 2): списания N / AL; роялти текущая O / AM (в JSON — royalty_curr).
+
 Причина: в окружении openpyxl может падать на некоторых xlsx (segfault),
 поэтому читаем OOXML как zip/xml.
 
@@ -142,6 +144,7 @@ def build_from_xlsx(xlsx_path, scenarios_json_path):
                 "fallback_share": d.get("L"),
                 "cpo_total": d.get("M"),
                 "writeoffs": d.get("N"),
+                "royalty_curr": d.get("O"),
             },
             "team2": {
                 "SH": d.get("AC"),
@@ -158,6 +161,7 @@ def build_from_xlsx(xlsx_path, scenarios_json_path):
                 "fallback_share": d.get("AJ"),
                 "cpo_total": d.get("AK"),
                 "writeoffs": d.get("AL"),
+                "royalty_curr": d.get("AM"),
             },
         }
 
@@ -175,6 +179,9 @@ def build_from_xlsx(xlsx_path, scenarios_json_path):
             "DC": initial.get("R"),
             "avg_check": initial.get("J"),
             "margin": initial.get("P"),
+            "writeoffs": initial.get("N") if _num(initial.get("N")) else 0,
+            "royalty_prev": initial.get("O") if _num(initial.get("O")) else 0,
+            "royalty_curr": initial.get("O") if _num(initial.get("O")) else 0,
         })
         t2.update({
             "SH": initial.get("AC"),
@@ -186,6 +193,9 @@ def build_from_xlsx(xlsx_path, scenarios_json_path):
             "DC": initial.get("AP"),
             "avg_check": initial.get("AH"),
             "margin": initial.get("AN"),
+            "writeoffs": initial.get("AL") if _num(initial.get("AL")) else 0,
+            "royalty_prev": initial.get("AM") if _num(initial.get("AM")) else 0,
+            "royalty_curr": initial.get("AM") if _num(initial.get("AM")) else 0,
         })
         im["team1"] = t1
         im["team2"] = t2

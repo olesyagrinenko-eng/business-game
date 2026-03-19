@@ -11,7 +11,7 @@
     * { box-sizing: border-box; }
     html { font-size: 18px; }
     body { font-family: 'YS Text', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; padding: 1.5rem; -webkit-font-smoothing: antialiased; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+    .header { position: relative; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; padding-left: 5.75rem; min-height: 3rem; }
     h1 { font-size: 2rem; margin: 0; color: var(--text); }
     .round-control { display: flex; align-items: center; gap: 0.5rem; }
     .round-control select, .round-control input, .round-control button { padding: 0.6rem 0.9rem; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 1.1rem; }
@@ -54,10 +54,34 @@
     .map-selector select { padding: 0.6rem 0.9rem; border-radius: 12px; background: var(--card); color: var(--text); font-size: 1.1rem; border: 1px solid var(--border); }
     .results-table { margin-top: 1rem; }
     .hidden { display: none !important; }
+    details.initial-metrics-wrap summary { cursor: pointer; list-style: none; color: var(--muted); font-size: 1.35rem; margin: 0; padding: 0.15rem 0; }
+    details.initial-metrics-wrap summary::-webkit-details-marker { display: none; }
+    details.initial-metrics-wrap[open] summary { margin-bottom: 0.5rem; }
+    .round-intro-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0 1.25rem; align-items: start; }
+    @media (max-width: 900px) { .round-intro-metrics { grid-template-columns: 1fr; } }
+    .round-intro-metrics .mini-card { background: #fafbfd; border: 1px solid var(--border); border-radius: 12px; padding: 0.65rem 0.85rem; }
+    .round-intro-metrics h3 { font-size: 0.95rem; margin: 0 0 0.45rem 0; color: var(--dark); font-weight: 700; }
+    .round-intro-metrics table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .round-intro-metrics th, .round-intro-metrics td { padding: 0.28rem 0.4rem; text-align: left; border-bottom: 1px solid rgba(35,57,103,0.12); }
+    .round-intro-metrics th { color: var(--muted); font-weight: 600; width: 52%; }
+    .growth-net-plus { color: #1b5e20; font-weight: 700; }
+    .growth-net-minus { color: #c62828; font-weight: 700; }
+    .growth-net-zero { color: var(--muted); font-weight: 600; }
+    .growth-net-note { font-size: 0.78rem; font-weight: 500; color: var(--muted); display: block; margin-top: 0.2rem; }
+    .host-logo {
+      position: absolute;
+      left: 0;
+      top: 0;
+      max-height: 48px;
+      width: auto;
+      max-width: 140px;
+      object-fit: contain;
+    }
   </style>
 </head>
 <body>
   <div class="header">
+    <img class="host-logo" src="/L_blue.png" alt="" width="140" height="48" decoding="async" />
     <h1>Бизнес-игра — Экран для проектора</h1>
     <div class="round-control" style="flex-wrap: wrap; gap: 0.5rem; align-items: center;">
       <div class="teams-count-block" style="margin-right: 0.75rem;">
@@ -93,18 +117,19 @@
       <div class="label">Текущий раунд</div>
       <div class="num" id="introRoundNum">1</div>
     </div>
-    <div id="initialMetricsBlock" class="card" style="margin-bottom:1.25rem; padding:1.25rem;">
-      <h2>Метрики на старте (исходные)</h2>
-      <p class="muted" style="margin-bottom:0.75rem;">Метрики каждой команды на старте — для справки в первом раунде.</p>
+    <details id="initialMetricsDetails" class="card initial-metrics-wrap" style="margin-bottom:1.25rem; padding:1.25rem;">
+      <summary><strong>Метрики на старте (исходные)</strong> <span style="font-weight:normal;font-size:0.95rem;color:var(--muted);">— развернуть / свернуть</span></summary>
+      <p class="muted" style="margin-bottom:0.75rem;">Исходные метрики ролей «Конкурент 1» и «Конкурент 2» в паре (дублируются под вводными раунда ниже).</p>
       <table id="initialMetricsTable" style="font-size:1.05rem;">
-        <thead><tr><th>Метрика</th><th>Команда 1</th><th>Команда 2</th></tr></thead>
+        <thead><tr><th>Метрика</th><th>Конкурент 1</th><th>Конкурент 2</th></tr></thead>
         <tbody id="initialMetricsBody"></tbody>
       </table>
-    </div>
+    </details>
     <h2>Общие вводные</h2>
     <ul id="commonIntro"></ul>
     <h2 style="margin-top:1.25rem;">Новые условия раунда <span id="introRoundNumSmall">1</span></h2>
     <div id="roundIntroComplications"></div>
+    <div id="roundIntroMetricsWrap" class="round-intro-metrics" aria-label="Исходные метрики по конкурентам"></div>
     <div class="task-box">
       <h2 style="margin-top:0;">Задание</h2>
       <p>Выбрать коэффициент изменения ставки курьера за заказ на следующую неделю:</p>
@@ -121,7 +146,7 @@
 
   <div id="view-progress" class="view card">
     <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
-      <h2 style="margin: 0;">Команды и ответы (раунд <span id="progressRoundNum">1</span>)</h2>
+      <h2 style="margin: 0;">Пары: конкуренты и ответы (раунд <span id="progressRoundNum">1</span>)</h2>
       <label style="color: var(--muted); font-size: 1.1rem;">Показать раунд:</label>
       <select id="progressRoundSelect">
         <option value="1">1</option>
@@ -134,7 +159,7 @@
     </div>
     <table>
       <thead>
-        <tr><th>Пара</th><th>Команда 1</th><th>Команда 2</th><th>Ответ 1</th><th>Ответ 2</th></tr>
+        <tr><th>Пара</th><th>Конкурент 1</th><th>Конкурент 2</th><th>Ответ конкурента 1</th><th>Ответ конкурента 2</th></tr>
       </thead>
       <tbody id="progressTable"></tbody>
     </table>
@@ -193,7 +218,7 @@
 
   <div id="view-allrounds" class="view card">
     <h2>Итоги по всем раундам</h2>
-    <p class="muted" style="font-size:1.1rem;">Сводка за этапы 1…N: <strong>сумма DC</strong> по раундам с результатом, <strong>прирост маржи</strong> — <strong>сумма изменений DC</strong> между соседними сыгранными этапами (в т.ч. от исходного к первому этапу; совпадает с «DC после N − исходный», если цепочка непрерывна). <strong>CTE в таргете</strong> — сколько раундов из числа раундов с расчётом.</p>
+    <p class="muted" style="font-size:1.1rem;"><strong>Сумма DC</strong> — сумма маржи по строкам раундов (другая величина, не «прирост»). Колонка <strong>«Итог ΣΔ к исходному»</strong> — <strong>сумма пошаговых изменений маржи</strong> по выбранным этапам: <strong>положительное число = в плюсе к стартовой марже</strong>, <strong>отрицательное = в минусе</strong> (по сравнению с исходным DC на старте). Математически это же значение, что <strong>DC после последнего учтённого этапа минус исходный DC</strong>. Наведите на ячейку — разбивка Δ по раундам. <strong>CTE в таргете</strong> — сколько раундов из числа раундов с расчётом.</p>
     <div class="map-selector">
       <label>Учитывать этапы 1…</label>
       <select id="allRoundsRoundSelect">
@@ -261,17 +286,18 @@
       });
     });
 
-    function renderInitialMetrics() {
+    function fmtInitialMetric(x) {
+      if (x == null) return "—";
+      if (typeof x === "number" && x >= 1000) return x.toLocaleString("ru");
+      if (typeof x === "number" && x < 1 && x > 0) return (x * 100).toFixed(0) + "%";
+      return x;
+    }
+
+    function getInitialMetricRows() {
       const im = (data && data.initial_metrics) || {};
       const t1 = im.team1 || {};
       const t2 = im.team2 || {};
-      const fmt = (x) => {
-        if (x == null) return "—";
-        if (typeof x === "number" && x >= 1000) return x.toLocaleString("ru");
-        if (typeof x === "number" && x < 1 && x > 0) return (x * 100).toFixed(0) + "%";
-        return x;
-      };
-      const rows = [
+      return [
         ["MPH", t1.MPH, t2.MPH],
         ["CPO", t1.CPO, t2.CPO],
         ["CTE target", t1.CTE_target, t2.CTE_target],
@@ -284,13 +310,43 @@
         ["DCPO", t1.DCPO, t2.DCPO],
         ["DC (исходный)", t1.DC, t2.DC],
       ];
+    }
+
+    function renderInitialMetrics() {
+      const rows = getInitialMetricRows();
       const tbody = document.getElementById("initialMetricsBody");
       if (!tbody) return;
       tbody.innerHTML = "";
       rows.forEach(([label, v1, v2]) => {
         const tr = document.createElement("tr");
-        tr.innerHTML = "<td>" + label + "</td><td>" + fmt(v1) + "</td><td>" + fmt(v2) + "</td>";
+        tr.innerHTML = "<td>" + label + "</td><td>" + fmtInitialMetric(v1) + "</td><td>" + fmtInitialMetric(v2) + "</td>";
         tbody.appendChild(tr);
+      });
+    }
+
+    function renderRoundIntroMetrics() {
+      const wrap = document.getElementById("roundIntroMetricsWrap");
+      if (!wrap || !data) return;
+      const rows = getInitialMetricRows();
+      wrap.innerHTML = "";
+      [1, 2].forEach((role) => {
+        const col = role === 1 ? 1 : 2;
+        const card = document.createElement("div");
+        card.className = "mini-card";
+        const h = document.createElement("h3");
+        h.textContent = "Конкурент " + role + " — исходные метрики";
+        card.appendChild(h);
+        const table = document.createElement("table");
+        const tb = document.createElement("tbody");
+        rows.forEach(([label, v1, v2]) => {
+          const v = col === 1 ? v1 : v2;
+          const tr = document.createElement("tr");
+          tr.innerHTML = "<th>" + label + "</th><td>" + fmtInitialMetric(v) + "</td>";
+          tb.appendChild(tr);
+        });
+        table.appendChild(tb);
+        card.appendChild(table);
+        wrap.appendChild(card);
       });
     }
 
@@ -301,6 +357,7 @@
       state.teams_count = data.teams_count ?? 0;
       updateTeamsCountDisplay();
       renderInitialMetrics();
+      renderRoundIntroMetrics();
       return data;
     }
 
@@ -323,6 +380,7 @@
         div.innerHTML = t;
         compEl.appendChild(div);
       });
+      renderRoundIntroMetrics();
     }
 
     document.getElementById("roundSelect").value = "1";
@@ -538,13 +596,13 @@
         const thead = document.getElementById("allRoundsTableHead");
         const tbody = document.getElementById("allRoundsTableBody");
         if (!thead || !tbody) return;
-        thead.innerHTML = "<tr><th>Команда</th><th>Исх. DC</th><th>Сумма DC<br><span style=\"font-weight:normal;font-size:0.85em\">(этапы 1…" + upTo + ")</span></th><th>Прирост маржи<br><span style=\"font-weight:normal;font-size:0.85em\">(сумма Δ по раундам)</span></th><th>CTE в таргете<br><span style=\"font-weight:normal;font-size:0.85em\">(раундов)</span></th></tr>";
+        const maxR = j.max_rounds != null ? j.max_rounds : 6;
+        thead.innerHTML = "<tr><th>Команда</th><th>Исх. DC</th><th>Сумма DC<br><span style=\"font-weight:normal;font-size:0.85em\">(этапы 1…" + upTo + ")</span></th><th>Итог ΣΔ к исходному<br><span style=\"font-weight:normal;font-size:0.85em\">(сумма Δ по раундам; &gt;0 плюс, &lt;0 минус)</span></th><th>CTE в таргете<br><span style=\"font-weight:normal;font-size:0.85em\">(раундов)</span></th></tr>";
         tbody.innerHTML = "";
         const fmt = (x) => x != null ? (typeof x === "number" && x > 1000 ? x.toLocaleString("ru") : x) : "—";
-        const fmtGrowth = (x) => {
+        const fmtGrowthNum = (x) => {
           if (x == null) return "—";
-          const s = (x >= 0 ? "+" : "") + (typeof x === "number" && x > 1000 ? x.toLocaleString("ru") : x);
-          return s;
+          return (x >= 0 ? "+" : "") + (typeof x === "number" && x > 1000 ? x.toLocaleString("ru") : x);
         };
         results.forEach((t) => {
           const perRound = (t.per_round || []).filter((p) => p.round <= upTo);
@@ -558,12 +616,39 @@
           });
           const sumStr = nDc ? sumDc.toLocaleString("ru") : "—";
           const initDc = fmt(t.initial_dc);
-          const gAll = t.dc_growth_sum_round_deltas != null ? t.dc_growth_sum_round_deltas : t.dc_growth;
-          const growthStr = fmtGrowth(gAll);
+          let gAll = t.dc_growth_sum_round_deltas != null ? t.dc_growth_sum_round_deltas : t.dc_growth;
+          const steps = t.dc_step_deltas || [];
+          if (gAll == null && steps.length) {
+            gAll = steps.reduce((acc, s) => acc + (Number(s.delta) || 0), 0);
+          }
+          let growthTitle = "";
+          if (steps.length) {
+            growthTitle = "ΣΔ по этапам: " + steps.map((s) => "р." + s.round + " " + (s.delta >= 0 ? "+" : "") + (typeof s.delta === "number" && s.delta > 1000 ? s.delta.toLocaleString("ru") : s.delta)).join(" + ");
+            if (gAll != null) growthTitle += " = итог " + (gAll >= 0 ? "+" : "") + (typeof gAll === "number" && gAll > 1000 ? gAll.toLocaleString("ru") : gAll) + " к исходному DC";
+          } else if (gAll != null) {
+            growthTitle = "Итоговое изменение маржи к исходному DC за этапы 1…" + upTo;
+          }
+          growthTitle += ". Исходный DC: " + (t.initial_dc != null ? fmt(t.initial_dc) : "—");
+          const lastR = t.delta_sum_last_round;
+          if (lastR != null && lastR < upTo) {
+            growthTitle += ". Учтены этапы до р." + lastR + " (результата по р." + upTo + " ещё нет).";
+          }
+          const growthTitleEsc = growthTitle.replace(/"/g, "&quot;");
+          let growthClass = "growth-net-zero";
+          if (gAll != null) {
+            if (gAll > 0) growthClass = "growth-net-plus";
+            else if (gAll < 0) growthClass = "growth-net-minus";
+          }
+          let growthInner = "<span class=\"" + growthClass + "\" title=\"" + growthTitleEsc + "\">" + fmtGrowthNum(gAll) + "</span>";
+          if (lastR != null && lastR < upTo) {
+            growthInner += "<span class=\"growth-net-note\">до этапа " + lastR + "</span>";
+          } else if (upTo === maxR && lastR != null && lastR === maxR) {
+            growthInner += "<span class=\"growth-net-note\">за все " + maxR + " этапов</span>";
+          }
           const nRes = (t.rounds_with_result != null ? t.rounds_with_result : (t.per_round || []).filter((p) => p.round <= upTo).length);
           const cteStr = nRes > 0 ? (t.cte_ok_rounds + " из " + nRes) : "—";
           const tr = document.createElement("tr");
-          tr.innerHTML = "<td>" + (t.name || "—") + "</td><td>" + initDc + "</td><td>" + sumStr + "</td><td>" + growthStr + "</td><td>" + cteStr + "</td>";
+          tr.innerHTML = "<td>" + (t.name || "—") + "</td><td>" + initDc + "</td><td>" + sumStr + "</td><td>" + growthInner + "</td><td>" + cteStr + "</td>";
           tbody.appendChild(tr);
         });
         fillQuadrantUls(results, quadrantUlIdsAll, "dc_growth_sum_round_deltas");
