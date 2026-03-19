@@ -29,13 +29,14 @@
     .trees-wrapper { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem; max-width: 100%; }
     .one-tree { position: relative; width: 100%; }
     .one-tree h3 { margin: 0 0 0.5rem 0; font-size: 1.4rem; color: var(--dark); padding: 0.35rem 0; border-bottom: 2px solid var(--accent); }
+    .diagram-outer { width: 100%; overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; border-radius: 14px; border: 1px solid rgba(35,57,103,0.12); background: linear-gradient(180deg, #f4f7fc 0%, #eef2f9 45%, #e8edf6 100%); }
 
-    /* Блок-схема: 1 — Заказы; 2 — столбец метрик (flex, узлы появляются с ростом раунда); 3 — CPO; 4 — DCPO+DC */
-    .diagram { position: relative; display: grid; grid-template-columns: minmax(90px, 0.9fr) minmax(140px, 2fr) minmax(100px, 1fr) minmax(100px, 1fr); grid-template-rows: 1fr; align-items: stretch; gap: 14px 18px; padding: 20px 24px; min-height: 340px; width: 100%; min-width: 720px; }
-    .diagram .plashka { background: var(--card); border: 2px solid var(--border); border-radius: 12px; padding: 12px 16px; font-size: 1.2rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-    .diagram .plashka .name { font-weight: 700; color: var(--dark); display: block; margin-bottom: 8px; font-size: 1.35rem; }
-    .diagram .plashka .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .diagram .plashka .row span { font-size: 1.15rem; }
+    /* Блок-схема: шире зазоры = «коридоры» для ортогональных стрелок (как на org-chart) */
+    .diagram { position: relative; display: grid; grid-template-columns: minmax(112px, 1fr) minmax(200px, 2.2fr) minmax(118px, 1.05fr) minmax(118px, 1.05fr); grid-template-rows: 1fr; align-items: stretch; gap: 22px 32px; padding: 28px 32px 32px; min-height: 380px; width: 100%; min-width: 820px; }
+    .diagram .plashka { position: relative; z-index: 2; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border: 2px solid var(--border); border-radius: 14px; padding: 14px 16px; font-size: 1.05rem; box-shadow: 0 2px 8px rgba(35,57,103,0.08), 0 1px 0 rgba(255,255,255,0.9) inset; }
+    .diagram .plashka .name { font-weight: 700; color: var(--dark); display: block; margin-bottom: 8px; font-size: 1.15rem; letter-spacing: 0.02em; }
+    .diagram .plashka .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .diagram .plashka .row span { font-size: 1.02rem; }
     .diagram .plashka .week-prev { color: var(--muted); }
     .diagram .plashka .week-curr { font-weight: 600; }
     .diagram .plashka .pct { margin-left: 8px; font-size: 1.05rem; color: var(--muted); }
@@ -46,14 +47,14 @@
     .diagram .plashka.status-green { border-color: var(--green); background: rgba(46,125,50,0.08); }
     .diagram .plashka.status-yellow { border-color: var(--yellow); background: rgba(249,168,37,0.12); }
     .diagram .plashka.status-red { border-color: var(--red); background: rgba(198,40,40,0.08); }
-    .diagram .mechanic-node { background: rgba(77, 170, 248, 0.07); border-style: dashed; }
-    .diagram .mechanic-node .name { font-size: 1.2rem; }
-    .diagram .col-left { grid-column: 1; grid-row: 1; align-self: stretch; background: rgba(77, 170, 248, 0.06); }
-    .diagram .mid-stack { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+    .diagram .mechanic-node { background: linear-gradient(180deg, rgba(77, 170, 248, 0.12) 0%, rgba(77, 170, 248, 0.05) 100%); border-style: dashed; border-color: rgba(35,57,103,0.45); }
+    .diagram .mechanic-node .name { font-size: 1.05rem; }
+    .diagram .col-left { grid-column: 1; grid-row: 1; align-self: stretch; background: linear-gradient(180deg, rgba(77, 170, 248, 0.14) 0%, rgba(77, 170, 248, 0.06) 100%); }
+    .diagram .mid-stack { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; gap: 18px; min-width: 0; position: relative; z-index: 2; }
     .diagram .block-cpo { grid-column: 3; grid-row: 1; align-self: center; }
-    .diagram .right-stack { grid-column: 4; grid-row: 1; display: flex; flex-direction: column; gap: 14px; justify-content: center; align-self: stretch; }
-    .diagram-svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
-    .diagram-svg line, .diagram-svg path { stroke: #6b7a99; stroke-width: 1.5; fill: none; }
+    .diagram .right-stack { grid-column: 4; grid-row: 1; display: flex; flex-direction: column; gap: 20px; justify-content: center; align-self: stretch; position: relative; z-index: 2; }
+    .diagram-svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 1; }
+    .diagram-svg path.link-path { stroke: #5a6d8f; stroke-width: 2; fill: none; stroke-linecap: square; stroke-linejoin: miter; }
     .shared-top { margin-bottom: 1rem; padding: 0.85rem; background: rgba(77,170,248,0.06); border-radius: 12px; border: 1px dashed var(--accent); }
     .shared-top .tree-node { margin: 0; padding: 0.6rem 0.85rem; border-radius: 8px; border: 2px solid var(--border); font-size: 1.2rem; }
     .shared-top .tree-node .name { font-weight: 700; }
@@ -103,8 +104,9 @@
       <!-- Дерево Команды 1 — плашки как в Excel -->
       <div class="one-tree card">
         <h3>Дерево — Команда 1</h3>
+        <div class="diagram-outer">
         <div class="diagram" id="diag1">
-          <svg class="diagram-svg" id="svg1"><defs><marker id="arr1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#6b7a99"/></marker></defs><g id="arrows1"></g></svg>
+          <svg class="diagram-svg" id="svg1"><defs><marker id="arr1" viewBox="0 0 10 10" markerWidth="9" markerHeight="9" refX="9" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 Z" fill="#5a6d8f"/></marker></defs><g id="arrows1"></g></svg>
           <div class="plashka col-left" id="p1_orders"><span class="name">Заказы</span><div class="row"><span class="week-prev">Прошлая: <b id="t1Orders_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1Orders_curr">—</b></span><span class="dot" id="t1Orders_dot"></span><span class="pct" id="t1Orders_pct"></span></div></div>
           <div class="mid-stack" id="midStack1">
             <div class="plashka" id="p1_oph"><span class="name">OPH</span><div class="row"><span class="week-prev">Прошлая: <b id="t1OPH_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1OPH_curr">—</b></span><span class="dot" id="t1OPH_dot"></span><span class="pct" id="t1OPH_pct"></span></div></div>
@@ -124,13 +126,15 @@
             <div class="plashka block-dc" id="p1_dc"><span class="name">DC</span><div class="row"><span class="week-prev">Прошлая: <b id="t1DC_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1DC_curr">—</b></span><span class="dot" id="t1DC_dot"></span><span class="pct" id="t1DC_pct"></span></div></div>
           </div>
         </div>
+        </div>
       </div>
 
       <!-- Дерево Команды 2 -->
       <div class="one-tree card">
         <h3>Дерево — Команда 2</h3>
+        <div class="diagram-outer">
         <div class="diagram" id="diag2">
-          <svg class="diagram-svg" id="svg2"><defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#6b7a99"/></marker></defs><g id="arrows2"></g></svg>
+          <svg class="diagram-svg" id="svg2"><defs><marker id="arr2" viewBox="0 0 10 10" markerWidth="9" markerHeight="9" refX="9" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 Z" fill="#5a6d8f"/></marker></defs><g id="arrows2"></g></svg>
           <div class="plashka col-left" id="p2_orders"><span class="name">Заказы</span><div class="row"><span class="week-prev">Прошлая: <b id="t2Orders_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2Orders_curr">—</b></span><span class="dot" id="t2Orders_dot"></span><span class="pct" id="t2Orders_pct"></span></div></div>
           <div class="mid-stack" id="midStack2">
             <div class="plashka" id="p2_oph"><span class="name">OPH</span><div class="row"><span class="week-prev">Прошлая: <b id="t2OPH_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2OPH_curr">—</b></span><span class="dot" id="t2OPH_dot"></span><span class="pct" id="t2OPH_pct"></span></div></div>
@@ -149,6 +153,7 @@
             <div class="plashka block-dcpo" id="p2_dcpo"><span class="name">DCPO</span><div class="row"><span class="week-prev">Прошлая: <b id="t2DCPO_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2DCPO_curr">—</b></span><span class="dot" id="t2DCPO_dot"></span><span class="pct" id="t2DCPO_pct"></span></div></div>
             <div class="plashka block-dc" id="p2_dc"><span class="name">DC</span><div class="row"><span class="week-prev">Прошлая: <b id="t2DC_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2DC_curr">—</b></span><span class="dot" id="t2DC_dot"></span><span class="pct" id="t2DC_pct"></span></div></div>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -206,7 +211,9 @@
     function setPlashka(id, status) {
       var el = document.getElementById(id);
       if (!el) return;
-      el.className = 'plashka ' + (status || '').replace('status-', '');
+      el.classList.remove('status-green', 'status-yellow', 'status-red');
+      var s = (status || '').replace('status-', '');
+      if (s === 'green' || s === 'yellow' || s === 'red') el.classList.add('status-' + s);
     }
     function metricStatus(improved) {
       if (improved === true) return 'green';
@@ -258,6 +265,7 @@
       fillTeam(2, prev2, sc ? sc.team2 : null, sh.sh2);
       fillMechanics(1);
       fillMechanics(2);
+      requestAnimationFrame(function() { requestAnimationFrame(redrawAllArrows); });
     }
     /** Плашки механик по раундам (как доп. вводные в СВОД: р2 сурж, р3 вывоз, р4 переток, р5 склад, р6 роялти) */
     function fillMechanics(teamNum) {
@@ -295,40 +303,62 @@
     }
     function getArrowLinks() {
       var L = [
-        { from: 'orders', to: 'oph', fromSide: 'right', toSide: 'left', route: 'line' },
-        { from: 'orders', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'ordersToDc', toOffsetY: -14 },
-        { from: 'aov', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'around', toOffsetY: -22 },
-        { from: 'oph', to: 'cpo', fromSide: 'right', toSide: 'left', route: 'line' },
-        { from: 'cpo', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'line', toOffsetY: 0 },
-        { from: 'margin', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'around', toOffsetY: 22 },
-        { from: 'dcpo', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'line', toOffsetY: 14 }
+        { from: 'orders', to: 'oph', fromSide: 'right', toSide: 'left', route: 'elbow' },
+        { from: 'orders', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'ordersToDc', toOffsetY: -12 },
+        { from: 'aov', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'elbow' },
+        { from: 'oph', to: 'cpo', fromSide: 'right', toSide: 'left', route: 'elbow' },
+        { from: 'cpo', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'elbow' },
+        { from: 'margin', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'elbow' },
+        { from: 'dcpo', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'elbow-v', toOffsetY: 8 }
       ];
       if (ROUND >= 2) {
-        L.push({ from: 'surge', to: 'aov', fromSide: 'right', toSide: 'left', route: 'around', toOffsetY: -12 });
-        L.push({ from: 'surge', to: 'orders', fromSide: 'left', toSide: 'right', route: 'around', toOffsetY: 16 });
+        L.push({ from: 'surge', to: 'aov', fromSide: 'right', toSide: 'left', route: 'elbow' });
+        L.push({ from: 'surge', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
       }
       if (ROUND >= 3) {
-        L.push({ from: 'delivery', to: 'orders', fromSide: 'left', toSide: 'right', route: 'around', toOffsetY: -8 });
-        L.push({ from: 'delivery', to: 'cte', fromSide: 'right', toSide: 'left', route: 'around', toOffsetY: 6 });
+        L.push({ from: 'delivery', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
+        L.push({ from: 'delivery', to: 'cte', fromSide: 'right', toSide: 'left', route: 'elbow' });
       }
-      if (ROUND >= 4) L.push({ from: 'churn', to: 'orders', fromSide: 'left', toSide: 'right', route: 'around', toOffsetY: 4 });
-      if (ROUND >= 5) L.push({ from: 'stock', to: 'orders', fromSide: 'left', toSide: 'right', route: 'around', toOffsetY: -4 });
+      if (ROUND >= 4) L.push({ from: 'churn', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
+      if (ROUND >= 5) L.push({ from: 'stock', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
       if (ROUND >= 6) {
-        L.push({ from: 'cte', to: 'royalty', fromSide: 'right', toSide: 'left', route: 'around', toOffsetY: -4 });
-        L.push({ from: 'royalty', to: 'margin', fromSide: 'right', toSide: 'left', route: 'around', toOffsetY: -6 });
-        L.push({ from: 'royalty', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'around', toOffsetY: 16 });
+        L.push({ from: 'cte', to: 'royalty', fromSide: 'right', toSide: 'left', route: 'elbow' });
+        L.push({ from: 'royalty', to: 'margin', fromSide: 'right', toSide: 'left', route: 'elbow' });
+        L.push({ from: 'royalty', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'elbow' });
       }
       return L;
     }
     function pointOnRect(r, side, refPoint) {
       var cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
-      var pad = 4;
+      var pad = 5;
       if (side === 'topUnderStart' && refPoint) return { x: refPoint.x, y: r.top + pad };
       if (side === 'left') return { x: r.left + pad, y: cy };
       if (side === 'right') return { x: r.right - pad, y: cy };
       if (side === 'top') return { x: cx, y: r.top + pad };
       if (side === 'bottom') return { x: cx, y: r.bottom - pad };
       return { x: cx, y: cy };
+    }
+    /** Ортогональная связь L→R / R→L (углы 90°, как на org-chart) */
+    function pathElbowManhattan(p1, p2, stub) {
+      stub = stub || 18;
+      var x0 = p1.x, y0 = p1.y, x3 = p2.x, y3 = p2.y;
+      if (Math.abs(x3 - x0) < 8 && Math.abs(y3 - y0) < 8) return 'M' + x0 + ',' + y0 + ' L' + x3 + ',' + y3;
+      if (x3 >= x0) {
+        var x1 = Math.min(x0 + stub, x3 - stub / 2);
+        var x2 = Math.max(x1 + 14, x3 - stub);
+        if (x2 <= x1 + 4) { x1 = x0 + stub; x2 = x3 - stub; }
+        var xm = (x1 + x2) / 2;
+        return 'M' + x0 + ',' + y0 + ' L' + x1 + ',' + y0 + ' L' + xm + ',' + y0 + ' L' + xm + ',' + y3 + ' L' + x2 + ',' + y3 + ' L' + x3 + ',' + y3;
+      }
+      var xLeft = x0 - stub;
+      var xRight = x3 + stub;
+      var xmR = (xLeft + xRight) / 2;
+      return 'M' + x0 + ',' + y0 + ' L' + xLeft + ',' + y0 + ' L' + xmR + ',' + y0 + ' L' + xmR + ',' + y3 + ' L' + xRight + ',' + y3 + ' L' + x3 + ',' + y3;
+    }
+    function pathElbowVertical(p1, p2, stub) {
+      stub = stub || 12;
+      var ym = (p1.y + p2.y) / 2;
+      return 'M' + p1.x + ',' + p1.y + ' L' + p1.x + ',' + ym + ' L' + p2.x + ',' + ym + ' L' + p2.x + ',' + p2.y;
     }
     function drawArrows(diagId, arrowsGroupId, markerUrl, prefix) {
       var diag = document.getElementById(diagId);
@@ -342,36 +372,29 @@
         var fromEl = document.getElementById(prefix + link.from);
         var toEl = document.getElementById(prefix + link.to);
         if (!fromEl || !toEl) return;
+        if (fromEl.offsetParent === null || toEl.offsetParent === null) return;
         var fr = fromEl.getBoundingClientRect();
         var tr = toEl.getBoundingClientRect();
         var toRect = { left: tr.left - dr.left, right: tr.right - dr.left, top: tr.top - dr.top, bottom: tr.bottom - dr.top };
         var fromRect = { left: fr.left - dr.left, right: fr.right - dr.left, top: fr.top - dr.top, bottom: fr.bottom - dr.top };
         var p1 = pointOnRect(fromRect, link.fromSide);
-        var p2 = link.toSide === 'topUnderStart' ? pointOnRect(toRect, 'topUnderStart', p1) : pointOnRect(toRect, link.toSide);
-        if (link.toOffsetY) { p2 = { x: p2.x, y: p2.y + link.toOffsetY }; }
+        var p2 = pointOnRect(toRect, link.toSide);
+        if (link.toOffsetY) p2 = { x: p2.x, y: p2.y + link.toOffsetY };
         var d;
         if (link.route === 'ordersToDc') {
-          var down = 50;
+          var down = Math.max(36, Math.min(72, (toRect.top - fromRect.bottom) * 0.35 + 28));
           var midY = p1.y + down;
           var dcCx = (toRect.left + toRect.right) / 2;
-          var endY = p2.y;
-          d = 'M' + p1.x + ',' + p1.y + ' L' + p1.x + ',' + midY + ' L' + dcCx + ',' + midY + ' L' + dcCx + ',' + endY + ' L' + p2.x + ',' + p2.y;
-        } else if (link.route === 'around') {
-          var down = 55;
-          var w1x = p1.x + 18;
-          var w1y = p1.y + down;
-          var w2x = p2.x - 18;
-          var w2y = w1y;
-          d = 'M' + p1.x + ',' + p1.y + ' L' + (p1.x + 10) + ',' + p1.y + ' Q' + (p1.x + 10) + ',' + w1y + ' ' + w1x + ',' + w1y + ' L' + w2x + ',' + w2y + ' Q' + (p2.x - 10) + ',' + w2y + ' ' + (p2.x - 10) + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
+          var endY = Math.max(midY + 8, p2.y - 6);
+          d = 'M' + p1.x + ',' + p1.y + ' L' + p1.x + ',' + midY + ' L' + dcCx + ',' + midY + ' L' + dcCx + ',' + endY + ' L' + p2.x + ',' + endY + ' L' + p2.x + ',' + p2.y;
+        } else if (link.route === 'elbow-v') {
+          d = pathElbowVertical(p1, p2, 14);
         } else {
-          d = 'M' + p1.x + ',' + p1.y + ' L' + p2.x + ',' + p2.y;
+          d = pathElbowManhattan(p1, p2, 20);
         }
         var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('d', d);
-        path.setAttribute('stroke', '#6b7a99');
-        path.setAttribute('stroke-width', '1.6');
-        path.setAttribute('stroke-linecap', 'round');
-        path.setAttribute('stroke-linejoin', 'round');
+        path.setAttribute('class', 'link-path');
         path.setAttribute('fill', 'none');
         path.setAttribute('marker-end', markerUrl);
         g.appendChild(path);

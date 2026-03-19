@@ -157,12 +157,12 @@
         <option value="3">3</option>
         <option value="4">4</option>
         <option value="5">5</option>
-        <option value="6">6 (итог)</option>
+        <option value="6">6</option>
       </select>
     </div>
-    <p class="muted" style="font-size: 1.1rem;">Ось X — CTE в таргете (больше половины раундов). Ось Y — прирост маржи от исходных значений (DC после выбранного раунда − Исходный DC): выше медианы = молодцы.</p>
+    <p class="muted" style="font-size: 1.1rem;">Ось X — CTE в таргете в выбранном раунде. Ось Y — прирост маржи к <strong>исходному</strong> DC (DC после этого раунда − исходный). Сводная сумма за все этапы — на вкладке «Итоги по всем раундам».</p>
     <table class="results-table" id="resultsTable">
-      <thead><tr><th>Команда</th><th>Исх. DC</th><th>SH</th><th>Заказы</th><th>OPH</th><th>DC по раундам</th><th>Сумма DC (итог)</th><th>Прирост маржи</th><th>CTE в таргете</th><th>Квадрант</th></tr></thead>
+      <thead><tr><th>Команда</th><th>Исх. DC</th><th>DC за выбранный раунд</th><th>Прирост к исх.</th><th>SH</th><th>Заказы</th><th>OPH</th><th>CTE в таргете</th><th>Квадрант</th></tr></thead>
       <tbody id="resultsTableBody"></tbody>
     </table>
     <div class="quadrant-map">
@@ -549,17 +549,16 @@
         const fmt = (x) => x != null ? (typeof x === "number" && x > 1000 ? x.toLocaleString("ru") : x) : "—";
         results.forEach((t) => {
           const tr = document.createElement("tr");
-          const perRoundStr = (t.per_round || []).map((pr) => pr.dc != null ? pr.dc.toLocaleString("ru") : "—").join(" / ") || "—";
-          const totalStr = t.total_dc != null ? t.total_dc.toLocaleString("ru") : "—";
+          const prSel = (t.per_round || []).find((p) => p.round === round);
+          const dcRoundStr = prSel && prSel.dc != null ? prSel.dc.toLocaleString("ru") : "—";
           const growthStr = t.dc_growth != null ? (t.dc_growth >= 0 ? "+" : "") + t.dc_growth.toLocaleString("ru") : "—";
           const cteStr = t.rounds_played ? t.cte_ok_rounds + " из " + t.rounds_played : "—";
           const quadStr = t.quadrant ? quadrantNames[t.quadrant] || t.quadrant : "—";
           const initDc = fmt(t.initial_dc);
-          // SH, Заказы, OPH — по итогам выбранного раунда, не исходные
           const shVal = fmt(t.result_sh != null ? t.result_sh : t.initial_sh);
           const ordersVal = fmt(t.result_orders != null ? t.result_orders : t.initial_orders);
           const ophVal = fmt(t.result_oph != null ? t.result_oph : t.initial_oph);
-          tr.innerHTML = "<td>" + t.name + "</td><td>" + initDc + "</td><td>" + shVal + "</td><td>" + ordersVal + "</td><td>" + ophVal + "</td><td>" + perRoundStr + "</td><td>" + totalStr + "</td><td>" + growthStr + "</td><td>" + cteStr + "</td><td>" + quadStr + "</td>";
+          tr.innerHTML = "<td>" + t.name + "</td><td>" + initDc + "</td><td>" + dcRoundStr + "</td><td>" + growthStr + "</td><td>" + shVal + "</td><td>" + ordersVal + "</td><td>" + ophVal + "</td><td>" + cteStr + "</td><td>" + quadStr + "</td>";
           tbody.appendChild(tr);
         });
       } catch (_) {}

@@ -37,7 +37,6 @@
     .task-box p { margin: 0.45rem 0; font-size: 1.15rem; color: var(--text); }
     .task-box .coef-options { font-size: 1.5rem; font-weight: 700; color: var(--dark); margin: 0.55rem 0; letter-spacing: 0.02em; }
     .task-box .goal { color: var(--dark); font-size: 1.1rem; margin-top: 0.5rem; }
-    .complication { background: #ffffff; border-left: 4px solid var(--accent); padding: 0.7rem 1.15rem; margin: 0.5rem 0; border-radius: 0 10px 10px 0; font-weight: 500; color: var(--text); font-size: 1.05rem; }
     .next-step { background: #ffffff; border: 2px solid var(--accent); border-radius: 16px; padding: 1.35rem; margin-top: 1.25rem; }
     .next-step strong { color: var(--dark); font-size: 1.2rem; }
     .next-step p { margin: 0.45rem 0; font-size: 1.1rem; color: var(--text); }
@@ -59,8 +58,14 @@
       40% { background: #f5fbff; box-shadow: 0 0 0 8px rgba(77, 170, 248, 0.15); }
       100% { background: #fff; box-shadow: 0 0 0 0 rgba(77, 170, 248, 0); }
     }
-    .new-conditions-head { color: #1565c0 !important; font-weight: 700 !important; font-size: 1.15rem !important; }
-    #complicationsWrap .complication { border-left-width: 5px; border-left-color: #4DAAF8; background: #fafcff; }
+    .new-conditions-head { color: #0d47a1 !important; font-weight: 800 !important; font-size: 1.25rem !important; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 0.5rem !important; padding: 0.5rem 0.65rem; background: linear-gradient(90deg, #fff8e1, #e3f2fd); border-radius: 10px; border: 2px solid #ff9800; }
+    .new-round-banner { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem; margin: 0.75rem 0 1rem; padding: 0.65rem; background: linear-gradient(135deg, #fff3e0 0%, #e8f5e9 50%, #e3f2fd 100%); border: 3px dashed #ff6f00; border-radius: 14px; box-shadow: 0 4px 14px rgba(255, 111, 0, 0.2); }
+    .new-round-banner__img { max-height: 76px; width: auto; max-width: 32%; object-fit: contain; border-radius: 8px; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(35,57,103,0.15); }
+    .complication { background: #ffffff; border-left: 4px solid var(--accent); padding: 0.7rem 1.15rem; margin: 0.5rem 0; border-radius: 0 10px 10px 0; font-weight: 500; color: var(--text); font-size: 1.05rem; }
+    .complication.complication-repeat { opacity: 0.88; font-size: 0.98rem; border-left-color: #90a4ae; background: #f5f7fa; font-weight: 400; }
+    .complication.complication-new { border-left-width: 8px !important; border-left-color: #e65100 !important; background: linear-gradient(90deg, #fff8e1, #ffffff) !important; font-weight: 700 !important; font-size: 1.08rem !important; box-shadow: 0 2px 10px rgba(230, 81, 0, 0.18); color: #1a237e !important; }
+    .new-badge { display: inline-block; margin-right: 0.45rem; padding: 0.15rem 0.45rem; font-size: 0.72rem; font-weight: 800; vertical-align: middle; background: #ff6f00; color: #fff; border-radius: 6px; letter-spacing: 0.06em; }
+    .result-round-label { font-size: 1.05rem; margin-bottom: 0.65rem; padding: 0.45rem 0.6rem; background: #e8f5e9; border-left: 5px solid #2e7d32; border-radius: 0 8px 8px 0; color: var(--dark); }
   </style>
 </head>
 <body>
@@ -99,6 +104,7 @@
         <p class="round-title">Вводные</p>
         <ul id="introList"></ul>
         <div id="complicationsWrap">
+          <div id="newRoundVisualBanner" class="new-round-banner" aria-hidden="true"></div>
           <div id="complicationsList"></div>
         </div>
         <div class="task-box">
@@ -246,19 +252,32 @@
           ul.appendChild(li);
         });
       }
+      const banner = document.getElementById("newRoundVisualBanner");
+      if (banner) {
+        banner.innerHTML = "";
+        ["картинка 1.png", "картинка 2.png", "картинка 3.png"].forEach((name) => {
+          const img = document.createElement("img");
+          img.className = "new-round-banner__img";
+          img.src = "/derevya/img/" + encodeURIComponent(name);
+          img.alt = "";
+          banner.appendChild(img);
+        });
+      }
       const compList = document.getElementById("complicationsList");
       compList.innerHTML = "";
+      const prevIntro = (rNum > 1 && data && data.rounds_intro && data.rounds_intro[String(rNum - 1)]) ? data.rounds_intro[String(rNum - 1)] : [];
+      const prevLen = Array.isArray(prevIntro) ? prevIntro.length : 0;
       if (roundIntro.length > 0) {
         const head = document.createElement("p");
-        head.className = "round-title";
+        head.className = "round-title new-conditions-head";
         head.style.marginTop = "1rem";
         head.textContent = "Новые условия раунда " + r + ":";
-        head.className = "round-title new-conditions-head";
         compList.appendChild(head);
-        roundIntro.forEach((text) => {
+        roundIntro.forEach((text, idx) => {
           const div = document.createElement("div");
-          div.className = "complication";
-          div.innerHTML = text;
+          const isNew = idx >= prevLen;
+          div.className = "complication " + (isNew ? "complication-new" : "complication-repeat");
+          div.innerHTML = (isNew ? "<span class=\"new-badge\">НОВОЕ</span>" : "") + text;
           compList.appendChild(div);
         });
       }
@@ -296,7 +315,8 @@
       const oppLabel = state && state.opponent_choice != null ? (coefLabels[String(state.opponent_choice)] || state.opponent_choice) : null;
       const role = (state && state.role != null && state.role !== "") ? Number(state.role) : pairRoleFromStorage();
       const initial = (data && data.initial_metrics) ? data.initial_metrics["team" + role] : {};
-      let html = "";
+      const resRound = state && state.current_round != null ? state.current_round : "";
+      let html = "<p class=\"result-round-label\">Раунд <strong>" + resRound + "</strong> — ваш результат по метрикам (одинаковые цифры в разных раундах — это нормально, смотрите номер раунда).</p>";
       if (oppLabel) {
         html += "<p style=\"margin-bottom:0.75rem;\"><strong>Конкурент выбрал:</strong> " + oppLabel + "</p>";
       }
@@ -346,7 +366,7 @@
           const dc = r.result.DC != null && r.result.DC !== "+" && r.result.DC !== "-" ? (typeof r.result.DC === "number" ? r.result.DC.toLocaleString("ru") : r.result.DC) : "—";
           resStr = " CTE " + (r.result.CTE != null ? r.result.CTE : "—") + ", DC " + dc + (r.result.CTE_in_target ? ", в таргете" : "");
         }
-        html += "<div class=\"round-item\">Раунд " + r.round + ": вы " + myL + ", конкурент " + oppL + (resStr ? ". Результат: " + resStr : "") + "</div>";
+        html += "<div class=\"round-item\" data-history-round=\"" + r.round + "\">Раунд " + r.round + ": вы " + myL + ", конкурент " + oppL + (resStr ? ". Результат: " + resStr : "") + "</div>";
       });
       box.innerHTML = html;
       show(box);
@@ -391,6 +411,9 @@
           showNextStep(state.current_round, true);
         } else {
           hide(document.getElementById("nextStepBox"));
+          const rb = document.getElementById("resultBox");
+          rb.innerHTML = "";
+          hide(rb);
         }
         if (state.results_by_round && state.results_by_round.length) {
           renderRoundHistory(state.results_by_round);

@@ -5,6 +5,7 @@
 Участники: регистрация по имени команды, выбор коэффициента в каждом раунде.
 Экран: вводные, задания, результаты раундов, карта 4 квадрантов.
 """
+import copy
 import json
 import os
 import sys
@@ -245,9 +246,10 @@ def api_state():
             if c1 is not None and c2 is not None:
                 res = get_scenario_result(current_round, c1, c2)
                 if res:
-                    result = res["team1"] if t["role"] == 1 else res["team2"]
-                    if result and result.get("DC") in ("+", "-"):
-                        result = {**result, "DC": None}
+                    raw = res["team1"] if t["role"] == 1 else res["team2"]
+                    result = copy.deepcopy(raw)
+                    if result.get("DC") in ("+", "-"):
+                        result["DC"] = None
         # История раундов: что делали я и конкурент, результат по каждому
         results_by_round = []
         for r in range(1, current_round + 1):
@@ -263,9 +265,10 @@ def api_state():
                     if c1 is not None and c2 is not None:
                         sr = get_scenario_result(r, c1, c2)
                         if sr:
-                            res_r = sr["team1"] if t["role"] == 1 else sr["team2"]
-                            if res_r and res_r.get("DC") in ("+", "-"):
-                                res_r = {**res_r, "DC": None}
+                            raw_r = sr["team1"] if t["role"] == 1 else sr["team2"]
+                            res_r = copy.deepcopy(raw_r)
+                            if res_r.get("DC") in ("+", "-"):
+                                res_r["DC"] = None
             results_by_round.append({
                 "round": r,
                 "my_choice": my_c,
