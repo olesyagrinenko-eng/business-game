@@ -1,0 +1,64 @@
+:root { --bg: #fff; --card: #fff; --dark: #233967; --accent: #4DAAF8; --text: #233967; --muted: #6b7a99; --border: #233967; --green: #2e7d32; --yellow: #f9a825; --red: #c62828; }
+* { box-sizing: border-box; }
+body { font-family: 'YS Text', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; padding: 0.75rem clamp(0.75rem, 2vw, 2rem); -webkit-font-smoothing: antialiased; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+h1 { font-size: 1.35rem; margin: 0; color: var(--text); }
+.round-badge { background: var(--card); border: 4px solid var(--accent); border-radius: 16px; padding: 0.5rem 1.25rem; text-align: center; }
+.round-badge .num { font-size: 1.75rem; font-weight: 800; color: var(--dark); }
+.round-badge .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+.card { background: var(--card); border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border); }
+.inputs-row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.inputs-row label { font-weight: 600; color: var(--muted); font-size: 0.9rem; }
+.inputs-row select { padding: 0.45rem 0.65rem; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 0.95rem; min-width: 100px; }
+a.back { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+.imgs { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+.imgs img { width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent); }
+.imgs img.blob { border-radius: 40% 60% 70% 30% / 50% 50% 50% 50%; }
+
+.trees-wrapper { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem; max-width: 100%; width: 100%; }
+.one-tree { position: relative; width: 100%; max-width: 100%; }
+.one-tree h3 { margin: 0 0 0.5rem 0; font-size: 1.25rem; color: var(--dark); padding: 0.35rem 0; border-bottom: 2px solid var(--accent); }
+.diagram-outer { width: 100%; max-width: 100%; overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; border-radius: 12px; border: 1px solid rgba(35,57,103,0.12); background: linear-gradient(180deg, #f4f7fc 0%, #eef2f9 45%, #e8edf6 100%); }
+
+/* Компактные блоки + широкие коридоры между колонками (стрелки идут в зазорах, не через плашки) */
+.diagram { position: relative; display: grid; grid-template-columns: minmax(100px, 1fr) minmax(160px, 2.5fr) minmax(100px, 1.15fr) minmax(100px, 1.15fr); grid-template-rows: 1fr; align-items: stretch; gap: 12px 40px; padding: 20px 28px 28px; min-height: 320px; width: 100%; min-width: min(100%, 720px); }
+.diagram .plashka { position: relative; z-index: 2; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border: 1.5px solid var(--border); border-radius: 10px; padding: 7px 10px; font-size: 0.88rem; box-shadow: 0 1px 4px rgba(35,57,103,0.07); }
+.diagram .plashka .name { font-weight: 700; color: var(--dark); display: block; margin-bottom: 4px; font-size: 0.92rem; letter-spacing: 0.02em; }
+.diagram .plashka .row { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.diagram .plashka .row span { font-size: 0.82rem; }
+.diagram .plashka .week-prev { color: var(--muted); }
+.diagram .plashka .week-curr { font-weight: 600; }
+.diagram .plashka .pct { margin-left: 4px; font-size: 0.78rem; color: var(--muted); }
+.diagram .dot { width: 13px; height: 13px; border-radius: 50%; display: inline-block; margin-left: 4px; flex-shrink: 0; }
+.diagram .dot.green { background: var(--green); }
+.diagram .dot.yellow { background: var(--yellow); }
+.diagram .dot.red { background: var(--red); }
+.diagram .plashka.status-green { border-color: var(--green); background: rgba(46,125,50,0.08); }
+.diagram .plashka.status-yellow { border-color: var(--yellow); background: rgba(249,168,37,0.12); }
+.diagram .plashka.status-red { border-color: var(--red); background: rgba(198,40,40,0.08); }
+.diagram .mechanic-node { background: linear-gradient(180deg, rgba(77, 170, 248, 0.12) 0%, rgba(77, 170, 248, 0.05) 100%); border-style: dashed; border-color: rgba(35,57,103,0.4); }
+.diagram .mechanic-node .name { font-size: 0.88rem; }
+.diagram .mechanic-node .row[style*="font-size"] { font-size: 0.75rem !important; }
+.diagram .col-left { grid-column: 1; grid-row: 1; align-self: stretch; background: linear-gradient(180deg, rgba(77, 170, 248, 0.14) 0%, rgba(77, 170, 248, 0.06) 100%); }
+.diagram .mid-stack { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; gap: 10px; min-width: 0; position: relative; z-index: 2; }
+.diagram .block-cpo { grid-column: 3; grid-row: 1; align-self: center; }
+.diagram .right-stack { grid-column: 4; grid-row: 1; display: flex; flex-direction: column; gap: 12px; justify-content: center; align-self: stretch; position: relative; z-index: 2; }
+.diagram-svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 1; }
+.diagram-svg path.link-path { stroke: #5a6d8f; stroke-width: 2; fill: none; stroke-linecap: square; stroke-linejoin: miter; }
+.shared-top { margin-bottom: 1rem; padding: 0.85rem; background: rgba(77,170,248,0.06); border-radius: 12px; border: 1px dashed var(--accent); }
+.shared-top .tree-node { margin: 0; padding: 0.6rem 0.85rem; border-radius: 8px; border: 2px solid var(--border); font-size: 1.2rem; }
+.shared-top .tree-node .name { font-weight: 700; }
+.card--diagrams { max-width: 100%; width: 100%; }
+
+/* Хаб «Все раунды» (index.html) — те же токены и отступы, что на страницах раундов */
+.trees-hub h1 { margin-bottom: 0.65rem; }
+.trees-hub .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.85rem; }
+.trees-hub .nav-grid a { display: block; background: var(--card); border: 2px solid var(--border); border-radius: 16px; padding: 1rem 1.1rem; text-align: center; text-decoration: none; color: var(--text); font-weight: 600; transition: border-color 0.2s, background 0.2s; font-size: 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.trees-hub .nav-grid a:hover { border-color: var(--accent); background: rgba(77, 170, 248, 0.08); color: var(--dark); }
+.trees-hub .nav-grid .num { font-size: 1.65rem; font-weight: 800; color: var(--accent); display: block; margin-bottom: 0.2rem; }
+.trees-hub .lead { color: var(--muted); margin-bottom: 1.25rem; font-size: 0.92rem; max-width: 42em; line-height: 1.45; }
+.trees-hub .imgs { display: flex; gap: 0.5rem; margin: 0 0 1rem 0; flex-wrap: wrap; }
+.trees-hub .imgs img { width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent); }
+.trees-hub .imgs img.blob { border-radius: 40% 60% 70% 30% / 50% 50% 50% 50%; }
+.trees-hub .footer-link { margin-top: 1.5rem; font-size: 0.9rem; color: var(--muted); }
+.trees-hub .footer-link a { color: var(--accent); text-decoration: none; }

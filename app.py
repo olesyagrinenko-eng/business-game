@@ -136,6 +136,7 @@ def _format_intro_bold(items):
             continue
         s = s.replace("больше курьеров нет, мы можем", "больше курьеров <strong>в городе</strong> нет, мы можем")
         s = s.replace("В стране санкции, поэтому пользователи не могут", "В стране санкции, поэтому <strong>в этом раунде</strong> пользователи не могут")
+        s = s.replace("за выполнение CTE", "за <strong>выполнение CTE</strong>")
         s = s.replace("за выполнения CTE", "за <strong>выполнение CTE</strong>")
         out.append(s)
     return out
@@ -156,7 +157,7 @@ def _format_round_intro_bold(round_num, items):
 
 @app.route("/api/data")
 def api_data():
-    """Общие данные: вводные, коэффициенты, количество раундов, ожидаемое кол-во команд, исходные метрики."""
+    """Общие данные: вводные, коэффициенты, количество раундов, ожидаемое количество команд, исходные метрики."""
     intro_by_round_raw = DATA.get("common_intro_by_round") or {}
     intro_by_round = {r: _format_intro_bold(lst) for r, lst in intro_by_round_raw.items()}
     rounds_intro_raw = DATA.get("rounds_intro") or {}
@@ -181,7 +182,7 @@ def api_data():
 
 @app.route("/api/settings", methods=["GET", "POST"])
 def api_settings():
-    """Получить или задать настройки (ожидаемое кол-во команд)."""
+    """Получить или задать настройки (ожидаемое количество команд)."""
     global expected_teams
     if request.method == "POST":
         body = request.get_json() or {}

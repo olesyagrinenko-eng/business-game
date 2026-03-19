@@ -8,57 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Дерево метрик — Раунд 2</title>
   <link rel="stylesheet" href="https://yastatic.net/s3/home/fonts/ys/4/text.css" crossorigin="anonymous">
-  <style>
-    :root { --bg: #fff; --card: #fff; --dark: #233967; --accent: #4DAAF8; --text: #233967; --muted: #6b7a99; --border: #233967; --green: #2e7d32; --yellow: #f9a825; --red: #c62828; }
-    * { box-sizing: border-box; }
-    body { font-family: 'YS Text', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; padding: 1rem; -webkit-font-smoothing: antialiased; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
-    h1 { font-size: 1.35rem; margin: 0; color: var(--text); }
-    .round-badge { background: var(--card); border: 4px solid var(--accent); border-radius: 16px; padding: 0.5rem 1.25rem; text-align: center; }
-    .round-badge .num { font-size: 1.75rem; font-weight: 800; color: var(--dark); }
-    .round-badge .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
-    .card { background: var(--card); border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border); }
-    .inputs-row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
-    .inputs-row label { font-weight: 600; color: var(--muted); font-size: 0.9rem; }
-    .inputs-row select { padding: 0.45rem 0.65rem; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 0.95rem; min-width: 100px; }
-    a.back { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
-    .imgs { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
-    .imgs img { width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent); }
-    .imgs img.blob { border-radius: 40% 60% 70% 30% / 50% 50% 50% 50%; }
-
-    .trees-wrapper { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem; max-width: 100%; }
-    .one-tree { position: relative; width: 100%; }
-    .one-tree h3 { margin: 0 0 0.5rem 0; font-size: 1.4rem; color: var(--dark); padding: 0.35rem 0; border-bottom: 2px solid var(--accent); }
-    .diagram-outer { width: 100%; overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; border-radius: 14px; border: 1px solid rgba(35,57,103,0.12); background: linear-gradient(180deg, #f4f7fc 0%, #eef2f9 45%, #e8edf6 100%); }
-
-    /* Блок-схема: шире зазоры = «коридоры» для ортогональных стрелок (как на org-chart) */
-    .diagram { position: relative; display: grid; grid-template-columns: minmax(112px, 1fr) minmax(200px, 2.2fr) minmax(118px, 1.05fr) minmax(118px, 1.05fr); grid-template-rows: 1fr; align-items: stretch; gap: 22px 32px; padding: 28px 32px 32px; min-height: 380px; width: 100%; min-width: 820px; }
-    .diagram .plashka { position: relative; z-index: 2; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border: 2px solid var(--border); border-radius: 14px; padding: 14px 16px; font-size: 1.05rem; box-shadow: 0 2px 8px rgba(35,57,103,0.08), 0 1px 0 rgba(255,255,255,0.9) inset; }
-    .diagram .plashka .name { font-weight: 700; color: var(--dark); display: block; margin-bottom: 8px; font-size: 1.15rem; letter-spacing: 0.02em; }
-    .diagram .plashka .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .diagram .plashka .row span { font-size: 1.02rem; }
-    .diagram .plashka .week-prev { color: var(--muted); }
-    .diagram .plashka .week-curr { font-weight: 600; }
-    .diagram .plashka .pct { margin-left: 8px; font-size: 1.05rem; color: var(--muted); }
-    .diagram .dot { width: 18px; height: 18px; border-radius: 50%; display: inline-block; margin-left: 6px; flex-shrink: 0; }
-    .diagram .dot.green { background: var(--green); }
-    .diagram .dot.yellow { background: var(--yellow); }
-    .diagram .dot.red { background: var(--red); }
-    .diagram .plashka.status-green { border-color: var(--green); background: rgba(46,125,50,0.08); }
-    .diagram .plashka.status-yellow { border-color: var(--yellow); background: rgba(249,168,37,0.12); }
-    .diagram .plashka.status-red { border-color: var(--red); background: rgba(198,40,40,0.08); }
-    .diagram .mechanic-node { background: linear-gradient(180deg, rgba(77, 170, 248, 0.12) 0%, rgba(77, 170, 248, 0.05) 100%); border-style: dashed; border-color: rgba(35,57,103,0.45); }
-    .diagram .mechanic-node .name { font-size: 1.05rem; }
-    .diagram .col-left { grid-column: 1; grid-row: 1; align-self: stretch; background: linear-gradient(180deg, rgba(77, 170, 248, 0.14) 0%, rgba(77, 170, 248, 0.06) 100%); }
-    .diagram .mid-stack { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; gap: 18px; min-width: 0; position: relative; z-index: 2; }
-    .diagram .block-cpo { grid-column: 3; grid-row: 1; align-self: center; }
-    .diagram .right-stack { grid-column: 4; grid-row: 1; display: flex; flex-direction: column; gap: 20px; justify-content: center; align-self: stretch; position: relative; z-index: 2; }
-    .diagram-svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 1; }
-    .diagram-svg path.link-path { stroke: #5a6d8f; stroke-width: 2; fill: none; stroke-linecap: square; stroke-linejoin: miter; }
-    .shared-top { margin-bottom: 1rem; padding: 0.85rem; background: rgba(77,170,248,0.06); border-radius: 12px; border: 1px dashed var(--accent); }
-    .shared-top .tree-node { margin: 0; padding: 0.6rem 0.85rem; border-radius: 8px; border: 2px solid var(--border); font-size: 1.2rem; }
-    .shared-top .tree-node .name { font-weight: 700; }
-  </style>
+  <link rel="stylesheet" href="trees.css">
 </head>
 <body>
   <div class="header">
@@ -72,7 +22,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card card--diagrams">
     <div class="imgs">
       <img src="img/картинка 1.png" alt="" class="blob">
       <img src="img/картинка 2.png" alt="" class="blob">
@@ -113,7 +63,7 @@
             <div class="plashka" id="p1_sh"><span class="name">SH</span><div class="row"><span class="week-prev">Прошлая: <b id="t1SH_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1SH_curr">—</b></span><span class="dot" id="t1SH_dot"></span><span class="pct" id="t1SH_pct"></span></div></div>
             <div class="plashka" id="p1_cte"><span class="name">CTE</span><div class="row"><span class="week-prev">Прошлая: <b id="t1CTE_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1CTE_curr">—</b></span><span class="dot" id="t1CTE_dot"></span><span class="pct" id="t1CTE_pct"></span></div></div>
             <div class="plashka mechanic-node" id="p1_surge" data-from-round="2" style="display:none"><span class="name">Сурж (Surge)</span><div class="row"><span class="week-prev">Прошлая: <b id="t1Surge_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1Surge_curr">—</b></span><span class="dot yellow" id="t1Surge_dot" style="margin-left:6px;"></span></div><div class="row" style="font-size:0.95rem;color:var(--muted);margin-top:4px;">Режет заказы, растит чек → влияет на AOV</div></div>
-            <div class="plashka mechanic-node" id="p1_delivery" data-from-round="3" style="display:none"><span class="name">Сервис вывоза заказов</span><div class="row"><span class="week-prev">Прошлая: <b id="t1Delivery_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1Delivery_curr">—</b></span><span class="dot yellow" id="t1Delivery_dot"></span></div><div class="row" style="font-size:0.95rem;color:var(--muted);margin-top:4px;">Вывоз при неоптимальном CTE, макс. 500 заказов</div></div>
+            <div class="plashka mechanic-node" id="p1_delivery" data-from-round="3" style="display:none"><span class="name">Сервис вывоза заказов</span><div class="row"><span class="week-prev">Прошлая: <b id="t1Delivery_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1Delivery_curr">—</b></span><span class="dot yellow" id="t1Delivery_dot"></span></div><div class="row" style="font-size:0.95rem;color:var(--muted);margin-top:4px;">Вывоз при неоптимальном CTE, максимум 500 заказов</div></div>
             <div class="plashka mechanic-node" id="p1_churn" data-from-round="4" style="display:none"><span class="name">Переток пользователей</span><div class="row"><span class="week-prev">Прошлая: <b id="t1Churn_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1Churn_curr">—</b></span><span class="dot yellow" id="t1Churn_dot"></span></div><div class="row" style="font-size:0.95rem;color:var(--muted);margin-top:4px;">Санкции сняты — заказы в приложении конкурента</div></div>
             <div class="plashka mechanic-node" id="p1_stock" data-from-round="5" style="display:none"><span class="name">Склад и списания</span><div class="row"><span class="week-prev">Прошлая: <b id="t1Stock_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1Stock_curr">—</b></span><span class="dot yellow" id="t1Stock_dot"></span></div><div class="row" style="font-size:0.95rem;color:var(--muted);margin-top:4px;">Сток под прогноз, скоропорт</div></div>
             <div class="plashka mechanic-node" id="p1_royalty" data-from-round="6" style="display:none"><span class="name">Динамические роялти</span><div class="row"><span class="week-prev">Прошлая: <b id="t1Royalty_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t1Royalty_curr">—</b></span><span class="dot yellow" id="t1Royalty_dot"></span></div><div class="row" style="font-size:0.95rem;color:var(--muted);margin-top:4px;">Зависят от качества сервиса (CTE)</div></div>
@@ -141,7 +91,7 @@
             <div class="plashka" id="p2_sh"><span class="name">SH</span><div class="row"><span class="week-prev">Прошлая: <b id="t2SH_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2SH_curr">—</b></span><span class="dot" id="t2SH_dot"></span><span class="pct" id="t2SH_pct"></span></div></div>
             <div class="plashka" id="p2_cte"><span class="name">CTE</span><div class="row"><span class="week-prev">Прошлая: <b id="t2CTE_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2CTE_curr">—</b></span><span class="dot" id="t2CTE_dot"></span><span class="pct" id="t2CTE_pct"></span></div></div>
             <div class="plashka mechanic-node" id="p2_surge" data-from-round="2" style="display:none"><span class="name">Сурж (Surge)</span><div class="row"><span class="week-prev">Прошлая: <b id="t2Surge_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2Surge_curr">—</b></span><span class="dot yellow" id="t2Surge_dot"></span></div><div class="row" style="font-size:0.95rem;color:var(--muted);margin-top:4px;">Режет заказы, растит чек → влияет на AOV</div></div>
-            <div class="plashka mechanic-node" id="p2_delivery" data-from-round="3" style="display:none"><span class="name">Сервис вывоза заказов</span><div class="row"><span class="week-prev">Прошлая: <b id="t2Delivery_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2Delivery_curr">—</b></span><span class="dot yellow" id="t2Delivery_dot"></span></div><div class="row" style="font-size:0.95rem;color:var(--muted);margin-top:4px;">Вывоз при неоптимальном CTE, макс. 500 заказов</div></div>
+            <div class="plashka mechanic-node" id="p2_delivery" data-from-round="3" style="display:none"><span class="name">Сервис вывоза заказов</span><div class="row"><span class="week-prev">Прошлая: <b id="t2Delivery_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2Delivery_curr">—</b></span><span class="dot yellow" id="t2Delivery_dot"></span></div><div class="row" style="font-size:0.95rem;color:var(--muted);margin-top:4px;">Вывоз при неоптимальном CTE, максимум 500 заказов</div></div>
             <div class="plashka mechanic-node" id="p2_churn" data-from-round="4" style="display:none"><span class="name">Переток пользователей</span><div class="row"><span class="week-prev">Прошлая: <b id="t2Churn_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2Churn_curr">—</b></span><span class="dot yellow" id="t2Churn_dot"></span></div><div class="row" style="font-size:0.95rem;color:var(--muted);margin-top:4px;">Санкции сняты — заказы в приложении конкурента</div></div>
             <div class="plashka mechanic-node" id="p2_stock" data-from-round="5" style="display:none"><span class="name">Склад и списания</span><div class="row"><span class="week-prev">Прошлая: <b id="t2Stock_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2Stock_curr">—</b></span><span class="dot yellow" id="t2Stock_dot"></span></div><div class="row" style="font-size:0.95rem;color:var(--muted);margin-top:4px;">Сток под прогноз, скоропорт</div></div>
             <div class="plashka mechanic-node" id="p2_royalty" data-from-round="6" style="display:none"><span class="name">Динамические роялти</span><div class="row"><span class="week-prev">Прошлая: <b id="t2Royalty_prev">—</b></span></div><div class="row"><span class="week-curr">Текущая: <b id="t2Royalty_curr">—</b></span><span class="dot yellow" id="t2Royalty_dot"></span></div><div class="row" style="font-size:0.95rem;color:var(--muted);margin-top:4px;">Зависят от качества сервиса (CTE)</div></div>
@@ -161,254 +111,15 @@
 
   <script>
     const ROUND = 2;
-    const ROUND_INTRO = "На след.неделе прогнозируют проливные дожди и рост спроса. Вы с конкурентом одновременно изобрели механизм суржа, который обрезает заказы, но растит чек.";
+    const ROUND_INTRO = "На следующей неделе прогнозируют проливные дожди и рост спроса. Вы с конкурентом одновременно изобрели механизм суржа, который обрезает заказы, но растит чек.";
     const AOV = 1155;
     const INITIAL = {
       team1: { orders: 1050, SH: 300, OPH: 3.5, CTE: 17, avg_check: 1100, margin: 0.33, DCPO: 253, DC: 265650, CPO: 110 },
       team2: { orders: 1110, SH: 300, OPH: 3.7, CTE: 15, avg_check: 1050, margin: 0.33, DCPO: 249.5, DC: 276945, CPO: 97 }
     };
     const SCENARIOS = {"0.4_-0.1": {"team1": {"SH": 540, "orders": 1260, "OPH": 2.33, "CTE": 11.33, "CPO": 156.86, "DCPO": 206.14, "DC": 259740, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 60, "orders": 300, "OPH": 5, "CTE": 20.27, "CPO": 93.29, "DCPO": 407.06, "DC": 122118.09, "CTE_in_target": false, "place_DC": null}}, "0.4_0": {"team1": {"SH": 492, "orders": 1260, "OPH": 2.56, "CTE": 12.44, "CPO": 153.05, "DCPO": 209.95, "DC": 264540, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 108, "orders": 540, "OPH": 5, "CTE": 20.27, "CPO": 101.43, "DCPO": 330.54, "DC": 178492.37, "CTE_in_target": false, "place_DC": null}}, "0.2_-0.1": {"team1": {"SH": 444, "orders": 1260, "OPH": 2.84, "CTE": 13.78, "CPO": 132.95, "DCPO": 230.05, "DC": 289860, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 156, "orders": 780, "OPH": 5, "CTE": 20.27, "CPO": 93.29, "DCPO": 312.39, "DC": 243660.94, "CTE_in_target": false, "place_DC": null}}, "0.4_0.2": {"team1": {"SH": 396, "orders": 1260, "OPH": 3.18, "CTE": 15.45, "CPO": 145.43, "DCPO": 217.57, "DC": 274140, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 204, "orders": 932.4, "OPH": 4.57, "CTE": 18.53, "CPO": 119.59, "DCPO": 276.41, "DC": 257721.6, "CTE_in_target": false, "place_DC": null}}, "0.2_0": {"team1": {"SH": 396, "orders": 1260, "OPH": 3.18, "CTE": 15.45, "CPO": 129.14, "DCPO": 233.86, "DC": 294660, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 204, "orders": 932.4, "OPH": 4.57, "CTE": 18.53, "CPO": 103.31, "DCPO": 292.69, "DC": 272906.4, "CTE_in_target": false, "place_DC": null}}, "0_-0.1": {"team1": {"SH": 348, "orders": 1134, "OPH": 3.26, "CTE": 15.83, "CPO": 112.12, "DCPO": 291.22, "DC": 330240, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 252, "orders": 1021.2, "OPH": 4.05, "CTE": 16.43, "CPO": 97.96, "DCPO": 293.73, "DC": 299960.23, "CTE_in_target": false, "place_DC": null}}, "-0.1_-0.1": {"team1": {"SH": 300, "orders": 1050, "OPH": 3.5, "CTE": 17, "CPO": 101.86, "DCPO": 304.7, "DC": 319938, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 300, "orders": 1110, "OPH": 3.7, "CTE": 15, "CPO": 100.31, "DCPO": 287.77, "DC": 319421.66, "CTE_in_target": true, "place_DC": null}}, "0_0": {"team1": {"SH": 300, "orders": 1050, "OPH": 3.5, "CTE": 17, "CPO": 110, "DCPO": 296.56, "DC": 311388, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 300, "orders": 1110, "OPH": 3.7, "CTE": 15, "CPO": 108.46, "DCPO": 279.62, "DC": 310383.09, "CTE_in_target": true, "place_DC": null}}, "0.2_0.2": {"team1": {"SH": 300, "orders": 1050, "OPH": 3.5, "CTE": 17, "CPO": 126.29, "DCPO": 280.27, "DC": 294288, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 300, "orders": 1110, "OPH": 3.7, "CTE": 15, "CPO": 124.74, "DCPO": 263.34, "DC": 292305.94, "CTE_in_target": true, "place_DC": null}}, "0.4_0.4": {"team1": {"SH": 300, "orders": 1050, "OPH": 3.5, "CTE": 17, "CPO": 142.57, "DCPO": 263.99, "DC": 277188, "CTE_in_target": true, "place_DC": null}, "team2": {"SH": 300, "orders": 1110, "OPH": 3.7, "CTE": 15, "CPO": 141.03, "DCPO": 247.05, "DC": 274228.8, "CTE_in_target": true, "place_DC": null}}, "-0.1_0": {"team1": {"SH": 252, "orders": 966, "OPH": 3.83, "CTE": 18.62, "CPO": 99.37, "DCPO": 310.98, "DC": 300402, "CTE_in_target": false, "place_DC": null}, "team2": {"SH": 348, "orders": 1198.8, "OPH": 3.44, "CTE": 13.97, "CPO": 110.46, "DCPO": 274.54, "DC": 329121.43, "CTE_in_target": true, "place_DC": null}}, "0_0.2": {"team1": {"SH": 204, "orders": 882, "OPH": 4.32, "CTE": 21, "CPO": 104.56, "DCPO": 310.3, "DC": 273684, "CTE_in_target": false, "place_DC": null}, "team2": {"SH": 396, "orders": 1332, "OPH": 3.36, "CTE": 13.64, "CPO": 127.44, "DCPO": 219.06, "DC": 291782.57, "CTE_in_target": true, "place_DC": null}}, "0.2_0.4": {"team1": {"SH": 204, "orders": 882, "OPH": 4.32, "CTE": 21, "CPO": 120.84, "DCPO": 294.01, "DC": 259320, "CTE_in_target": false, "place_DC": null}, "team2": {"SH": 396, "orders": 1332, "OPH": 3.36, "CTE": 13.64, "CPO": 143.73, "DCPO": 202.77, "DC": 270090, "CTE_in_target": true, "place_DC": null}}, "-0.1_0.2": {"team1": {"SH": 156, "orders": 780, "OPH": 5, "CTE": 24.29, "CPO": 93.29, "DCPO": 328.35, "DC": 256115.14, "CTE_in_target": false, "place_DC": null}, "team2": {"SH": 444, "orders": 1332, "OPH": 3, "CTE": 12.16, "CPO": 131.05, "DCPO": 215.45, "DC": 286982.57, "CTE_in_target": true, "place_DC": null}}, "0_0.4": {"team1": {"SH": 108, "orders": 540, "OPH": 5, "CTE": 24.29, "CPO": 101.43, "DCPO": 346.27, "DC": 186986.57, "CTE_in_target": false, "place_DC": null}, "team2": {"SH": 492, "orders": 1332, "OPH": 2.71, "CTE": 10.98, "CPO": 150.94, "DCPO": 195.56, "DC": 260490, "CTE_in_target": true, "place_DC": null}}, "-0.1_0.4": {"team1": {"SH": 60, "orders": 300, "OPH": 5, "CTE": 24.29, "CPO": 93.29, "DCPO": 422.17, "DC": 126652.29, "CTE_in_target": false, "place_DC": null}, "team2": {"SH": 540, "orders": 1332, "OPH": 2.47, "CTE": 10, "CPO": 154.54, "DCPO": 191.96, "DC": 255690, "CTE_in_target": true, "place_DC": null}}};
-
-    document.getElementById('roundNum').textContent = ROUND;
-    document.getElementById('roundIntro').textContent = ROUND_INTRO;
-
-    function fmt(x) {
-      if (x == null) return '—';
-      if (typeof x === 'number' && x === Math.round(x)) return String(Math.round(x));
-      return typeof x === 'number' ? x.toLocaleString('ru', {maximumFractionDigits: 2}) : String(x);
-    }
-    function placeStatus(place) {
-      if (place == null) return '';
-      if (place <= 4) return 'status-green';
-      if (place <= 8) return 'status-yellow';
-      return 'status-red';
-    }
-    function cteStatus(ok) {
-      return ok ? 'status-green' : 'status-red';
-    }
-    function computeSH(c1, c2) {
-      var sh1 = Math.max(0, 300 + 600 * c1);
-      var sh2 = Math.max(0, 300 - 600 * c1);
-      return { sh1: Math.round(sh1 * 10) / 10, sh2: Math.round(sh2 * 10) / 10 };
-    }
-    function pctChange(prev, curr) {
-      if (prev == null || prev === 0 || curr == null) return null;
-      return Math.round(((curr - prev) / prev) * 100);
-    }
-    function pctStr(pct) {
-      if (pct == null) return '—';
-      return (pct > 0 ? '+' : '') + pct + '%';
-    }
-    function set(id, value) {
-      var el = document.getElementById(id);
-      if (el) el.textContent = value;
-    }
-    function setDot(id, status) {
-      var el = document.getElementById(id);
-      if (!el) return;
-      el.className = 'dot ' + (status || '');
-    }
-    function setPlashka(id, status) {
-      var el = document.getElementById(id);
-      if (!el) return;
-      el.classList.remove('status-green', 'status-yellow', 'status-red');
-      var s = (status || '').replace('status-', '');
-      if (s === 'green' || s === 'yellow' || s === 'red') el.classList.add('status-' + s);
-    }
-    function metricStatus(improved) {
-      if (improved === true) return 'green';
-      if (improved === false) return 'red';
-      return 'yellow';
-    }
-    function fillTeam(team, prev, curr, shCurr) {
-      var prefix = team === 1 ? 't1' : 't2';
-      var ordersCurr = (curr && curr.orders != null) ? curr.orders : (curr && curr.DCPO ? curr.DC / curr.DCPO : null);
-      if (curr && curr.SH != null) shCurr = curr.SH;
-      var ophCurr = (curr && curr.OPH != null) ? curr.OPH : (shCurr > 0 && ordersCurr != null ? ordersCurr / shCurr : null);
-      var aovCurr = (curr && curr.avg_check != null) ? curr.avg_check : (typeof AOV === 'number' ? AOV : prev.avg_check);
-      var ordPrev = prev.orders, shPrev = prev.SH;
-      var ordPct = pctChange(ordPrev, ordersCurr); var ordOk = ordPct == null ? null : (ordPct > 0 ? true : ordPct < 0 ? false : null);
-      var shPct = pctChange(shPrev, shCurr); var shOk = shPct == null ? null : (shPct > 0 ? true : shPct < 0 ? false : null);
-      var ophPct = pctChange(prev.OPH, ophCurr); var ophOk = ophPct == null ? null : (ophPct > 0 ? true : ophPct < 0 ? false : null);
-      var ctePct = curr ? pctChange(prev.CTE, curr.CTE) : null; var cteOk = curr ? curr.CTE_in_target : null;
-      var aovPct = pctChange(prev.avg_check, aovCurr); var aovOk = aovPct == null ? null : (aovPct === 0 ? null : aovPct > 0 ? true : false);
-      var marginPct = 0; var marginOk = null;
-      var cpoPct = curr ? pctChange(prev.CPO, curr.CPO) : null; var cpoOk = cpoPct == null ? null : (cpoPct < 0 ? true : cpoPct > 0 ? false : null);
-      var dcpoPct = curr ? pctChange(prev.DCPO, curr.DCPO) : null; var dcpoOk = dcpoPct == null ? null : (dcpoPct > 0 ? true : dcpoPct < 0 ? false : null);
-      var dcPct = curr ? pctChange(prev.DC, curr.DC) : null; var dcOk = dcPct == null ? null : (dcPct > 0 ? true : dcPct < 0 ? false : null);
-      set(prefix + 'SH_prev', fmt(prev.SH)); set(prefix + 'SH_curr', fmt(shCurr)); setDot(prefix + 'SH_dot', metricStatus(shOk)); set(prefix + 'SH_pct', pctStr(shPct)); setPlashka('p' + team + '_sh', 'status-' + metricStatus(shOk));
-      set(prefix + 'Orders_prev', fmt(prev.orders)); set(prefix + 'Orders_curr', ordersCurr != null ? fmt(Math.round(ordersCurr)) : '—'); setDot(prefix + 'Orders_dot', metricStatus(ordOk)); set(prefix + 'Orders_pct', pctStr(ordPct)); setPlashka('p' + team + '_orders', 'status-' + metricStatus(ordOk));
-      set(prefix + 'OPH_prev', fmt(prev.OPH)); set(prefix + 'OPH_curr', ophCurr != null ? Number(ophCurr).toFixed(1) : '—'); setDot(prefix + 'OPH_dot', metricStatus(ophOk)); set(prefix + 'OPH_pct', pctStr(ophPct)); setPlashka('p' + team + '_oph', 'status-' + metricStatus(ophOk));
-      set(prefix + 'CTE_prev', prev.CTE != null ? Number(prev.CTE).toFixed(1) : '—'); set(prefix + 'CTE_curr', curr ? Number(curr.CTE).toFixed(1) : '—'); setDot(prefix + 'CTE_dot', metricStatus(cteOk)); set(prefix + 'CTE_pct', pctStr(ctePct)); setPlashka('p' + team + '_cte', 'status-' + metricStatus(cteOk));
-      set(prefix + 'AOV_prev', fmt(prev.avg_check)); set(prefix + 'AOV_curr', fmt(aovCurr)); setDot(prefix + 'AOV_dot', metricStatus(aovOk)); set(prefix + 'AOV_pct', pctStr(aovPct)); setPlashka('p' + team + '_aov', 'status-' + metricStatus(aovOk));
-      set(prefix + 'Margin_prev', prev.margin != null ? (prev.margin * 100).toFixed(0) + '%' : '—'); set(prefix + 'Margin_curr', prev.margin != null ? (prev.margin * 100).toFixed(1) + '%' : '—'); setDot(prefix + 'Margin_dot', 'yellow'); set(prefix + 'Margin_pct', '0%'); setPlashka('p' + team + '_margin', 'status-yellow');
-      set(prefix + 'DCPO_prev', String(Math.round(prev.DCPO))); set(prefix + 'DCPO_curr', curr ? String(Math.round(curr.DCPO)) : '—'); setDot(prefix + 'DCPO_dot', metricStatus(dcpoOk)); set(prefix + 'DCPO_pct', pctStr(dcpoPct)); setPlashka('p' + team + '_dcpo', 'status-' + metricStatus(dcpoOk));
-      set(prefix + 'DC_prev', fmt(prev.DC)); set(prefix + 'DC_curr', curr ? fmt(curr.DC) : '—'); setDot(prefix + 'DC_dot', metricStatus(dcOk)); set(prefix + 'DC_pct', pctStr(dcPct)); setPlashka('p' + team + '_dc', 'status-' + metricStatus(dcOk));
-      set(prefix + 'CPO_prev', fmt(prev.CPO)); set(prefix + 'CPO_curr', curr ? String(Math.round(curr.CPO)) : '—'); setDot(prefix + 'CPO_dot', metricStatus(cpoOk)); set(prefix + 'CPO_pct', pctStr(cpoPct)); setPlashka('p' + team + '_cpo', 'status-' + metricStatus(cpoOk));
-    }
-    function scenarioKey(c1, c2) {
-      return (c1 === 0 ? '0.0' : String(c1)) + '_' + (c2 === 0 ? '0.0' : String(c2));
-    }
-    function update() {
-      var c1 = parseFloat(document.getElementById('coef1').value);
-      var c2 = parseFloat(document.getElementById('coef2').value);
-      var key = scenarioKey(c1, c2);
-      var sc = SCENARIOS[key] || SCENARIOS[String(c1) + '_' + String(c2)];
-      var coefLabels = { '-0.1': '-10%', '0': '0%', '0.2': '+20%', '0.4': '+40%' };
-      document.getElementById('vCoef1').textContent = coefLabels[String(c1)] || c1;
-      document.getElementById('vCoef2').textContent = coefLabels[String(c2)] || c2;
-      var diff = c2 - c1;
-      document.getElementById('vDiff').textContent = (diff > 0 ? '+' : '') + diff.toFixed(1);
-      var sh = computeSH(c1, c2);
-      var prev1 = INITIAL.team1, prev2 = INITIAL.team2;
-      fillTeam(1, prev1, sc ? sc.team1 : null, sh.sh1);
-      fillTeam(2, prev2, sc ? sc.team2 : null, sh.sh2);
-      fillMechanics(1);
-      fillMechanics(2);
-      requestAnimationFrame(function() { requestAnimationFrame(redrawAllArrows); });
-    }
-    /** Плашки механик по раундам (как доп. вводные в СВОД: р2 сурж, р3 вывоз, р4 переток, р5 склад, р6 роялти) */
-    function fillMechanics(teamNum) {
-      var prefix = teamNum === 1 ? 't1' : 't2';
-      var pid = teamNum === 1 ? 'p1' : 'p2';
-      function vis(id, on) {
-        var el = document.getElementById(id);
-        if (el) el.style.display = on ? '' : 'none';
-      }
-      vis(pid + '_surge', ROUND >= 2);
-      vis(pid + '_delivery', ROUND >= 3);
-      vis(pid + '_churn', ROUND >= 4);
-      vis(pid + '_stock', ROUND >= 5);
-      vis(pid + '_royalty', ROUND >= 6);
-      if (ROUND >= 2) {
-        set(prefix + 'Surge_prev', ROUND === 2 ? 'нет' : 'да');
-        set(prefix + 'Surge_curr', 'да');
-      }
-      if (ROUND >= 3) {
-        set(prefix + 'Delivery_prev', ROUND === 3 ? 'нет' : 'да');
-        set(prefix + 'Delivery_curr', 'да');
-      }
-      if (ROUND >= 4) {
-        set(prefix + 'Churn_prev', ROUND === 4 ? 'нет' : 'да');
-        set(prefix + 'Churn_curr', 'да');
-      }
-      if (ROUND >= 5) {
-        set(prefix + 'Stock_prev', ROUND === 5 ? 'нет' : 'да');
-        set(prefix + 'Stock_curr', 'да');
-      }
-      if (ROUND >= 6) {
-        set(prefix + 'Royalty_prev', 'нет');
-        set(prefix + 'Royalty_curr', 'да');
-      }
-    }
-    function getArrowLinks() {
-      var L = [
-        { from: 'orders', to: 'oph', fromSide: 'right', toSide: 'left', route: 'elbow' },
-        { from: 'orders', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'ordersToDc', toOffsetY: -12 },
-        { from: 'aov', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'elbow' },
-        { from: 'oph', to: 'cpo', fromSide: 'right', toSide: 'left', route: 'elbow' },
-        { from: 'cpo', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'elbow' },
-        { from: 'margin', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'elbow' },
-        { from: 'dcpo', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'elbow-v', toOffsetY: 8 }
-      ];
-      if (ROUND >= 2) {
-        L.push({ from: 'surge', to: 'aov', fromSide: 'right', toSide: 'left', route: 'elbow' });
-        L.push({ from: 'surge', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
-      }
-      if (ROUND >= 3) {
-        L.push({ from: 'delivery', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
-        L.push({ from: 'delivery', to: 'cte', fromSide: 'right', toSide: 'left', route: 'elbow' });
-      }
-      if (ROUND >= 4) L.push({ from: 'churn', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
-      if (ROUND >= 5) L.push({ from: 'stock', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
-      if (ROUND >= 6) {
-        L.push({ from: 'cte', to: 'royalty', fromSide: 'right', toSide: 'left', route: 'elbow' });
-        L.push({ from: 'royalty', to: 'margin', fromSide: 'right', toSide: 'left', route: 'elbow' });
-        L.push({ from: 'royalty', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'elbow' });
-      }
-      return L;
-    }
-    function pointOnRect(r, side, refPoint) {
-      var cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
-      var pad = 5;
-      if (side === 'topUnderStart' && refPoint) return { x: refPoint.x, y: r.top + pad };
-      if (side === 'left') return { x: r.left + pad, y: cy };
-      if (side === 'right') return { x: r.right - pad, y: cy };
-      if (side === 'top') return { x: cx, y: r.top + pad };
-      if (side === 'bottom') return { x: cx, y: r.bottom - pad };
-      return { x: cx, y: cy };
-    }
-    /** Ортогональная связь L→R / R→L (углы 90°, как на org-chart) */
-    function pathElbowManhattan(p1, p2, stub) {
-      stub = stub || 18;
-      var x0 = p1.x, y0 = p1.y, x3 = p2.x, y3 = p2.y;
-      if (Math.abs(x3 - x0) < 8 && Math.abs(y3 - y0) < 8) return 'M' + x0 + ',' + y0 + ' L' + x3 + ',' + y3;
-      if (x3 >= x0) {
-        var x1 = Math.min(x0 + stub, x3 - stub / 2);
-        var x2 = Math.max(x1 + 14, x3 - stub);
-        if (x2 <= x1 + 4) { x1 = x0 + stub; x2 = x3 - stub; }
-        var xm = (x1 + x2) / 2;
-        return 'M' + x0 + ',' + y0 + ' L' + x1 + ',' + y0 + ' L' + xm + ',' + y0 + ' L' + xm + ',' + y3 + ' L' + x2 + ',' + y3 + ' L' + x3 + ',' + y3;
-      }
-      var xLeft = x0 - stub;
-      var xRight = x3 + stub;
-      var xmR = (xLeft + xRight) / 2;
-      return 'M' + x0 + ',' + y0 + ' L' + xLeft + ',' + y0 + ' L' + xmR + ',' + y0 + ' L' + xmR + ',' + y3 + ' L' + xRight + ',' + y3 + ' L' + x3 + ',' + y3;
-    }
-    function pathElbowVertical(p1, p2, stub) {
-      stub = stub || 12;
-      var ym = (p1.y + p2.y) / 2;
-      return 'M' + p1.x + ',' + p1.y + ' L' + p1.x + ',' + ym + ' L' + p2.x + ',' + ym + ' L' + p2.x + ',' + p2.y;
-    }
-    function drawArrows(diagId, arrowsGroupId, markerUrl, prefix) {
-      var diag = document.getElementById(diagId);
-      var g = document.getElementById(arrowsGroupId);
-      var svg = g && g.parentNode;
-      if (!diag || !g || !svg) return;
-      var dr = diag.getBoundingClientRect();
-      svg.setAttribute('viewBox', '0 0 ' + dr.width + ' ' + dr.height);
-      g.innerHTML = '';
-      getArrowLinks().forEach(function(link, idx) {
-        var fromEl = document.getElementById(prefix + link.from);
-        var toEl = document.getElementById(prefix + link.to);
-        if (!fromEl || !toEl) return;
-        if (fromEl.offsetParent === null || toEl.offsetParent === null) return;
-        var fr = fromEl.getBoundingClientRect();
-        var tr = toEl.getBoundingClientRect();
-        var toRect = { left: tr.left - dr.left, right: tr.right - dr.left, top: tr.top - dr.top, bottom: tr.bottom - dr.top };
-        var fromRect = { left: fr.left - dr.left, right: fr.right - dr.left, top: fr.top - dr.top, bottom: fr.bottom - dr.top };
-        var p1 = pointOnRect(fromRect, link.fromSide);
-        var p2 = pointOnRect(toRect, link.toSide);
-        if (link.toOffsetY) p2 = { x: p2.x, y: p2.y + link.toOffsetY };
-        var d;
-        if (link.route === 'ordersToDc') {
-          var down = Math.max(36, Math.min(72, (toRect.top - fromRect.bottom) * 0.35 + 28));
-          var midY = p1.y + down;
-          var dcCx = (toRect.left + toRect.right) / 2;
-          var endY = Math.max(midY + 8, p2.y - 6);
-          d = 'M' + p1.x + ',' + p1.y + ' L' + p1.x + ',' + midY + ' L' + dcCx + ',' + midY + ' L' + dcCx + ',' + endY + ' L' + p2.x + ',' + endY + ' L' + p2.x + ',' + p2.y;
-        } else if (link.route === 'elbow-v') {
-          d = pathElbowVertical(p1, p2, 14);
-        } else {
-          d = pathElbowManhattan(p1, p2, 20);
-        }
-        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', d);
-        path.setAttribute('class', 'link-path');
-        path.setAttribute('fill', 'none');
-        path.setAttribute('marker-end', markerUrl);
-        g.appendChild(path);
-      });
-    }
-    function redrawAllArrows() {
-      drawArrows('diag1', 'arrows1', 'url(#arr1)', 'p1_');
-      drawArrows('diag2', 'arrows2', 'url(#arr2)', 'p2_');
-    }
-    document.getElementById('coef1').addEventListener('change', update);
-    document.getElementById('coef2').addEventListener('change', update);
-    update();
-    setTimeout(redrawAllArrows, 0);
-    window.addEventListener('resize', redrawAllArrows);
+    Object.assign(window, { ROUND, ROUND_INTRO, AOV, INITIAL, SCENARIOS });
   </script>
+  <script src="trees.js"></script>
 </body>
 </html>
