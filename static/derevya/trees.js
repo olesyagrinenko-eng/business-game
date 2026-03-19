@@ -52,6 +52,23 @@
     if (!isFinite(n)) return '—';
     return Math.round(n) + '%';
   }
+  /** Сурж: число из JSON = уже проценты (0, 15, 100); строки нет/да — устаревший формат */
+  function fmtSurgePct(x) {
+    if (x == null) return '—';
+    if (typeof x === 'string') {
+      if (x === 'нет') return '0%';
+      if (x === 'да') return '—';
+      var ps = parseFloat(String(x).replace(',', '.'));
+      if (isFinite(ps)) return fmtSurgePct(ps);
+      return x;
+    }
+    var n = Number(x);
+    if (!isFinite(n)) return '—';
+    if (n === 0) return '0%';
+    if (n > 0 && n < 1) return pctPlain(Math.round(n * 100));
+    if (n >= 1 && n <= 100) return pctPlain(Math.round(n));
+    return fmt(n) + '%';
+  }
   /** Доля фоллбэка из Excel: 0–1 как доля, иначе как проценты (5 → 5%) */
   function fmtFallbackShare(x) {
     if (x == null || typeof x !== 'number' || !isFinite(x)) return '—';
@@ -144,7 +161,7 @@
     applyDiagramMinHeight();
     requestAnimationFrame(function () { requestAnimationFrame(redrawAllArrows); });
   }
-  /** Плашки механик по раундам (как доп. вводные в СВОД: р2 сурж, р3 вывоз, р4 переток, р5 склад, р6 роялти) */
+  /** Плашки механик: сурж из слотов сценария (%). «Вывоз» не на листе «Деревья» — в диаграмме не показываем. */
   function fillMechanics(teamNum, sc) {
     var prefix = teamNum === 1 ? 't1' : 't2';
     var pid = teamNum === 1 ? 'p1' : 'p2';
@@ -175,19 +192,15 @@
       return;
     }
     vis(pid + '_surge', ROUND >= 2);
-    vis(pid + '_delivery', ROUND >= 3);
+    vis(pid + '_delivery', false);
     vis(pid + '_churn', ROUND >= 4);
     vis(pid + '_stock', ROUND >= 5);
     vis(pid + '_royalty', false);
     if (ROUND >= 2) {
-      var sp = teamData && teamData.surge_prev != null ? String(teamData.surge_prev) : (ROUND === 2 ? 'нет' : 'да');
-      var scurr = teamData && teamData.surge_curr != null ? String(teamData.surge_curr) : 'да';
+      var sp = teamData && teamData.surge_prev != null ? fmtSurgePct(teamData.surge_prev) : (ROUND === 2 ? '0%' : fmtSurgePct(100));
+      var scurr = teamData && teamData.surge_curr != null ? fmtSurgePct(teamData.surge_curr) : fmtSurgePct(100);
       set(prefix + 'Surge_prev', sp);
       set(prefix + 'Surge_curr', scurr);
-    }
-    if (ROUND >= 3) {
-      set(prefix + 'Delivery_prev', ROUND === 3 ? 'нет' : 'да');
-      set(prefix + 'Delivery_curr', 'да');
     }
     if (ROUND >= 4) {
       set(prefix + 'Churn_prev', ROUND === 4 ? 'нет' : 'да');
@@ -212,10 +225,6 @@
       /* toSide: top — у mid-колонки общий левый край; вход слева давал вертикаль через весь столбец (CTE, AOV…) */
       L.push({ from: 'surge', to: 'aov', fromSide: 'right', toSide: 'top', route: 'elbow' });
       L.push({ from: 'surge', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
-    }
-    if (ROUND >= 3) {
-      L.push({ from: 'delivery', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
-      L.push({ from: 'delivery', to: 'cte', fromSide: 'right', toSide: 'top', route: 'elbow' });
     }
     if (ROUND >= 4) L.push({ from: 'churn', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
     if (ROUND >= 5) L.push({ from: 'stock', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });

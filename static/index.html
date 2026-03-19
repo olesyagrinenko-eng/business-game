@@ -321,7 +321,7 @@
       return null;
     }
 
-    /** Дозаполнить SH / заказы / OPH, если в сценарии null (как в СВОД для этапов 4–6). */
+    /** Дозаполнить SH / заказы / OPH, если в сценарии null: заказы ≈ DC/DCPO по строке сценария (DC суммарная маржа, DCPO на заказ). */
     function enrichResultShOrdersOph(res, initial) {
       const out = res && typeof res === "object" ? { ...res } : res;
       if (!out || !initial) return out;
@@ -329,13 +329,14 @@
       let sh = out.SH != null ? coerceMetricNum(out.SH) : coerceMetricNum(initial.SH);
       let orders = out.orders;
       if (orders == null) {
-        const io = coerceMetricNum(initial.orders);
-        let iniDc = coerceMetricNum(initial.DC);
-        if (iniDc == null) iniDc = coerceMetricNum(initial.DCPO);
         const curDc = coerceMetricNum(out.DC);
-        if (io != null && iniDc != null && iniDc !== 0 && curDc != null)
-          orders = Math.max(0, Math.round((io * curDc) / iniDc));
-        else if (io != null) orders = io;
+        const curDcpo = coerceMetricNum(out.DCPO);
+        if (curDc != null && curDcpo != null && Math.abs(curDcpo) > 1e-12)
+          orders = Math.round(curDc / curDcpo);
+        else {
+          const io = coerceMetricNum(initial.orders);
+          if (io != null) orders = io;
+        }
       } else {
         orders = coerceMetricNum(orders);
       }

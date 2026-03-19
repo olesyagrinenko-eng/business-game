@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Сборка scenarios.json из svod_full.txt (без Excel)."""
+"""Сборка scenarios.json из svod_full.txt (без Excel).
+
+Важно: основная матрица сценариев соответствует листу **СВОД** (как в export_scenarios.py).
+Лист Excel **«Деревья»** этим скриптом не читается — только если вы вручную переносите значения
+в кортежи svod_full.txt. Узлы «сурж» в веб-дереве берут слоты 26–29 кортежа как **долю суржа в %**.
+"""
 import json
 import os
 import re
@@ -134,16 +139,20 @@ def main():
             def opt(i):
                 return rv(parts[i]) if len(parts) > i and parts[i] is not None else None
 
-            def surge_txt(v):
-                """Слоты 26–29 в СВОД: 0/1 → нет/да (сурж и т.п.)."""
+            def surge_pct(v):
+                """Сурж в процентах для дерева (слоты 26–29). 0 = 0%; 1 (устар. флаг) = 100%;
+                0<d<1 — доля (0,15 → 15%); ≥2 — уже проценты (5 → 5%)."""
                 if v is None:
                     return None
-                if isinstance(v, (int, float)):
-                    if v == 0:
-                        return "нет"
-                    if v == 1:
-                        return "да"
-                return str(v)
+                if not isinstance(v, (int, float)):
+                    return None
+                if v == 0:
+                    return 0
+                if v == 1:
+                    return 100
+                if 0 < v < 1:
+                    return round(float(v) * 100, 2)
+                return rv(v)
 
             team1 = {
                 "CTE": rv(parts[4]),
@@ -168,8 +177,8 @@ def main():
                 "SH": opt(23),
                 "orders": opt(24),
                 "OPH": opt(25),
-                "surge_prev": surge_txt(opt(28)),
-                "surge_curr": surge_txt(opt(29)),
+                "surge_prev": surge_pct(opt(28)),
+                "surge_curr": surge_pct(opt(29)),
             }
             # Раунд 6, лист «Деревья» колонка P: доля фоллбэка / общий CPO (на строке сценария или с P138/P140)
             if r == 6:

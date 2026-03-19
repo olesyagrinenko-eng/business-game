@@ -39,6 +39,15 @@ try:
         for _k, _v in _r5.items():
             if _k not in _r6:
                 _r6[_k] = copy.deepcopy(_v)
+    # В файле часто нет исходного DC — это суммарная маржа (заказы × DCPO), не путать с DCPO «на заказ»
+    _im0 = DATA.get("initial_metrics") or {}
+    for _tk in ("team1", "team2"):
+        _s0 = _im0.get(_tk)
+        if isinstance(_s0, dict) and _s0.get("DC") is None:
+            try:
+                _s0["DC"] = round(float(_s0["orders"]) * float(_s0["DCPO"]), 2)
+            except (TypeError, ValueError, KeyError):
+                pass
 except FileNotFoundError:
     print("ERROR: data/scenarios.json not found at", DATA_PATH, file=sys.stderr)
     DATA = {"common_intro_by_round": {str(r): [] for r in range(1, 7)}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
@@ -142,8 +151,9 @@ def _coerce_metric_number(x):
 def _enrich_side_sh_orders_oph(side, role):
     """
     В СВОД (txt→JSON) часто нет SH / заказов / OPH в строках сценария (все None).
-    Тогда оцениваем заказы пропорционально DC сценария к исходному DC/DCPO, SH берём из исходных
-    метрик роли, OPH = заказы/SH. Уже заданные в сценарии значения не перезаписываем.
+    Связь в модели: DC (суммарная маржа) ≈ заказы × DCPO → при отсутствии заказов в строке:
+    заказы ≈ DC / DCPO по этой же строке сценария. SH — из исходных метрик роли, OPH = заказы/SH.
+    Уже заданные в сценарии значения не перезаписываем.
     """
     if not isinstance(side, dict):
         return
@@ -156,20 +166,16 @@ def _enrich_side_sh_orders_oph(side, role):
     sh = _coerce_metric_number(sh) if sh is not None else None
     orders = side.get("orders")
     if orders is None:
-        io = _coerce_metric_number(im.get("orders"))
-        ini_dc = _coerce_metric_number(im.get("DC"))
-        if ini_dc is None:
-            ini_dc = _coerce_metric_number(im.get("DCPO"))
         cur_dc = _coerce_metric_number(side.get("DC"))
+        cur_dcpo = _coerce_metric_number(side.get("DCPO"))
         if (
-            io is not None
-            and ini_dc is not None
-            and ini_dc != 0
-            and cur_dc is not None
+            cur_dc is not None
+            and cur_dcpo is not None
+            and abs(cur_dcpo) > 1e-12
         ):
-            orders = max(0, round(io * cur_dc / ini_dc))
-        elif io is not None:
-            orders = io
+            orders = round(cur_dc / cur_dcpo)
+        else:
+            orders = _coerce_metric_number(im.get("orders"))
     else:
         orders = _coerce_metric_number(orders)
     oph = side.get("OPH")
@@ -504,7 +510,13 @@ def api_results():
     results = []
     for t in teams:
         im = initial_metrics.get("team" + str(t["role"]), {})
-        initial_dc = im.get("DC") if im.get("DC") is not None else im.get("DCPO")
+        # Исходный DC — суммарная маржа; не подставлять DCPO (маржа на заказ) — другая размерность
+        initial_dc = im.get("DC")
+        if initial_dc is None and isinstance(im, dict):
+            try:
+                initial_dc = round(float(im["orders"]) * float(im["DCPO"]), 2)
+            except (TypeError, ValueError, KeyError):
+                initial_dc = None
         per_round = []
         total_dc = 0
         cte_ok_count = 0
