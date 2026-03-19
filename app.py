@@ -148,12 +148,18 @@ def _coerce_metric_number(x):
     return None
 
 
+# При отсутствии SH в сценарии: часы растут слабее, чем заказы (иначе OPH = const при SH=const).
+_SH_SCALE_EXPONENT = 0.5
+# DC/DCPO даёт одинаковые заказы во многих сценариях одного раунда — тогда SH ещё подстраиваем по CPO сценария.
+_CPO_SH_EXPONENT = 0.35
+
+
 def _enrich_side_sh_orders_oph(side, role):
     """
     В СВОД (txt→JSON) часто нет SH / заказов / OPH в строках сценария (все None).
-    Связь в модели: DC (суммарная маржа) ≈ заказы × DCPO → при отсутствии заказов в строке:
-    заказы ≈ DC / DCPO по этой же строке сценария. SH — из исходных метрик роли, OPH = заказы/SH.
-    Уже заданные в сценарии значения не перезаписываем.
+    Заказы ≈ DC / DCPO по строке сценария (суммарная маржа / маржа на заказ).
+    Если SH в сценарии нет: база SH ≈ исходный_SH × (заказы/исх._заказы)^0.5, затем × (CPO_сценария/CPO_исх.)^0.35 —
+    иначе при одинаковом DC/DCPO во всех ячейках раунда заказы и OPH не менялись бы. Уже заданные поля не перезаписываем.
     """
     if not isinstance(side, dict):
         return
@@ -162,35 +168,57 @@ def _enrich_side_sh_orders_oph(side, role):
     im = (DATA.get("initial_metrics") or {}).get("team%d" % int(role), {})
     if not im:
         return
-    sh = side["SH"] if side.get("SH") is not None else im.get("SH")
-    sh = _coerce_metric_number(sh) if sh is not None else None
+
     orders = side.get("orders")
     if orders is None:
         cur_dc = _coerce_metric_number(side.get("DC"))
         cur_dcpo = _coerce_metric_number(side.get("DCPO"))
-        if (
-            cur_dc is not None
-            and cur_dcpo is not None
-            and abs(cur_dcpo) > 1e-12
-        ):
+        if cur_dc is not None and cur_dcpo is not None and abs(cur_dcpo) > 1e-12:
             orders = round(cur_dc / cur_dcpo)
         else:
             orders = _coerce_metric_number(im.get("orders"))
     else:
         orders = _coerce_metric_number(orders)
+
+    sh_in = side.get("SH")
+    if sh_in is not None:
+        sh = _coerce_metric_number(sh_in)
+    else:
+        io = _coerce_metric_number(im.get("orders"))
+        ish = _coerce_metric_number(im.get("SH"))
+        sh = None
+        if ish is not None and io is not None and float(io) > 0 and orders is not None:
+            o_num = float(orders)
+            if o_num > 0:
+                ratio = o_num / float(io)
+                sh = max(1.0, round(ish * (ratio**_SH_SCALE_EXPONENT)))
+            elif o_num == 0:
+                sh = ish
+        if sh is None:
+            sh = ish
+        if sh is not None:
+            cpo_sc = _coerce_metric_number(side.get("CPO"))
+            cpo_im = _coerce_metric_number(im.get("CPO"))
+            if (
+                cpo_sc is not None
+                and cpo_im is not None
+                and cpo_im > 0
+                and cpo_sc > 0
+            ):
+                sh = max(1.0, round(float(sh) * ((cpo_sc / cpo_im) ** _CPO_SH_EXPONENT)))
+
     oph = side.get("OPH")
     if oph is None:
         if sh is not None and sh != 0 and orders is not None:
             try:
                 oph = round(float(orders) / float(sh), 2)
             except (ValueError, ZeroDivisionError):
-                oph = im.get("OPH")
-                oph = _coerce_metric_number(oph) if oph is not None else None
+                oph = _coerce_metric_number(im.get("OPH"))
         else:
-            oph = im.get("OPH")
-            oph = _coerce_metric_number(oph) if oph is not None else None
+            oph = _coerce_metric_number(im.get("OPH"))
     else:
         oph = _coerce_metric_number(oph)
+
     if side.get("SH") is None and sh is not None:
         side["SH"] = sh
     if side.get("orders") is None and orders is not None:

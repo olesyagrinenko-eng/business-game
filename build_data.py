@@ -164,8 +164,8 @@ def main():
                 "SH": opt(10),
                 "orders": opt(11),
                 "OPH": opt(12),
-                "surge_prev": surge_txt(opt(26)),
-                "surge_curr": surge_txt(opt(27)),
+                "surge_prev": surge_pct(opt(26)),
+                "surge_curr": surge_pct(opt(27)),
             }
             team2 = {
                 "CTE": rv(parts[17]),

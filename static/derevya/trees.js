@@ -66,7 +66,10 @@
     if (!isFinite(n)) return '—';
     if (n === 0) return '0%';
     if (n > 0 && n < 1) return pctPlain(Math.round(n * 100));
-    if (n >= 1 && n <= 100) return pctPlain(Math.round(n));
+    if (n >= 1 && n <= 100) {
+      if (Math.abs(n - Math.round(n)) < 1e-6) return pctPlain(Math.round(n));
+      return n.toLocaleString('ru', { maximumFractionDigits: 1, minimumFractionDigits: 0 }) + '%';
+    }
     return fmt(n) + '%';
   }
   /** Доля фоллбэка из Excel: 0–1 как доля, иначе как проценты (5 → 5%) */
@@ -197,8 +200,8 @@
     vis(pid + '_stock', ROUND >= 5);
     vis(pid + '_royalty', false);
     if (ROUND >= 2) {
-      var sp = teamData && teamData.surge_prev != null ? fmtSurgePct(teamData.surge_prev) : (ROUND === 2 ? '0%' : fmtSurgePct(100));
-      var scurr = teamData && teamData.surge_curr != null ? fmtSurgePct(teamData.surge_curr) : fmtSurgePct(100);
+      var sp = teamData && teamData.surge_prev != null ? fmtSurgePct(teamData.surge_prev) : (ROUND === 2 ? '0%' : '—');
+      var scurr = teamData && teamData.surge_curr != null ? fmtSurgePct(teamData.surge_curr) : '—';
       set(prefix + 'Surge_prev', sp);
       set(prefix + 'Surge_curr', scurr);
     }

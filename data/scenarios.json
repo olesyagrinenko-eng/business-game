@@ -92,8 +92,7 @@
       "orders": 1050.0,
       "avg_check": 1100.0,
       "margin": 0.33,
-      "DCPO": 253.0,
-      "DC": 265650.0
+      "DCPO": 253.0
     },
     "team2": {
       "MPH": 358.9,
@@ -105,8 +104,7 @@
       "orders": 1110.0,
       "avg_check": 1050.0,
       "margin": 0.33,
-      "DCPO": 249.5,
-      "DC": 276945.0
+      "DCPO": 249.5
     }
   },
   "scenarios": {
@@ -122,8 +120,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 90,
@@ -135,8 +133,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.0": {
@@ -150,8 +148,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 50.0,
@@ -163,8 +161,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_-0.1": {
@@ -178,8 +176,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 34.62,
@@ -191,8 +189,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.2": {
@@ -206,8 +204,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 26.47,
@@ -219,8 +217,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.0": {
@@ -234,8 +232,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 26.47,
@@ -247,8 +245,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_-0.1": {
@@ -262,8 +260,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 21.43,
@@ -275,8 +273,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_-0.1": {
@@ -290,8 +288,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 18,
@@ -303,8 +301,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.0": {
@@ -318,8 +316,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 18,
@@ -331,8 +329,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.2": {
@@ -346,8 +344,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 18,
@@ -359,8 +357,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.4": {
@@ -374,8 +372,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 18,
@@ -387,8 +385,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.0": {
@@ -402,8 +400,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15.52,
@@ -415,8 +413,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.2": {
@@ -430,8 +428,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 13.64,
@@ -443,8 +441,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.4": {
@@ -458,8 +456,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 13.64,
@@ -471,8 +469,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.2": {
@@ -486,8 +484,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 12.16,
@@ -499,8 +497,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.4": {
@@ -514,8 +512,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 10.98,
@@ -527,8 +525,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.4": {
@@ -542,8 +540,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 10,
@@ -555,8 +553,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       }
     },
@@ -572,8 +570,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 20.27,
@@ -585,8 +583,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.0": {
@@ -600,8 +598,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 20.27,
@@ -613,8 +611,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_-0.1": {
@@ -628,8 +626,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 20.27,
@@ -641,8 +639,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.2": {
@@ -656,8 +654,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 18.53,
@@ -669,8 +667,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.0": {
@@ -684,8 +682,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 18.53,
@@ -697,8 +695,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_-0.1": {
@@ -712,8 +710,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 16.43,
@@ -725,8 +723,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_-0.1": {
@@ -740,8 +738,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -753,8 +751,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.0": {
@@ -768,8 +766,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -781,8 +779,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.2": {
@@ -796,8 +794,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -809,8 +807,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.4": {
@@ -824,8 +822,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -837,8 +835,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.0": {
@@ -852,8 +850,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 13.97,
@@ -865,8 +863,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.2": {
@@ -880,8 +878,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 13.64,
@@ -893,8 +891,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.4": {
@@ -908,8 +906,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 13.64,
@@ -921,8 +919,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.2": {
@@ -936,8 +934,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 12.16,
@@ -949,8 +947,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.4": {
@@ -964,8 +962,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 10.98,
@@ -977,8 +975,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.4": {
@@ -992,8 +990,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 10,
@@ -1005,8 +1003,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       }
     },
@@ -1022,8 +1020,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 20.27,
@@ -1035,8 +1033,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.0": {
@@ -1050,8 +1048,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 20.27,
@@ -1063,8 +1061,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_-0.1": {
@@ -1078,8 +1076,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 19.59,
@@ -1091,8 +1089,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.2": {
@@ -1106,8 +1104,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 18.53,
@@ -1119,8 +1117,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.0": {
@@ -1134,8 +1132,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 17.9,
@@ -1147,8 +1145,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_-0.1": {
@@ -1162,8 +1160,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 16.1,
@@ -1175,8 +1173,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_-0.1": {
@@ -1190,8 +1188,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -1203,8 +1201,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.0": {
@@ -1218,8 +1216,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -1231,8 +1229,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.2": {
@@ -1246,8 +1244,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -1259,8 +1257,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.4": {
@@ -1274,8 +1272,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -1287,8 +1285,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.0": {
@@ -1302,8 +1300,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 13.97,
@@ -1315,8 +1313,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.2": {
@@ -1330,8 +1328,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 13.64,
@@ -1343,8 +1341,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.4": {
@@ -1358,8 +1356,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 13.64,
@@ -1371,8 +1369,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.2": {
@@ -1386,8 +1384,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 12.16,
@@ -1399,8 +1397,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.4": {
@@ -1414,8 +1412,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 10.98,
@@ -1427,8 +1425,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.4": {
@@ -1442,8 +1440,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 10,
@@ -1455,8 +1453,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       }
     },
@@ -1472,8 +1470,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 20.27,
@@ -1485,8 +1483,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.0": {
@@ -1500,8 +1498,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 20.27,
@@ -1513,8 +1511,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_-0.1": {
@@ -1528,8 +1526,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 20.0,
@@ -1541,8 +1539,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.2": {
@@ -1556,8 +1554,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 18.53,
@@ -1569,8 +1567,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.0": {
@@ -1584,8 +1582,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 18.34,
@@ -1597,8 +1595,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_-0.1": {
@@ -1612,8 +1610,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 16.35,
@@ -1625,8 +1623,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_-0.1": {
@@ -1640,8 +1638,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -1653,8 +1651,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.0": {
@@ -1668,8 +1666,8 @@
           "SH": 540,
           "orders": 1890,
           "OPH": 3.5,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -1681,8 +1679,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.2": {
@@ -1696,8 +1694,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -1709,8 +1707,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.4": {
@@ -1724,8 +1722,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -1737,8 +1735,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.0": {
@@ -1752,8 +1750,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15.0,
@@ -1765,8 +1763,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.2": {
@@ -1780,8 +1778,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -1793,8 +1791,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.4": {
@@ -1808,8 +1806,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -1821,8 +1819,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.2": {
@@ -1836,8 +1834,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15.0,
@@ -1849,8 +1847,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.4": {
@@ -1864,8 +1862,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -1877,8 +1875,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.4": {
@@ -1892,8 +1890,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -1905,8 +1903,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       }
     },
@@ -1922,8 +1920,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 20.27,
@@ -1935,8 +1933,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.0": {
@@ -1950,8 +1948,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 20.27,
@@ -1963,8 +1961,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_-0.1": {
@@ -1978,8 +1976,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 20.17,
@@ -1991,8 +1989,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.2": {
@@ -2006,8 +2004,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 18.53,
@@ -2019,8 +2017,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.0": {
@@ -2034,8 +2032,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 18.47,
@@ -2047,8 +2045,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_-0.1": {
@@ -2062,8 +2060,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 16.41,
@@ -2075,8 +2073,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_-0.1": {
@@ -2090,8 +2088,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -2103,8 +2101,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.0": {
@@ -2118,8 +2116,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -2131,8 +2129,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.2": {
@@ -2146,8 +2144,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -2159,8 +2157,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.4_0.4": {
@@ -2174,8 +2172,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -2187,8 +2185,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.0": {
@@ -2202,8 +2200,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15.0,
@@ -2215,8 +2213,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.2": {
@@ -2230,8 +2228,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -2243,8 +2241,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.2_0.4": {
@@ -2258,8 +2256,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15,
@@ -2271,8 +2269,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.2": {
@@ -2286,8 +2284,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 15.0,
@@ -2299,8 +2297,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "0.0_0.4": {
@@ -2314,8 +2312,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 13.72,
@@ -2327,8 +2325,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       },
       "-0.1_0.4": {
@@ -2342,8 +2340,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         },
         "team2": {
           "CTE": 12.5,
@@ -2355,8 +2353,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да"
+          "surge_prev": 0,
+          "surge_curr": 100
         }
       }
     },
@@ -2372,8 +2370,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2387,8 +2385,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2404,8 +2402,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2419,8 +2417,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2436,8 +2434,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2451,8 +2449,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2468,8 +2466,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2483,8 +2481,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2500,8 +2498,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2515,8 +2513,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2532,8 +2530,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2547,8 +2545,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2564,8 +2562,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2579,8 +2577,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2596,8 +2594,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2611,8 +2609,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2628,8 +2626,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2643,8 +2641,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2660,8 +2658,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2675,8 +2673,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2692,8 +2690,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2707,8 +2705,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2724,8 +2722,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2739,8 +2737,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2756,8 +2754,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2771,8 +2769,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2788,8 +2786,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2803,8 +2801,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
@@ -2820,8 +2818,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         },
@@ -2835,8 +2833,8 @@
           "SH": null,
           "orders": null,
           "OPH": null,
-          "surge_prev": "нет",
-          "surge_curr": "да",
+          "surge_prev": 0,
+          "surge_curr": 100,
           "fallback_share": null,
           "cpo_total": null
         }
