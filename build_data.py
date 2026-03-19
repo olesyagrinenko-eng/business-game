@@ -173,7 +173,7 @@ def main():
                 "DC": rv(parts[7]),
                 "CTE_in_target": parts[8] == "+",
                 "place_DC": int(parts[9]) if parts[9] is not None else None,
-                "avg_check": opt(13),
+                "avg_check": opt(36),
                 "SH": opt(10),
                 "orders": opt(11),
                 "OPH": opt(12),
@@ -204,13 +204,6 @@ def main():
             if r >= 5:
                 team1["writeoffs"] = opt(34)
                 team2["writeoffs"] = opt(35)
-            # Точечная правка по листу «Деревья»: раунд 4, сценарий +20%/+20%.
-            # В Excel для этого кейса сурж текущей недели = 17%, AOV = 1232.
-            if r == 4 and key == "0.2_0.2":
-                team1["surge_curr"] = 17
-                team2["surge_curr"] = 17
-                team1["avg_check"] = 1232
-                team2["avg_check"] = 1232
             scenarios[str(r)][key] = {"team1": team1, "team2": team2}
 
     # Общие вводные зависят от раунда: часть пунктов убирается (по правилам из СВОД).
