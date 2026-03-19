@@ -216,6 +216,25 @@
       <thead id="allRoundsTableHead"></thead>
       <tbody id="allRoundsTableBody"></tbody>
     </table>
+    <h3 style="margin-top:1.75rem;">Карта квадрантов (по тем же данным)</h3>
+    <div class="quadrant-map">
+      <div class="quadrant top_left">
+        <h3>Рост маржи, CTE вне таргета</h3>
+        <ul id="qlAll"></ul>
+      </div>
+      <div class="quadrant top_right">
+        <h3>Рост маржи, CTE в таргете</h3>
+        <ul id="qrAll"></ul>
+      </div>
+      <div class="quadrant bottom_left">
+        <h3>Маржа не выросла, CTE вне таргета</h3>
+        <ul id="qlbAll"></ul>
+      </div>
+      <div class="quadrant bottom_right">
+        <h3>Маржа не выросла, CTE в таргете</h3>
+        <ul id="qrbAll"></ul>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -496,26 +515,35 @@
       });
     }
 
+    const quadrantUlIds = { top_left: "ql", top_right: "qr", bottom_left: "qlb", bottom_right: "qrb" };
+    const quadrantUlIdsAll = { top_left: "qlAll", top_right: "qrAll", bottom_left: "qlbAll", bottom_right: "qrbAll" };
+
+    function fillQuadrantUls(results, idMap) {
+      const m = idMap || quadrantUlIds;
+      Object.values(m).forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = "";
+      });
+      results.forEach((t) => {
+        if (!t.quadrant) return;
+        const qid = m[t.quadrant];
+        if (!qid) return;
+        const ul = document.getElementById(qid);
+        if (!ul) return;
+        const li = document.createElement("li");
+        const growthStr = t.dc_growth != null ? (t.dc_growth >= 0 ? "+" : "") + t.dc_growth.toLocaleString("ru") : "—";
+        li.textContent = t.name + " (прирост: " + growthStr + ")";
+        ul.appendChild(li);
+      });
+    }
+
     async function loadResults() {
       const round = parseInt(document.getElementById("mapRoundSelect").value, 10) || 6;
       try {
         const r = await fetch(API + "/api/results?round=" + round);
         const j = await r.json();
         const results = j.results || [];
-        const list = (name) => document.getElementById(name);
-        ["ql", "qr", "qlb", "qrb"].forEach((id) => { list(id).innerHTML = ""; });
-        results.forEach((t) => {
-          let id = "ql";
-          if (t.quadrant === "top_right") id = "qr";
-          else if (t.quadrant === "bottom_left") id = "qlb";
-          else if (t.quadrant === "bottom_right") id = "qrb";
-          if (t.quadrant) {
-            const li = document.createElement("li");
-            const growthStr = t.dc_growth != null ? (t.dc_growth >= 0 ? "+" : "") + t.dc_growth.toLocaleString("ru") : "—";
-            li.textContent = t.name + " (прирост: " + growthStr + ")";
-            list(id).appendChild(li);
-          }
-        });
+        fillQuadrantUls(results, quadrantUlIds);
         const tbody = document.getElementById("resultsTableBody");
         tbody.innerHTML = "";
         const fmt = (x) => x != null ? (typeof x === "number" && x > 1000 ? x.toLocaleString("ru") : x) : "—";
@@ -579,6 +607,7 @@
           tr.innerHTML = "<td>" + (t.name || "—") + "</td><td>" + initDc + "</td><td>" + sumStr + "</td><td>" + growthStr + "</td><td>" + shVal + "</td><td>" + ordersVal + "</td><td>" + ophVal + "</td><td>" + cteStr + "</td>";
           tbody.appendChild(tr);
         });
+        fillQuadrantUls(results, quadrantUlIdsAll);
       } catch (_) {}
     }
 

@@ -2,6 +2,7 @@
 """Генерация round2.html .. round6.html из scenarios.json."""
 import json
 import os
+import re
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 # BASE = .../game-web/static/derevya → data = .../game-web/data/scenarios.json
@@ -36,8 +37,15 @@ for r in ["1", "2", "3", "4", "5", "6"]:
     content = template
     content = content.replace("const ROUND = 1;", f"const ROUND = {round_num};")
     content = content.replace("Раунд 1</title>", f"Раунд {round_num}</title>")
+    content = content.replace('<div class="num" id="roundNum">1</div>', f'<div class="num" id="roundNum">{round_num}</div>')
     content = content.replace("const AOV = 1100;", f"const AOV = {AOV_BY_ROUND.get(r, 1100)};")
-    content = content.replace('const ROUND_INTRO = \'На след.неделе прогнозируют проливные дожди и рост спроса.\';', f"const ROUND_INTRO = {json.dumps(intro)};")
+    content = re.sub(
+        r"const ROUND_INTRO = .*?;",
+        "const ROUND_INTRO = " + json.dumps(intro, ensure_ascii=False) + ";",
+        content,
+        count=1,
+        flags=re.DOTALL,
+    )
     # Replace SCENARIOS = {...}; by matching braces
     pos = content.find("const SCENARIOS = ")
     start = pos + len("const SCENARIOS = ")

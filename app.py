@@ -84,6 +84,9 @@ def get_scenario_result(r, coef1, coef2):
     if res is None and (c1 == 0 or c2 == 0):
         alt2 = f"{int(c1) if c1 == int(c1) else c1}_{int(c2) if c2 == int(c2) else c2}"
         res = scenarios.get(alt2)
+    # Раунд 6: в данных часто не все пары коэффициентов — подставляем сценарий раунда 5
+    if res is None and r == 6:
+        res = get_scenario_result(5, coef1, coef2)
     return res
 
 
@@ -430,14 +433,25 @@ def api_results():
             })
         rounds_played = sum(1 for r in rounds_consider if (t["id"], r) in choices)
         show_total = up_to_round == max_rounds and rounds_played >= 1
-        # Прирост маржи от исходных значений
+        # Последний раунд с рассчитанным DC в диапазоне 1…up_to (если для N нет сценария — берём предыдущий)
+        effective_dc_round = None
+        if dc_by_round:
+            for er in range(up_to_round, 0, -1):
+                if er in dc_by_round:
+                    effective_dc_round = er
+                    break
+        # Прирост маржи от исходных: DC после effective_dc_round − исходный
         dc_growth = None
-        if up_to_round in dc_by_round and initial_dc is not None:
-            dc_growth = dc_by_round[up_to_round] - (initial_dc if isinstance(initial_dc, (int, float)) else 0)
-        elif 1 in dc_by_round and up_to_round in dc_by_round and initial_dc is None:
-            dc_growth = dc_by_round[up_to_round] - dc_by_round[1]
-        # Метрики по итогам выбранного раунда (для таблицы: SH, Заказы, OPH — результат раунда, не исходные)
-        pr_up = next((p for p in per_round if p["round"] == up_to_round), None)
+        if effective_dc_round is not None and initial_dc is not None:
+            dc_growth = dc_by_round[effective_dc_round] - (initial_dc if isinstance(initial_dc, (int, float)) else 0)
+        elif effective_dc_round is not None and 1 in dc_by_round and initial_dc is None:
+            dc_growth = dc_by_round[effective_dc_round] - dc_by_round[1]
+        # SH / Заказы / OPH — по последнему раунду с данными ≤ up_to, не только строго N
+        pr_up = None
+        for p in reversed(per_round):
+            if p["round"] <= up_to_round:
+                pr_up = p
+                break
         results.append({
             "team_id": t["id"],
             "name": team_display_name(t),
@@ -455,7 +469,7 @@ def api_results():
             "result_orders": pr_up.get("orders") if pr_up else None,
             "result_oph": pr_up.get("oph") if pr_up else None,
         })
-    # Квадранты: по выбранному раунду отдельно (CTE в таргете именно в этом раунде, не накопительно)
+    # Квадранты: прирост и CTE по последнему раунду с данными ≤ выбранного N (как в сводке)
     dcs_r1 = [z["per_round"][0]["dc"] for z in results if z.get("per_round") and len(z["per_round"]) > 0 and z["per_round"][0].get("dc") is not None]
     median_r1 = sorted(dcs_r1)[len(dcs_r1) // 2] if dcs_r1 else 0
     growths = [x["dc_growth"] for x in results if x.get("dc_growth") is not None]
@@ -464,8 +478,12 @@ def api_results():
         x["quadrant"] = None
         if x["rounds_played"] < 1:
             continue
-        # CTE в таргете только в выбранном раунде (up_to_round), не накопительно
-        pr_sel = next((p for p in x.get("per_round", []) if p["round"] == up_to_round), None)
+        # CTE в таргете в том же «эффективном» раунде, что и для прироста (последний с данными ≤ N)
+        pr_sel = None
+        for p in reversed(x.get("per_round", [])):
+            if p["round"] <= up_to_round:
+                pr_sel = p
+                break
         cte_ok = pr_sel.get("cte_ok", False) if pr_sel else False
         if up_to_round == 1:
             dc1 = x["per_round"][0]["dc"] if x.get("per_round") and x["per_round"] and x["per_round"][0].get("dc") is not None else 0

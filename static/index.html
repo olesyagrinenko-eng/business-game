@@ -47,6 +47,20 @@
     .metrics-table { width: 100%; margin-top: 0.75rem; font-size: 1.05rem; }
     .metrics-table th, .metrics-table td { padding: 0.45rem 0.6rem; text-align: left; border-bottom: 1px solid var(--border); }
     .metrics-table .initial { color: var(--muted); }
+    .results-accordion { margin-top: 1rem; border: 2px solid var(--accent); border-radius: 14px; padding: 0.35rem 1rem 0.75rem; background: #fff; }
+    .results-accordion summary { cursor: pointer; font-weight: 700; color: var(--dark); padding: 0.6rem 0; list-style: none; }
+    .results-accordion summary::-webkit-details-marker { display: none; }
+    .results-accordion[open] summary { border-bottom: 1px solid rgba(35,57,103,0.15); margin-bottom: 0.65rem; }
+    #complicationsWrap { border-radius: 12px; padding: 0.35rem 0.5rem; transition: background 0.4s ease, box-shadow 0.4s ease; }
+    #complicationsWrap.round-switch-pulse { animation: roundCondPulse 2.2s ease-out; }
+    @keyframes roundCondPulse {
+      0% { background: #fff; box-shadow: 0 0 0 0 rgba(77, 170, 248, 0); }
+      15% { background: #e8f4ff; box-shadow: 0 0 0 4px rgba(77, 170, 248, 0.45); }
+      40% { background: #f5fbff; box-shadow: 0 0 0 8px rgba(77, 170, 248, 0.15); }
+      100% { background: #fff; box-shadow: 0 0 0 0 rgba(77, 170, 248, 0); }
+    }
+    .new-conditions-head { color: #1565c0 !important; font-weight: 700 !important; font-size: 1.15rem !important; }
+    #complicationsWrap .complication { border-left-width: 5px; border-left-color: #4DAAF8; background: #fafcff; }
   </style>
 </head>
 <body>
@@ -84,7 +98,9 @@
       <div class="card">
         <p class="round-title">Вводные</p>
         <ul id="introList"></ul>
-        <div id="complicationsList"></div>
+        <div id="complicationsWrap">
+          <div id="complicationsList"></div>
+        </div>
         <div class="task-box">
           <p class="round-title">Задание</p>
           <p>Выберите коэффициент изменения ставки курьера за заказ на следующую неделю:</p>
@@ -93,8 +109,11 @@
         </div>
         <div class="btn-group" id="coefButtons"></div>
         <p id="waitOpponent" class="muted hidden" style="margin-top:1rem;">Ожидаем решение соперника...</p>
-        <div id="resultBox" class="result-box hidden"></div>
-        <div id="roundHistoryBox" class="round-history hidden"></div>
+        <details id="resultsAccordion" class="results-accordion">
+          <summary>Результаты и история раундов (нажмите, чтобы раскрыть или скрыть)</summary>
+          <div id="resultBox" class="result-box hidden"></div>
+          <div id="roundHistoryBox" class="round-history hidden"></div>
+        </details>
         <div id="nextStepBox" class="next-step hidden"></div>
       </div>
       <p class="muted" style="text-align:center; margin-top:1rem; font-size:0.95rem;">
@@ -124,6 +143,13 @@
     }
     let data = null;
     let lastRenderedRound = 0;
+    let lastIntroRoundSeen = 0;
+
+    function pairRoleFromStorage() {
+      if (teamRole === null || teamRole === undefined || teamRole === "") return 1;
+      const n = typeof teamRole === "number" ? teamRole : parseInt(String(teamRole), 10);
+      return n === 2 ? 2 : 1;
+    }
 
     async function loadData() {
       const r = await fetch(API + "/api/data");
@@ -196,6 +222,14 @@
       const r = String(data.current_round || 1);
       const rNum = parseInt(r, 10);
       document.getElementById("roundNum").textContent = r;
+      const compWrap = document.getElementById("complicationsWrap");
+      if (compWrap && lastIntroRoundSeen > 0 && rNum !== lastIntroRoundSeen) {
+        compWrap.classList.remove("round-switch-pulse");
+        void compWrap.offsetWidth;
+        compWrap.classList.add("round-switch-pulse");
+        setTimeout(() => compWrap.classList.remove("round-switch-pulse"), 2300);
+      }
+      lastIntroRoundSeen = rNum;
       const common = (data && data.common_intro_by_round && data.common_intro_by_round[r]) || (data && data.common_intro) || [];
       const roundIntro = (data && data.rounds_intro && data.rounds_intro[r]) || [];
       const ul = document.getElementById("introList");
@@ -219,6 +253,7 @@
         head.className = "round-title";
         head.style.marginTop = "1rem";
         head.textContent = "Новые условия раунда " + r + ":";
+        head.className = "round-title new-conditions-head";
         compList.appendChild(head);
         roundIntro.forEach((text) => {
           const div = document.createElement("div");
@@ -259,7 +294,7 @@
       box.innerHTML = "";
       if (!res) return;
       const oppLabel = state && state.opponent_choice != null ? (coefLabels[String(state.opponent_choice)] || state.opponent_choice) : null;
-      const role = (state && state.role != null) ? state.role : (teamRole === "1" ? 1 : 2);
+      const role = (state && state.role != null && state.role !== "") ? Number(state.role) : pairRoleFromStorage();
       const initial = (data && data.initial_metrics) ? data.initial_metrics["team" + role] : {};
       let html = "";
       if (oppLabel) {
@@ -276,7 +311,7 @@
         const initVal = initial[key] != null ? (typeof initial[key] === "number" && key === "DC" ? initial[key].toLocaleString("ru") : initial[key]) : "—";
         let resVal = res[key];
         if (key === "DC" && (resVal === "+" || resVal === "-" || resVal === "")) resVal = null;
-        if (resVal != null && typeof resVal === "number" && key === "DC") resVal = resVal.toLocaleString("ru");
+        if (resVal != null && typeof resVal === "number" && key === "DC") resVal = resVal.toLocaleString("ru", { maximumFractionDigits: 2 });
         else if (resVal != null && typeof resVal === "number") resVal = Math.round(resVal * 100) / 100;
         html += "<tr><td>" + (metricNames[key] || key) + "</td><td class=\"initial\">" + initVal + "</td><td>" + (resVal != null ? resVal : "—") + "</td></tr>";
       });
