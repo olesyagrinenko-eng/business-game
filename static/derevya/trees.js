@@ -114,6 +114,8 @@
     var shPct = pctChange(shPrev, shCurr); var shOk = shPct == null ? null : (shPct > 0 ? true : shPct < 0 ? false : null);
     var ophPct = pctChange(prev.OPH, ophCurr); var ophOk = ophPct == null ? null : (ophPct > 0 ? true : ophPct < 0 ? false : null);
     var ctePct = curr ? pctChange(prev.CTE, curr.CTE) : null; var cteOk = curr ? curr.CTE_in_target : null;
+    var cteAtTarget = curr && prev && curr.CTE != null && prev.CTE != null && Math.abs(Number(curr.CTE) - Number(prev.CTE)) < 0.01;
+    var cteTraffic = cteAtTarget ? 'yellow' : metricStatus(cteOk);
     var aovPct = pctChange(prev.avg_check, aovCurr); var aovOk = aovPct == null ? null : (aovPct === 0 ? null : aovPct > 0 ? true : false);
     var marginPct = 0; var marginOk = null;
     var cpoPct = curr ? pctChange(prev.CPO, curr.CPO) : null; var cpoOk = cpoPct == null ? null : (cpoPct < 0 ? true : cpoPct > 0 ? false : null);
@@ -122,7 +124,7 @@
     set(prefix + 'SH_prev', fmt(prev.SH)); set(prefix + 'SH_curr', fmt(shCurr)); setDot(prefix + 'SH_dot', metricStatus(shOk)); set(prefix + 'SH_pct', pctStr(shPct)); setPlashka('p' + team + '_sh', 'status-' + metricStatus(shOk));
     set(prefix + 'Orders_prev', fmt(prev.orders)); set(prefix + 'Orders_curr', ordersCurr != null ? fmt(Math.round(ordersCurr)) : '—'); setDot(prefix + 'Orders_dot', metricStatus(ordOk)); set(prefix + 'Orders_pct', pctStr(ordPct)); setPlashka('p' + team + '_orders', 'status-' + metricStatus(ordOk));
     set(prefix + 'OPH_prev', fmtDec1(prev.OPH)); set(prefix + 'OPH_curr', ophCurr != null ? fmtDec1(Number(ophCurr)) : '—'); setDot(prefix + 'OPH_dot', metricStatus(ophOk)); set(prefix + 'OPH_pct', pctStr(ophPct)); setPlashka('p' + team + '_oph', 'status-' + metricStatus(ophOk));
-    set(prefix + 'CTE_prev', prev.CTE != null ? fmtDec1(Number(prev.CTE)) : '—'); set(prefix + 'CTE_curr', curr ? fmtDec1(Number(curr.CTE)) : '—'); setDot(prefix + 'CTE_dot', metricStatus(cteOk)); set(prefix + 'CTE_pct', pctStr(ctePct)); setPlashka('p' + team + '_cte', 'status-' + metricStatus(cteOk));
+    set(prefix + 'CTE_prev', prev.CTE != null ? fmtDec1(Number(prev.CTE)) : '—'); set(prefix + 'CTE_curr', curr ? fmtDec1(Number(curr.CTE)) : '—'); setDot(prefix + 'CTE_dot', cteTraffic); set(prefix + 'CTE_pct', pctStr(ctePct)); setPlashka('p' + team + '_cte', 'status-' + cteTraffic);
     set(prefix + 'AOV_prev', fmt(prev.avg_check)); set(prefix + 'AOV_curr', fmt(aovCurr)); setDot(prefix + 'AOV_dot', metricStatus(aovOk)); set(prefix + 'AOV_pct', pctStr(aovPct)); setPlashka('p' + team + '_aov', 'status-' + metricStatus(aovOk));
     var woPrev = prev.writeoffs;
     var woCurr = curr && curr.writeoffs;
@@ -184,11 +186,10 @@
       var el = document.getElementById(id);
       if (el) el.style.display = on ? '' : 'none';
     }
-    /* Раунд 6: упрощённое дерево — без суржа/вывоза/перетока/склада; блок «роялти» без старого подзаголовка */
+    /* Раунд 6: упрощённое дерево — без суржа/вывоза/склада; блок «роялти» без старого подзаголовка */
     if (ROUND >= 6) {
       vis(pid + '_surge', false);
       vis(pid + '_delivery', false);
-      vis(pid + '_churn', false);
       vis(pid + '_stock', false);
       vis(pid + '_writeoffs', false);
       vis(pid + '_royalty', true);
@@ -208,11 +209,10 @@
     }
     vis(pid + '_surge', ROUND >= 2);
     vis(pid + '_delivery', false);
-    vis(pid + '_churn', ROUND >= 4 && ROUND !== 5);
     vis(pid + '_stock', ROUND >= 6);
     vis(pid + '_writeoffs', ROUND === 5);
-    vis(pid + '_fallback', ROUND >= 5);
-    vis(pid + '_cpo_total', ROUND >= 5);
+    vis(pid + '_fallback', ROUND >= 4);
+    vis(pid + '_cpo_total', ROUND >= 4);
     vis(pid + '_royalty', false);
     if (ROUND >= 2) {
       var sp = teamData && teamData.surge_prev != null ? fmtSurgePct(teamData.surge_prev) : (ROUND === 2 ? '0%' : '—');
@@ -220,15 +220,11 @@
       set(prefix + 'Surge_prev', sp);
       set(prefix + 'Surge_curr', scurr);
     }
-    if (ROUND >= 4) {
-      set(prefix + 'Churn_prev', ROUND === 4 ? 'нет' : 'да');
-      set(prefix + 'Churn_curr', 'да');
-    }
     if (ROUND >= 6) {
       set(prefix + 'Stock_prev', 'да');
       set(prefix + 'Stock_curr', 'да');
     }
-    if (ROUND >= 5 && ROUND < 6) {
+    if (ROUND >= 4 && ROUND < 6) {
       set(prefix + 'Fallback_curr', teamData && teamData.fallback_share != null ? fmtFallbackShare(Number(teamData.fallback_share)) : '—');
       set(prefix + 'CpoTotal_curr', teamData && teamData.cpo_total != null ? fmt(Number(teamData.cpo_total)) : '—');
     }
@@ -248,7 +244,6 @@
       L.push({ from: 'surge', to: 'aov', fromSide: 'right', toSide: 'top', route: 'elbow' });
       L.push({ from: 'surge', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
     }
-    if (ROUND >= 4) L.push({ from: 'churn', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
     if (ROUND >= 6) L.push({ from: 'stock', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
     if (ROUND >= 6) {
       L.push({ from: 'cte', to: 'royalty', fromSide: 'right', toSide: 'top', route: 'elbow' });

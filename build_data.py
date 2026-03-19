@@ -173,6 +173,7 @@ def main():
                 "DC": rv(parts[7]),
                 "CTE_in_target": parts[8] == "+",
                 "place_DC": int(parts[9]) if parts[9] is not None else None,
+                "avg_check": opt(13),
                 "SH": opt(10),
                 "orders": opt(11),
                 "OPH": opt(12),
@@ -186,20 +187,30 @@ def main():
                 "DC": rv(parts[20]),
                 "CTE_in_target": parts[21] == "+" if len(parts) > 21 else False,
                 "place_DC": int(parts[22]) if len(parts) > 22 and parts[22] is not None else None,
+                "avg_check": opt(37),
                 "SH": opt(23),
                 "orders": opt(24),
                 "OPH": opt(25),
                 "surge_prev": surge_pct(opt(28)),
                 "surge_curr": surge_pct(opt(29)),
             }
-            # Раунды 5–6: фоллбэк / общий CPO (как на листе «Деревья»); списания — при наличии слотов в txt
-            if r >= 5:
+            # Фоллбэк / общий CPO из колонок СВОД (слоты 30–33) доступны со сценариев раунда 4+.
+            if r >= 4:
                 team1["fallback_share"] = opt(30)
                 team1["cpo_total"] = opt(31)
                 team2["fallback_share"] = opt(32)
                 team2["cpo_total"] = opt(33)
+            # Списания заполнены в раундах 5+ (если есть слоты).
+            if r >= 5:
                 team1["writeoffs"] = opt(34)
                 team2["writeoffs"] = opt(35)
+            # Точечная правка по листу «Деревья»: раунд 4, сценарий +20%/+20%.
+            # В Excel для этого кейса сурж текущей недели = 17%, AOV = 1232.
+            if r == 4 and key == "0.2_0.2":
+                team1["surge_curr"] = 17
+                team2["surge_curr"] = 17
+                team1["avg_check"] = 1232
+                team2["avg_check"] = 1232
             scenarios[str(r)][key] = {"team1": team1, "team2": team2}
 
     # Общие вводные зависят от раунда: часть пунктов убирается (по правилам из СВОД).
