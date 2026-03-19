@@ -7,6 +7,7 @@
 """
 import copy
 import json
+import math
 import os
 import sys
 from flask import Flask, request, jsonify, send_from_directory
@@ -31,6 +32,13 @@ try:
         DATA["rounds_intro"]["6"] = ri["5"]
     if "6" not in DATA.get("scenarios", {}):
         DATA.setdefault("scenarios", {})["6"] = {}
+    # Раунд 6 в JSON часто с 3 сценариями; для остальных комбинаций нужна полная матрица (как в р5)
+    _sc = DATA.get("scenarios") or {}
+    _r5, _r6 = _sc.get("5"), _sc.get("6")
+    if isinstance(_r5, dict) and isinstance(_r6, dict):
+        for _k, _v in _r5.items():
+            if _k not in _r6:
+                _r6[_k] = copy.deepcopy(_v)
 except FileNotFoundError:
     print("ERROR: data/scenarios.json not found at", DATA_PATH, file=sys.stderr)
     DATA = {"common_intro_by_round": {str(r): [] for r in range(1, 7)}, "rounds_intro": {}, "scenarios": {}, "coefficients": [], "initial_metrics": {}}
@@ -73,18 +81,37 @@ def get_opponent_choice(team_id, r):
     return choices.get((other_id, r))
 
 
+def scenario_pair_key(coef1, coef2):
+    """Ключ сценария как в scenarios.json: «0», не «0.0»; совпадает с выгрузкой из СВОД."""
+    def part(v):
+        x = float(v)
+        if math.isclose(x, 0.0, abs_tol=1e-12):
+            return "0"
+        if math.isclose(x, round(x), rel_tol=0, abs_tol=1e-9):
+            return str(int(round(x)))
+        return "%g" % x
+
+    return f"{part(coef1)}_{part(coef2)}"
+
+
 def get_scenario_result(r, coef1, coef2):
-    # Ключи в JSON: "0.4_-0.1", "0_0", "0.4_0" — нормализуем float и пробуем варианты
     c1, c2 = float(coef1), float(coef2)
-    key = f"{c1}_{c2}"
     scenarios = DATA.get("scenarios", {}).get(str(r), {})
-    res = scenarios.get(key)
-    if res is None:
-        alt = key.replace("_0.0", "_0").replace("0.0_", "0_")
-        res = scenarios.get(alt)
-    if res is None and (c1 == 0 or c2 == 0):
-        alt2 = f"{int(c1) if c1 == int(c1) else c1}_{int(c2) if c2 == int(c2) else c2}"
-        res = scenarios.get(alt2)
+    # Порядок важен: сначала канонический ключ JSON, затем «сырой» float (0.0_0.4 и т.д.)
+    keys_try = [
+        scenario_pair_key(c1, c2),
+        f"{c1}_{c2}",
+        f"{c1}_{c2}".replace("_0.0", "_0").replace("0.0_", "0_"),
+    ]
+    seen = set()
+    res = None
+    for key in keys_try:
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        res = scenarios.get(key)
+        if res is not None:
+            break
     # Раунд 6: в данных часто не все пары коэффициентов — подставляем сценарий раунда 5
     if res is None and r == 6:
         res = get_scenario_result(5, coef1, coef2)
@@ -241,16 +268,17 @@ def api_state():
         result = None
         if my_choice is not None and opp_choice is not None:
             pid = get_pair_id(team_id)
-            p = pairs[pid]
-            c1 = choices.get((p["team1_id"], current_round))
-            c2 = choices.get((p["team2_id"], current_round))
-            if c1 is not None and c2 is not None:
-                res = get_scenario_result(current_round, c1, c2)
-                if res:
-                    raw = res["team1"] if t["role"] == 1 else res["team2"]
-                    result = copy.deepcopy(raw)
-                    if result.get("DC") in ("+", "-"):
-                        result["DC"] = None
+            if pid is not None:
+                p = pairs[pid]
+                c1 = choices.get((p["team1_id"], current_round))
+                c2 = choices.get((p["team2_id"], current_round))
+                if c1 is not None and c2 is not None:
+                    res = get_scenario_result(current_round, c1, c2)
+                    if res is not None:
+                        raw = res["team1"] if t["role"] == 1 else res["team2"]
+                        result = copy.deepcopy(raw)
+                        if result.get("DC") in ("+", "-"):
+                            result["DC"] = None
         # История раундов: что делали я и конкурент, результат по каждому
         results_by_round = []
         for r in range(1, current_round + 1):
@@ -265,7 +293,7 @@ def api_state():
                     c2 = choices.get((p["team2_id"], r))
                     if c1 is not None and c2 is not None:
                         sr = get_scenario_result(r, c1, c2)
-                        if sr:
+                        if sr is not None:
                             raw_r = sr["team1"] if t["role"] == 1 else sr["team2"]
                             res_r = copy.deepcopy(raw_r)
                             if res_r.get("DC") in ("+", "-"):
@@ -390,7 +418,7 @@ def api_round():
 
 @app.route("/api/results")
 def api_results():
-    """Итоги: пораундовые DC/CTE; сумма по итогам max_rounds. Прирост маржи от исходных (DC_N - initial_dc). Квадранты по приросту."""
+    """Итоги: пораундовые DC/CTE; сумма DC; прирост к исх. для карты; сумма ΔDC по этапам для сводки; квадранты по приросту."""
     up_to_round = request.args.get("round", type=int)
     if up_to_round is None or up_to_round < 1 or up_to_round > max_rounds:
         up_to_round = max_rounds
@@ -417,7 +445,7 @@ def api_results():
             if c1 is None or c2 is None:
                 continue
             res = get_scenario_result(r, c1, c2)
-            if not res:
+            if res is None:
                 continue
             side = res["team1"] if t["role"] == 1 else res["team2"]
             dc = side.get("DC")
@@ -444,12 +472,27 @@ def api_results():
                 if er in dc_by_round:
                     effective_dc_round = er
                     break
-        # Прирост маржи от исходных: DC после effective_dc_round − исходный
+        # Прирост маржи к исходному: DC после effective_dc_round − исходный (для карты по раунду / квадрантов)
         dc_growth = None
         if effective_dc_round is not None and initial_dc is not None:
             dc_growth = dc_by_round[effective_dc_round] - (initial_dc if isinstance(initial_dc, (int, float)) else 0)
         elif effective_dc_round is not None and 1 in dc_by_round and initial_dc is None:
             dc_growth = dc_by_round[effective_dc_round] - dc_by_round[1]
+        # Сумма изменений маржи между соседними сыгранными этапами: (DC_r1−I)+(DC_r2−DC_r1)+… = DC_last−I
+        dc_growth_sum_round_deltas = None
+        _ordered = sorted(dc_by_round.keys())
+        if _ordered:
+            _prev = float(initial_dc) if isinstance(initial_dc, (int, float)) else None
+            _acc = 0.0
+            for _rk in _ordered:
+                _cur = dc_by_round[_rk]
+                if not isinstance(_cur, (int, float)):
+                    continue
+                _fv = float(_cur)
+                if _prev is not None:
+                    _acc += _fv - _prev
+                _prev = _fv
+            dc_growth_sum_round_deltas = _acc
         # SH / Заказы / OPH — по последнему раунду с данными ≤ up_to, не только строго N
         pr_up = None
         for p in reversed(per_round):
@@ -465,6 +508,8 @@ def api_results():
             "cte_ok_rounds": cte_ok_count,
             "rounds_played": rounds_played,
             "dc_growth": round(dc_growth, 0) if dc_growth is not None else None,
+            "dc_growth_sum_round_deltas": round(dc_growth_sum_round_deltas, 0) if dc_growth_sum_round_deltas is not None else None,
+            "rounds_with_result": len(per_round),
             "initial_dc": round(initial_dc, 0) if isinstance(initial_dc, (int, float)) else initial_dc,
             "initial_sh": im.get("SH"),
             "initial_orders": im.get("orders"),
@@ -476,7 +521,13 @@ def api_results():
     # Квадранты: прирост и CTE по последнему раунду с данными ≤ выбранного N (как в сводке)
     dcs_r1 = [z["per_round"][0]["dc"] for z in results if z.get("per_round") and len(z["per_round"]) > 0 and z["per_round"][0].get("dc") is not None]
     median_r1 = sorted(dcs_r1)[len(dcs_r1) // 2] if dcs_r1 else 0
-    growths = [x["dc_growth"] for x in results if x.get("dc_growth") is not None]
+    def _growth_for_axis(row):
+        g = row.get("dc_growth_sum_round_deltas")
+        if g is None:
+            g = row.get("dc_growth")
+        return g
+
+    growths = [_growth_for_axis(x) for x in results if _growth_for_axis(x) is not None]
     median_growth = sorted(growths)[len(growths) // 2] if growths else 0
     for x in results:
         x["quadrant"] = None
@@ -493,7 +544,8 @@ def api_results():
             dc1 = x["per_round"][0]["dc"] if x.get("per_round") and x["per_round"] and x["per_round"][0].get("dc") is not None else 0
             high = dc1 >= median_r1
         else:
-            high = x.get("dc_growth") is not None and x["dc_growth"] >= median_growth
+            gx = _growth_for_axis(x)
+            high = gx is not None and gx >= median_growth
         if high and cte_ok:
             x["quadrant"] = "top_right"
         elif high and not cte_ok:
