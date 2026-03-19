@@ -21,7 +21,7 @@ a.back { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
 .diagram-outer { width: 100%; max-width: 100%; overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; border-radius: 12px; border: 1px solid rgba(35,57,103,0.12); background: linear-gradient(180deg, #f4f7fc 0%, #eef2f9 45%, #e8edf6 100%); }
 
 /* Компактные блоки + широкие коридоры между колонками (стрелки идут в зазорах, не через плашки) */
-.diagram { position: relative; display: grid; grid-template-columns: minmax(100px, 1fr) minmax(160px, 2.5fr) minmax(100px, 1.15fr) minmax(100px, 1.15fr); grid-template-rows: 1fr; align-items: stretch; gap: 12px 40px; padding: 20px 28px 28px; min-height: 320px; width: 100%; min-width: min(100%, 720px); }
+.diagram { position: relative; display: grid; grid-template-columns: minmax(100px, 1fr) minmax(160px, 2.5fr) minmax(100px, 1.15fr) minmax(100px, 1.15fr); grid-template-rows: 1fr; align-items: stretch; gap: 12px 40px; padding: 20px 28px 52px; min-height: 320px; width: 100%; min-width: min(100%, 720px); }
 .diagram .plashka { position: relative; z-index: 2; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border: 1.5px solid var(--border); border-radius: 10px; padding: 7px 10px; font-size: 0.88rem; box-shadow: 0 1px 4px rgba(35,57,103,0.07); }
 .diagram .plashka .name { font-weight: 700; color: var(--dark); display: block; margin-bottom: 4px; font-size: 0.92rem; letter-spacing: 0.02em; }
 .diagram .plashka .row { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }

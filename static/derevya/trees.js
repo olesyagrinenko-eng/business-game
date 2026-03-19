@@ -166,18 +166,19 @@
       { from: 'dcpo', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'elbow-v', toOffsetY: 8 }
     ];
     if (ROUND >= 2) {
-      L.push({ from: 'surge', to: 'aov', fromSide: 'right', toSide: 'left', route: 'elbow' });
+      /* toSide: top — у mid-колонки общий левый край; вход слева давал вертикаль через весь столбец (CTE, AOV…) */
+      L.push({ from: 'surge', to: 'aov', fromSide: 'right', toSide: 'top', route: 'elbow' });
       L.push({ from: 'surge', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
     }
     if (ROUND >= 3) {
       L.push({ from: 'delivery', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
-      L.push({ from: 'delivery', to: 'cte', fromSide: 'right', toSide: 'left', route: 'elbow' });
+      L.push({ from: 'delivery', to: 'cte', fromSide: 'right', toSide: 'top', route: 'elbow' });
     }
     if (ROUND >= 4) L.push({ from: 'churn', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
     if (ROUND >= 5) L.push({ from: 'stock', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
     if (ROUND >= 6) {
-      L.push({ from: 'cte', to: 'royalty', fromSide: 'right', toSide: 'left', route: 'elbow' });
-      L.push({ from: 'royalty', to: 'margin', fromSide: 'right', toSide: 'left', route: 'elbow' });
+      L.push({ from: 'cte', to: 'royalty', fromSide: 'right', toSide: 'top', route: 'elbow' });
+      L.push({ from: 'royalty', to: 'margin', fromSide: 'right', toSide: 'top', route: 'elbow' });
       L.push({ from: 'royalty', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'elbow' });
     }
     return L;
@@ -192,7 +193,51 @@
     if (side === 'bottom') return { x: cx, y: r.bottom - pad };
     return { x: cx, y: cy };
   }
-  /** Центры «коридоров» между колонками сетки (стрелки не заходят внутрь плашек) */
+  function getMaxPlashkaBottomRel(diag, dr) {
+    var maxB = 0;
+    var pls = diag.querySelectorAll('.plashka');
+    for (var i = 0; i < pls.length; i++) {
+      var el = pls[i];
+      if (el.offsetParent === null) continue;
+      var r = el.getBoundingClientRect();
+      var bot = r.bottom - dr.top;
+      if (isFinite(bot) && bot > maxB) maxB = bot;
+    }
+    return maxB;
+  }
+
+  /** Нижняя горизонталь «Заказы→DC»: строго ниже всех видимых плашек */
+  function getOrdersToDcLaneY(diag, dr) {
+    var maxB = getMaxPlashkaBottomRel(diag, dr);
+    var gap = 22;
+    var y = maxB > 0 ? maxB + gap : dr.height - 16;
+    var floor = dr.height - 9;
+    if (y > floor) y = floor;
+    return y;
+  }
+
+  /** Реальные границы плашек mid (контейнер .mid-stack может быть уже детей из-за flex) */
+  function midPlashkaExtents(mid, dr) {
+    var minL = Infinity, maxR = -Infinity, minT = Infinity, maxB = -Infinity;
+    var pls = mid.querySelectorAll('.plashka');
+    var n = 0;
+    for (var i = 0; i < pls.length; i++) {
+      if (pls[i].offsetParent === null) continue;
+      n++;
+      var r = pls[i].getBoundingClientRect();
+      minL = Math.min(minL, r.left - dr.left);
+      maxR = Math.max(maxR, r.right - dr.left);
+      minT = Math.min(minT, r.top - dr.top);
+      maxB = Math.max(maxB, r.bottom - dr.top);
+    }
+    var box = mid.getBoundingClientRect();
+    if (n === 0) {
+      return { mL: box.left - dr.left, mR: box.right - dr.left, midTop: box.top - dr.top, midBottom: box.bottom - dr.top };
+    }
+    return { mL: minL, mR: maxR, midTop: minT, midBottom: maxB };
+  }
+
+  /** Коридоры: g12 строго слева от плашек, g23 у левого края CPO (не середина зазора — стабильнее) */
   function getColumnGutters(diag, dr) {
     var orders = diag.querySelector('.col-left');
     var mid = diag.querySelector('.mid-stack');
@@ -200,20 +245,98 @@
     var rs = diag.querySelector('.right-stack');
     if (!orders || !mid || !cpo || !rs) return null;
     var o = orders.getBoundingClientRect();
-    var m = mid.getBoundingClientRect();
     var c = cpo.getBoundingClientRect();
     var r = rs.getBoundingClientRect();
-    return {
-      g12: ((o.right - dr.left) + (m.left - dr.left)) / 2,
-      g23: ((m.right - dr.left) + (c.left - dr.left)) / 2,
-      g34: ((c.right - dr.left) + (r.left - dr.left)) / 2
-    };
+    var ext = midPlashkaExtents(mid, dr);
+    var mL = ext.mL;
+    var mR = ext.mR;
+    var oR = o.right - dr.left;
+    var cL = c.left - dr.left;
+    var cR = c.right - dr.left;
+    var rL = r.left - dr.left;
+    function clampGap(x, lo, hi, margin) {
+      margin = margin || 4;
+      if (hi - lo < margin * 2 + 2) return (lo + hi) / 2;
+      return Math.max(lo + margin, Math.min(x, hi - margin));
+    }
+    var g12ideal = (oR + mL) / 2;
+    var g34ideal = (cR + rL) / 2;
+    var g12 = clampGap(g12ideal, oR, mL, 5);
+    g12 = Math.min(g12, mL - 6);
+    g12 = Math.max(g12, oR + 4);
+    var g23 = cL - 8;
+    if (g23 < mR + 8) g23 = mR + 12;
+    if (g23 > cL - 3) g23 = Math.max(mR + 10, (mR + cL) / 2);
+    var g34 = clampGap(g34ideal, cR, rL, 5);
+    return { g12: g12, g23: g23, g34: g34, mR: mR, mL: mL, midTop: ext.midTop, midBottom: ext.midBottom };
   }
   function linkColumn(nodeId) {
     if (nodeId === 'orders') return 1;
     if (nodeId === 'cpo') return 3;
     if (nodeId === 'dcpo' || nodeId === 'dc') return 4;
     return 2;
+  }
+  /** Mid → Заказы с левого края механики: вверх по левому краю, полоса над всем столбцом, затем к заказам (не режем соседние плашки) */
+  function pathMidLeftToOrdersRight(p1, p2, g12, midTop) {
+    var yEsc = Math.max(8, (isFinite(midTop) ? midTop : p1.y) - 14);
+    return 'M' + p1.x + ',' + p1.y + ' L' + p1.x + ',' + yEsc + ' L' + g12 + ',' + yEsc + ' L' + g12 + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
+  }
+
+  /**
+   * Стебель справа → вход в цель сверху (toSide top): горизонталь только над верхом mid / целей,
+   * короткий спуск по центру верха — не делит общий левый край со всем столбцом.
+   */
+  function pathSpineToTopMid(p1, p2, xg, stub, fromRect, toRect, drH, fromSide, midTop) {
+    stub = stub || 10;
+    var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
+    var yEsc = Math.min(toRect.top - 7, fromRect.top - 7);
+    if (isFinite(midTop)) yEsc = Math.min(yEsc, midTop - 12);
+    yEsc = Math.max(6, yEsc);
+    var xa;
+    if (fromSide === 'right') {
+      xa = Math.min(x1 + stub, xg - 2);
+    } else if (fromSide === 'left') {
+      xa = Math.max(x1 - stub, xg + 2);
+    } else {
+      xa = x1;
+    }
+    return 'M' + x1 + ',' + y1 + ' L' + xa + ',' + y1 + ' L' + xg + ',' + y1 + ' L' + xg + ',' + yEsc + ' L' + x2 + ',' + yEsc + ' L' + x2 + ',' + y2;
+  }
+
+  /**
+   * Вход на левый край плашки mid-stack без горизонтали через середину блока (CTE, AOV и т.д.):
+   * стебель xg → yJoin над/под блоком → коротко влево → вниз/вверх по левому краю к точке входа.
+   */
+  function pathSpineToLeftEdgeMid(p1, p2, xg, stub, toRect, drH, fromSide, fromRect) {
+    stub = stub || 10;
+    var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
+    var margin = 12;
+    var yJoin;
+    if (fromRect && fromRect.bottom < toRect.top - 2) {
+      yJoin = (fromRect.bottom + toRect.top) / 2;
+    } else if (fromRect && toRect.bottom < fromRect.top - 2) {
+      yJoin = (toRect.bottom + fromRect.top) / 2;
+    } else if (y2 < y1 - 4) {
+      yJoin = Math.max(8, toRect.top - margin);
+    } else if (y2 > y1 + 4) {
+      yJoin = Math.min(drH - 8, toRect.bottom + margin);
+    } else {
+      var yAb = Math.max(8, toRect.top - margin);
+      var yBe = Math.min(drH - 8, toRect.bottom + margin);
+      var c1 = Math.abs(y1 - yAb) + Math.abs(y2 - yAb);
+      var c2 = Math.abs(y1 - yBe) + Math.abs(y2 - yBe);
+      yJoin = c1 <= c2 ? yAb : yBe;
+    }
+    yJoin = Math.max(8, Math.min(drH - 8, yJoin));
+    var xa;
+    if (fromSide === 'right') {
+      xa = Math.min(x1 + stub, xg - 2);
+    } else if (fromSide === 'left') {
+      xa = Math.max(x1 - stub, xg + 2);
+    } else {
+      xa = x1;
+    }
+    return 'M' + x1 + ',' + y1 + ' L' + xa + ',' + y1 + ' L' + xg + ',' + y1 + ' L' + xg + ',' + yJoin + ' L' + x2 + ',' + yJoin + ' L' + x2 + ',' + y2;
   }
   /** Одна вертикаль в коридоре xg; не пересекает блоки колонок */
   function pathViaOneGutter(p1, p2, xg, stub) {
@@ -237,14 +360,30 @@
     var xc2 = Math.min(x2 + stub, xg - 2);
     return 'M' + x1 + ',' + y1 + ' L' + xb2 + ',' + y1 + ' L' + xg + ',' + y1 + ' L' + xg + ',' + y2 + ' L' + xc2 + ',' + y2 + ' L' + x2 + ',' + y2;
   }
-  /** Кол. 2 → 4: два коридора + обход блока CPO по горизонтали сверху или снизу */
-  function pathViaGutters2to4(p1, p2, g23, g34, cpoRel, drH, stub) {
+  /** Кол. 2 → 4: два коридора + обход CPO; горизонталь yLane не проводим «на уровне середины» mid, если можно ниже/выше */
+  function pathViaGutters2to4(p1, p2, g23, g34, cpoRel, drH, stub, midBand) {
     stub = stub || 10;
     var yTop = Math.max(8, cpoRel.top - 8);
     var yBot = Math.min(drH - 8, cpoRel.bottom + 8);
-    var d1 = Math.abs(p1.y - yTop) + Math.abs(p2.y - yTop);
-    var d2 = Math.abs(p1.y - yBot) + Math.abs(p2.y - yBot);
-    var yLane = d1 <= d2 ? yTop : yBot;
+    var yBelowMid = midBand && isFinite(midBand.bottom) ? Math.min(drH - 8, midBand.bottom + 20) : null;
+    var yAboveMid = midBand && isFinite(midBand.top) ? Math.max(8, midBand.top - 14) : null;
+    var candidates = [yTop, yBot];
+    if (yBelowMid != null) candidates.push(yBelowMid);
+    if (yAboveMid != null) candidates.push(yAboveMid);
+    function manhattan(yc) {
+      return Math.abs(p1.y - yc) + Math.abs(p2.y - yc);
+    }
+    var yLane = yTop;
+    var best = Infinity;
+    for (var ci = 0; ci < candidates.length; ci++) {
+      var yc = candidates[ci];
+      if (!isFinite(yc)) continue;
+      var sc = manhattan(yc);
+      if (sc < best) {
+        best = sc;
+        yLane = yc;
+      }
+    }
     var xa = Math.min(p1.x + stub, g23 - 2);
     var xb = Math.max(p2.x - stub, g34 + 2);
     return 'M' + p1.x + ',' + p1.y + ' L' + xa + ',' + p1.y + ' L' + g23 + ',' + p1.y + ' L' + g23 + ',' + yLane + ' L' + g34 + ',' + yLane + ' L' + g34 + ',' + p2.y + ' L' + xb + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
@@ -261,11 +400,25 @@
     var svg = g && g.parentNode;
     if (!diag || !g || !svg) return;
     var dr = diag.getBoundingClientRect();
+    /* Если контент высокий, под нижние плашки не помещается «полоса» — расширяем min-height и перерисовываем */
+    var maxPlB = getMaxPlashkaBottomRel(diag, dr);
+    var needBelow = 26;
+    if (maxPlB > 0 && maxPlB + needBelow > dr.height - 8) {
+      var needMinH = maxPlB + needBelow + 48;
+      var prevMin = parseFloat(diag.style.minHeight) || 0;
+      if (needMinH > prevMin) {
+        diag.style.minHeight = needMinH + 'px';
+        requestAnimationFrame(function () { drawArrows(diagId, arrowsGroupId, markerUrl, prefix); });
+        return;
+      }
+    }
+    dr = diag.getBoundingClientRect();
     svg.setAttribute('viewBox', '0 0 ' + dr.width + ' ' + dr.height);
     g.innerHTML = '';
     var gutters = getColumnGutters(diag, dr);
     var cpoEl = diag.querySelector('.block-cpo');
     var cpoRel = cpoEl ? { top: cpoEl.getBoundingClientRect().top - dr.top, bottom: cpoEl.getBoundingClientRect().bottom - dr.top } : { top: dr.height * 0.35, bottom: dr.height * 0.55 };
+    var midBand = gutters ? { top: gutters.midTop, bottom: gutters.midBottom } : null;
     getArrowLinks().forEach(function (link, idx) {
       var fromEl = document.getElementById(prefix + link.from);
       var toEl = document.getElementById(prefix + link.to);
@@ -280,24 +433,33 @@
       if (link.toOffsetY) p2 = { x: p2.x, y: p2.y + link.toOffsetY };
       var d;
       if (link.route === 'ordersToDc') {
-        var pathY = dr.height - 12;
+        var pathY = getOrdersToDcLaneY(diag, dr);
         var dcCx = (toRect.left + toRect.right) / 2;
-        var endY = Math.max(pathY + 10, p2.y - 6);
+        var endY = Math.max(pathY + 8, p2.y - 6);
         d = 'M' + p1.x + ',' + p1.y + ' L' + p1.x + ',' + pathY + ' L' + dcCx + ',' + pathY + ' L' + dcCx + ',' + endY + ' L' + p2.x + ',' + p2.y;
       } else if (link.route === 'elbow-v') {
         d = pathElbowVerticalCol4(p1, p2);
       } else if (link.route === 'elbow' && gutters) {
         var cf = linkColumn(link.from);
         var ct = linkColumn(link.to);
-        if (cf === ct) {
+        if (cf === 2 && ct === 1 && link.fromSide === 'left' && link.toSide === 'right') {
+          d = pathMidLeftToOrdersRight(p1, p2, gutters.g12, gutters.midTop);
+        } else if (cf === ct) {
           var xgSame = cf === 2 ? gutters.g23 : (cf === 4 ? gutters.g34 : gutters.g12);
-          d = pathViaOneGutter(p1, p2, xgSame, 10);
+          if (cf === 2 && gutters.mR != null) xgSame = Math.max(xgSame, gutters.mR + 12);
+          if (cf === 2 && link.toSide === 'top') {
+            d = pathSpineToTopMid(p1, p2, xgSame, 10, fromRect, toRect, dr.height, link.fromSide, gutters.midTop);
+          } else if (cf === 2 && link.toSide === 'left') {
+            d = pathSpineToLeftEdgeMid(p1, p2, xgSame, 10, toRect, dr.height, link.fromSide, fromRect);
+          } else {
+            d = pathViaOneGutter(p1, p2, xgSame, 10);
+          }
         } else if (Math.abs(cf - ct) === 1) {
           var lo = Math.min(cf, ct), hi = Math.max(cf, ct);
-          var xgOne = (lo === 1 && hi === 2) ? gutters.g12 : (lo === 2 && hi === 3) ? gutters.g23 : gutters.g34;
+          var xgOne = (lo === 1 && hi === 2) ? gutters.g12 : (lo === 2 && hi === 3) ? Math.max(gutters.g23, (gutters.mR != null ? gutters.mR : 0) + 12) : gutters.g34;
           d = pathViaOneGutter(p1, p2, xgOne, 10);
         } else if (cf === 2 && ct === 4) {
-          d = pathViaGutters2to4(p1, p2, gutters.g23, gutters.g34, cpoRel, dr.height, 10);
+          d = pathViaGutters2to4(p1, p2, gutters.g23, gutters.g34, cpoRel, dr.height, 10, midBand);
         } else {
           d = pathViaOneGutter(p1, p2, gutters.g12, 10);
         }
