@@ -160,7 +160,7 @@
         <option value="6">6</option>
       </select>
     </div>
-    <p class="muted" style="font-size: 1.1rem;">Ось X — CTE в таргете в <strong>выбранном</strong> раунде (в таблице — да/нет). Ось Y — прирост маржи к <strong>исходному</strong> DC (DC после этого раунда − исходный). Сводка по всем этапам и сумма приростов по раундам — на вкладке «Итоги по всем раундам».</p>
+    <p class="muted" style="font-size: 1.1rem;">Ось X — CTE в таргете в <strong>выбранном</strong> раунде (в таблице — да/нет). Ось Y для квадрантов: <strong>верх</strong> — если прирост маржи к исходному DC <strong>строго больше нуля</strong>, <strong>низ</strong> — ноль или отрицательный прирост (без медианы по командам). Сводка по всем этапам — на вкладке «Итоги по всем раундам».</p>
     <table class="results-table" id="resultsTable">
       <thead><tr><th>Команда</th><th>Исх. DC</th><th>DC за выбранный раунд</th><th>Прирост к исх.</th><th>SH</th><th>Заказы</th><th>OPH</th><th>CTE в таргете<br><span style="font-weight:normal;font-size:0.85em">(этот раунд)</span></th><th>Квадрант</th></tr></thead>
       <tbody id="resultsTableBody"></tbody>
@@ -200,7 +200,7 @@
 
   <div id="view-allrounds" class="view card">
     <h2>Итоги по всем раундам</h2>
-    <p class="muted" style="font-size:1.1rem;">Сводка за этапы 1…N: <strong>сумма DC</strong> по раундам с результатом, <strong>прирост маржи</strong> — <strong>сумма изменений DC</strong> между соседними сыгранными этапами (в т.ч. от исходного к первому этапу; совпадает с «DC после N − исходный», если цепочка непрерывна). Финальные SH / заказы / OPH — после этапа N. <strong>CTE в таргете</strong> — сколько раундов из числа раундов с расчётом.</p>
+    <p class="muted" style="font-size:1.1rem;">Сводка за этапы 1…N: <strong>сумма DC</strong> по раундам с результатом, <strong>прирост маржи</strong> — <strong>сумма изменений DC</strong> между соседними сыгранными этапами (в т.ч. от исходного к первому этапу; совпадает с «DC после N − исходный», если цепочка непрерывна). <strong>CTE в таргете</strong> — сколько раундов из числа раундов с расчётом.</p>
     <div class="map-selector">
       <label>Учитывать этапы 1…</label>
       <select id="allRoundsRoundSelect">
@@ -580,7 +580,7 @@
         const thead = document.getElementById("allRoundsTableHead");
         const tbody = document.getElementById("allRoundsTableBody");
         if (!thead || !tbody) return;
-        thead.innerHTML = "<tr><th>Команда</th><th>Исх. DC</th><th>Сумма DC<br><span style=\"font-weight:normal;font-size:0.85em\">(этапы 1…" + upTo + ")</span></th><th>Прирост маржи<br><span style=\"font-weight:normal;font-size:0.85em\">(сумма Δ по раундам)</span></th><th>SH</th><th>Заказы</th><th>OPH</th><th>CTE в таргете<br><span style=\"font-weight:normal;font-size:0.85em\">(раундов)</span></th></tr>";
+        thead.innerHTML = "<tr><th>Команда</th><th>Исх. DC</th><th>Сумма DC<br><span style=\"font-weight:normal;font-size:0.85em\">(этапы 1…" + upTo + ")</span></th><th>Прирост маржи<br><span style=\"font-weight:normal;font-size:0.85em\">(сумма Δ по раундам)</span></th><th>CTE в таргете<br><span style=\"font-weight:normal;font-size:0.85em\">(раундов)</span></th></tr>";
         tbody.innerHTML = "";
         const fmt = (x) => x != null ? (typeof x === "number" && x > 1000 ? x.toLocaleString("ru") : x) : "—";
         const fmtGrowth = (x) => {
@@ -602,13 +602,10 @@
           const initDc = fmt(t.initial_dc);
           const gAll = t.dc_growth_sum_round_deltas != null ? t.dc_growth_sum_round_deltas : t.dc_growth;
           const growthStr = fmtGrowth(gAll);
-          const shVal = fmt(t.result_sh != null ? t.result_sh : t.initial_sh);
-          const ordersVal = fmt(t.result_orders != null ? t.result_orders : t.initial_orders);
-          const ophVal = fmt(t.result_oph != null ? t.result_oph : t.initial_oph);
           const nRes = (t.rounds_with_result != null ? t.rounds_with_result : (t.per_round || []).filter((p) => p.round <= upTo).length);
           const cteStr = nRes > 0 ? (t.cte_ok_rounds + " из " + nRes) : "—";
           const tr = document.createElement("tr");
-          tr.innerHTML = "<td>" + (t.name || "—") + "</td><td>" + initDc + "</td><td>" + sumStr + "</td><td>" + growthStr + "</td><td>" + shVal + "</td><td>" + ordersVal + "</td><td>" + ophVal + "</td><td>" + cteStr + "</td>";
+          tr.innerHTML = "<td>" + (t.name || "—") + "</td><td>" + initDc + "</td><td>" + sumStr + "</td><td>" + growthStr + "</td><td>" + cteStr + "</td>";
           tbody.appendChild(tr);
         });
         fillQuadrantUls(results, quadrantUlIdsAll, "dc_growth_sum_round_deltas");

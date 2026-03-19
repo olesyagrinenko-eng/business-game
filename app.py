@@ -118,6 +118,81 @@ def get_scenario_result(r, coef1, coef2):
     return res
 
 
+def _coerce_metric_number(x):
+    """Привести к float для расчёта заказов/OPH (JSON/СВОД иногда дают строку)."""
+    if x is None:
+        return None
+    if isinstance(x, bool):
+        return None
+    if isinstance(x, (int, float)):
+        if isinstance(x, float) and (math.isnan(x) or math.isinf(x)):
+            return None
+        return float(x)
+    if isinstance(x, str):
+        s = x.strip().replace(" ", "").replace(",", ".")
+        if not s:
+            return None
+        try:
+            return float(s)
+        except ValueError:
+            return None
+    return None
+
+
+def _enrich_side_sh_orders_oph(side, role):
+    """
+    В СВОД (txt→JSON) часто нет SH / заказов / OPH в строках сценария (все None).
+    Тогда оцениваем заказы пропорционально DC сценария к исходному DC/DCPO, SH берём из исходных
+    метрик роли, OPH = заказы/SH. Уже заданные в сценарии значения не перезаписываем.
+    """
+    if not isinstance(side, dict):
+        return
+    if side.get("SH") is not None and side.get("orders") is not None and side.get("OPH") is not None:
+        return
+    im = (DATA.get("initial_metrics") or {}).get("team%d" % int(role), {})
+    if not im:
+        return
+    sh = side["SH"] if side.get("SH") is not None else im.get("SH")
+    sh = _coerce_metric_number(sh) if sh is not None else None
+    orders = side.get("orders")
+    if orders is None:
+        io = _coerce_metric_number(im.get("orders"))
+        ini_dc = _coerce_metric_number(im.get("DC"))
+        if ini_dc is None:
+            ini_dc = _coerce_metric_number(im.get("DCPO"))
+        cur_dc = _coerce_metric_number(side.get("DC"))
+        if (
+            io is not None
+            and ini_dc is not None
+            and ini_dc != 0
+            and cur_dc is not None
+        ):
+            orders = max(0, round(io * cur_dc / ini_dc))
+        elif io is not None:
+            orders = io
+    else:
+        orders = _coerce_metric_number(orders)
+    oph = side.get("OPH")
+    if oph is None:
+        if sh is not None and sh != 0 and orders is not None:
+            try:
+                oph = round(float(orders) / float(sh), 2)
+            except (ValueError, ZeroDivisionError):
+                oph = im.get("OPH")
+                oph = _coerce_metric_number(oph) if oph is not None else None
+        else:
+            oph = im.get("OPH")
+            oph = _coerce_metric_number(oph) if oph is not None else None
+    else:
+        oph = _coerce_metric_number(oph)
+    if side.get("SH") is None and sh is not None:
+        side["SH"] = sh
+    if side.get("orders") is None and orders is not None:
+        side["orders"] = orders
+    if side.get("OPH") is None and oph is not None:
+        side["OPH"] = oph
+
+
 @app.route("/health")
 def health():
     """Проверка для Render и отладки: сервер отвечает без загрузки данных."""
@@ -279,6 +354,7 @@ def api_state():
                         result = copy.deepcopy(raw)
                         if result.get("DC") in ("+", "-"):
                             result["DC"] = None
+                        _enrich_side_sh_orders_oph(result, t["role"])
         # История раундов: что делали я и конкурент, результат по каждому
         results_by_round = []
         for r in range(1, current_round + 1):
@@ -298,6 +374,7 @@ def api_state():
                             res_r = copy.deepcopy(raw_r)
                             if res_r.get("DC") in ("+", "-"):
                                 res_r["DC"] = None
+                            _enrich_side_sh_orders_oph(res_r, t["role"])
             results_by_round.append({
                 "round": r,
                 "my_choice": my_c,
@@ -455,13 +532,17 @@ def api_results():
             cte_ok = side.get("CTE_in_target", False)
             if cte_ok:
                 cte_ok_count += 1
+            side_disp = copy.deepcopy(side)
+            if side_disp.get("DC") in ("+", "-"):
+                side_disp["DC"] = None
+            _enrich_side_sh_orders_oph(side_disp, t["role"])
             per_round.append({
                 "round": r,
                 "dc": round(dc, 0) if isinstance(dc, (int, float)) else None,
                 "cte_ok": cte_ok,
-                "sh": side.get("SH"),
-                "orders": side.get("orders"),
-                "oph": side.get("OPH"),
+                "sh": side_disp.get("SH"),
+                "orders": side_disp.get("orders"),
+                "oph": side_disp.get("OPH"),
             })
         rounds_played = sum(1 for r in rounds_consider if (t["id"], r) in choices)
         show_total = up_to_round == max_rounds and rounds_played >= 1
@@ -518,17 +599,13 @@ def api_results():
             "result_orders": pr_up.get("orders") if pr_up else None,
             "result_oph": pr_up.get("oph") if pr_up else None,
         })
-    # Квадранты: прирост и CTE по последнему раунду с данными ≤ выбранного N (как в сводке)
-    dcs_r1 = [z["per_round"][0]["dc"] for z in results if z.get("per_round") and len(z["per_round"]) > 0 and z["per_round"][0].get("dc") is not None]
-    median_r1 = sorted(dcs_r1)[len(dcs_r1) // 2] if dcs_r1 else 0
+    # Квадранты: ось «прирост маржи» = прирост к исходному DC (и для раунда 1 тоже, не абсолютный DC)
     def _growth_for_axis(row):
         g = row.get("dc_growth_sum_round_deltas")
         if g is None:
             g = row.get("dc_growth")
         return g
 
-    growths = [_growth_for_axis(x) for x in results if _growth_for_axis(x) is not None]
-    median_growth = sorted(growths)[len(growths) // 2] if growths else 0
     for x in results:
         x["quadrant"] = None
         if x["rounds_played"] < 1:
@@ -540,12 +617,9 @@ def api_results():
                 pr_sel = p
                 break
         cte_ok = pr_sel.get("cte_ok", False) if pr_sel else False
-        if up_to_round == 1:
-            dc1 = x["per_round"][0]["dc"] if x.get("per_round") and x["per_round"] and x["per_round"][0].get("dc") is not None else 0
-            high = dc1 >= median_r1
-        else:
-            gx = _growth_for_axis(x)
-            high = gx is not None and gx >= median_growth
+        gx = _growth_for_axis(x)
+        # Верхние квадранты: любой положительный прирост маржи (без сравнения с медианой)
+        high = gx is not None and gx > 0
         if high and cte_ok:
             x["quadrant"] = "top_right"
         elif high and not cte_ok:
@@ -556,7 +630,7 @@ def api_results():
             x["quadrant"] = "bottom_left"
     return jsonify({
         "results": results,
-        "median_dc_growth": median_growth,
+        "median_dc_growth": None,
         "up_to_round": up_to_round,
         "show_total_only_after_round_5": True,
     })

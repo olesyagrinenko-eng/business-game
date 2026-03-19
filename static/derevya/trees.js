@@ -4,7 +4,6 @@
 
   var ROUND = window.ROUND;
   var ROUND_INTRO = window.ROUND_INTRO;
-  var AOV = window.AOV;
   var INITIAL = window.INITIAL;
   var SCENARIOS = window.SCENARIOS;
 
@@ -15,6 +14,11 @@
     if (x == null) return '—';
     if (typeof x === 'number' && x === Math.round(x)) return String(Math.round(x));
     return typeof x === 'number' ? x.toLocaleString('ru', { maximumFractionDigits: 2 }) : String(x);
+  }
+  /** Одинаковый формат дробей: всегда запятая и один знак (3,5) */
+  function fmtDec1(x) {
+    if (x == null || typeof x !== 'number' || !isFinite(x)) return '—';
+    return x.toLocaleString('ru', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   }
   function placeStatus(place) {
     if (place == null) return '';
@@ -36,7 +40,23 @@
   }
   function pctStr(pct) {
     if (pct == null) return '—';
-    return (pct > 0 ? '+' : '') + pct + '%';
+    var n = typeof pct === 'number' ? pct : parseFloat(pct);
+    if (!isFinite(n)) return '—';
+    var r = Math.round(n);
+    var s = Math.abs(n - r) < 0.001 ? String(r) : String(n).replace('.', ',');
+    return (n > 0 ? '+' : '') + s + '%';
+  }
+  function pctPlain(pct) {
+    if (pct == null) return '—';
+    var n = typeof pct === 'number' ? pct : parseFloat(pct);
+    if (!isFinite(n)) return '—';
+    return Math.round(n) + '%';
+  }
+  /** Доля фоллбэка из Excel: 0–1 как доля, иначе как проценты (5 → 5%) */
+  function fmtFallbackShare(x) {
+    if (x == null || typeof x !== 'number' || !isFinite(x)) return '—';
+    if (x >= 0 && x <= 1) return pctPlain(x * 100);
+    return fmt(x) + '%';
   }
   function set(id, value) {
     var el = document.getElementById(id);
@@ -64,7 +84,8 @@
     var ordersCurr = (curr && curr.orders != null) ? curr.orders : (curr && curr.DCPO ? curr.DC / curr.DCPO : null);
     if (curr && curr.SH != null) shCurr = curr.SH;
     var ophCurr = (curr && curr.OPH != null) ? curr.OPH : (shCurr > 0 && ordersCurr != null ? ordersCurr / shCurr : null);
-    var aovCurr = (curr && curr.avg_check != null) ? curr.avg_check : (typeof AOV === 'number' ? AOV : prev.avg_check);
+    /* Текущий AOV: только из сценария или «как на прошлой неделе»; глобальный AOV раунда не подставляем (ломает команды с разным чеком). */
+    var aovCurr = (curr && curr.avg_check != null) ? curr.avg_check : prev.avg_check;
     var ordPrev = prev.orders, shPrev = prev.SH;
     var ordPct = pctChange(ordPrev, ordersCurr); var ordOk = ordPct == null ? null : (ordPct > 0 ? true : ordPct < 0 ? false : null);
     var shPct = pctChange(shPrev, shCurr); var shOk = shPct == null ? null : (shPct > 0 ? true : shPct < 0 ? false : null);
@@ -77,11 +98,13 @@
     var dcPct = curr ? pctChange(prev.DC, curr.DC) : null; var dcOk = dcPct == null ? null : (dcPct > 0 ? true : dcPct < 0 ? false : null);
     set(prefix + 'SH_prev', fmt(prev.SH)); set(prefix + 'SH_curr', fmt(shCurr)); setDot(prefix + 'SH_dot', metricStatus(shOk)); set(prefix + 'SH_pct', pctStr(shPct)); setPlashka('p' + team + '_sh', 'status-' + metricStatus(shOk));
     set(prefix + 'Orders_prev', fmt(prev.orders)); set(prefix + 'Orders_curr', ordersCurr != null ? fmt(Math.round(ordersCurr)) : '—'); setDot(prefix + 'Orders_dot', metricStatus(ordOk)); set(prefix + 'Orders_pct', pctStr(ordPct)); setPlashka('p' + team + '_orders', 'status-' + metricStatus(ordOk));
-    set(prefix + 'OPH_prev', fmt(prev.OPH)); set(prefix + 'OPH_curr', ophCurr != null ? Number(ophCurr).toFixed(1) : '—'); setDot(prefix + 'OPH_dot', metricStatus(ophOk)); set(prefix + 'OPH_pct', pctStr(ophPct)); setPlashka('p' + team + '_oph', 'status-' + metricStatus(ophOk));
-    set(prefix + 'CTE_prev', prev.CTE != null ? Number(prev.CTE).toFixed(1) : '—'); set(prefix + 'CTE_curr', curr ? Number(curr.CTE).toFixed(1) : '—'); setDot(prefix + 'CTE_dot', metricStatus(cteOk)); set(prefix + 'CTE_pct', pctStr(ctePct)); setPlashka('p' + team + '_cte', 'status-' + metricStatus(cteOk));
+    set(prefix + 'OPH_prev', fmtDec1(prev.OPH)); set(prefix + 'OPH_curr', ophCurr != null ? fmtDec1(Number(ophCurr)) : '—'); setDot(prefix + 'OPH_dot', metricStatus(ophOk)); set(prefix + 'OPH_pct', pctStr(ophPct)); setPlashka('p' + team + '_oph', 'status-' + metricStatus(ophOk));
+    set(prefix + 'CTE_prev', prev.CTE != null ? fmtDec1(Number(prev.CTE)) : '—'); set(prefix + 'CTE_curr', curr ? fmtDec1(Number(curr.CTE)) : '—'); setDot(prefix + 'CTE_dot', metricStatus(cteOk)); set(prefix + 'CTE_pct', pctStr(ctePct)); setPlashka('p' + team + '_cte', 'status-' + metricStatus(cteOk));
     set(prefix + 'AOV_prev', fmt(prev.avg_check)); set(prefix + 'AOV_curr', fmt(aovCurr)); setDot(prefix + 'AOV_dot', metricStatus(aovOk)); set(prefix + 'AOV_pct', pctStr(aovPct)); setPlashka('p' + team + '_aov', 'status-' + metricStatus(aovOk));
-    set(prefix + 'Margin_prev', prev.margin != null ? (prev.margin * 100).toFixed(0) + '%' : '—'); set(prefix + 'Margin_curr', prev.margin != null ? (prev.margin * 100).toFixed(1) + '%' : '—'); setDot(prefix + 'Margin_dot', 'yellow'); set(prefix + 'Margin_pct', '0%'); setPlashka('p' + team + '_margin', 'status-yellow');
-    set(prefix + 'DCPO_prev', String(Math.round(prev.DCPO))); set(prefix + 'DCPO_curr', curr ? String(Math.round(curr.DCPO)) : '—'); setDot(prefix + 'DCPO_dot', metricStatus(dcpoOk)); set(prefix + 'DCPO_pct', pctStr(dcpoPct)); setPlashka('p' + team + '_dcpo', 'status-' + metricStatus(dcpoOk));
+    set(prefix + 'Margin_prev', prev.margin != null ? pctPlain(prev.margin * 100) : '—'); set(prefix + 'Margin_curr', prev.margin != null ? pctPlain(prev.margin * 100) : '—'); setDot(prefix + 'Margin_dot', 'yellow'); set(prefix + 'Margin_pct', '0%'); setPlashka('p' + team + '_margin', 'status-yellow');
+    set(prefix + 'DCPO_prev', String(Math.round(prev.DCPO))); set(prefix + 'DCPO_curr', curr ? String(Math.round(curr.DCPO)) : '—');
+    var dcpoTraffic = (curr && curr.CTE_in_target === false) ? 'red' : metricStatus(dcpoOk);
+    setDot(prefix + 'DCPO_dot', 'status-' + dcpoTraffic); set(prefix + 'DCPO_pct', pctStr(dcpoPct)); setPlashka('p' + team + '_dcpo', 'status-' + dcpoTraffic);
     set(prefix + 'DC_prev', fmt(prev.DC)); set(prefix + 'DC_curr', curr ? fmt(curr.DC) : '—'); setDot(prefix + 'DC_dot', metricStatus(dcOk)); set(prefix + 'DC_pct', pctStr(dcPct)); setPlashka('p' + team + '_dc', 'status-' + metricStatus(dcOk));
     set(prefix + 'CPO_prev', fmt(prev.CPO)); set(prefix + 'CPO_curr', curr ? String(Math.round(curr.CPO)) : '—'); setDot(prefix + 'CPO_dot', metricStatus(cpoOk)); set(prefix + 'CPO_pct', pctStr(cpoPct)); setPlashka('p' + team + '_cpo', 'status-' + metricStatus(cpoOk));
   }
@@ -110,33 +133,57 @@
     var coefLabels = { '-0.1': '-10%', '0': '0%', '0.2': '+20%', '0.4': '+40%' };
     document.getElementById('vCoef1').textContent = coefLabels[String(c1)] || c1;
     document.getElementById('vCoef2').textContent = coefLabels[String(c2)] || c2;
-    var diff = c2 - c1;
-    document.getElementById('vDiff').textContent = (diff > 0 ? '+' : '') + diff.toFixed(1);
+    var diffPct = Math.round((c2 - c1) * 100);
+    document.getElementById('vDiff').textContent = (diffPct > 0 ? '+' : '') + diffPct + '%';
     var sh = computeSH(c1, c2);
     var prev1 = INITIAL.team1, prev2 = INITIAL.team2;
     fillTeam(1, prev1, sc ? sc.team1 : null, sh.sh1);
     fillTeam(2, prev2, sc ? sc.team2 : null, sh.sh2);
-    fillMechanics(1);
-    fillMechanics(2);
+    fillMechanics(1, sc);
+    fillMechanics(2, sc);
     applyDiagramMinHeight();
     requestAnimationFrame(function () { requestAnimationFrame(redrawAllArrows); });
   }
   /** Плашки механик по раундам (как доп. вводные в СВОД: р2 сурж, р3 вывоз, р4 переток, р5 склад, р6 роялти) */
-  function fillMechanics(teamNum) {
+  function fillMechanics(teamNum, sc) {
     var prefix = teamNum === 1 ? 't1' : 't2';
     var pid = teamNum === 1 ? 'p1' : 'p2';
+    var teamData = sc && (teamNum === 1 ? sc.team1 : sc.team2);
     function vis(id, on) {
       var el = document.getElementById(id);
       if (el) el.style.display = on ? '' : 'none';
+    }
+    /* Раунд 6: упрощённое дерево — без суржа/вывоза/перетока/склада; блок «роялти» без старого подзаголовка */
+    if (ROUND >= 6) {
+      vis(pid + '_surge', false);
+      vis(pid + '_delivery', false);
+      vis(pid + '_churn', false);
+      vis(pid + '_stock', false);
+      vis(pid + '_royalty', true);
+      vis(pid + '_fallback', true);
+      vis(pid + '_cpo_total', true);
+      var roy = document.querySelector('#' + pid + '_royalty .name');
+      if (roy) roy.textContent = 'Роялти';
+      var royRows = document.querySelectorAll('#' + pid + '_royalty .row');
+      for (var ri = 0; ri < royRows.length; ri++) {
+        if (royRows[ri].textContent.indexOf('Зависят') >= 0) royRows[ri].style.display = 'none';
+      }
+      set(prefix + 'Royalty_prev', teamData && teamData.royalty_prev != null ? String(teamData.royalty_prev) : 'нет');
+      set(prefix + 'Royalty_curr', teamData && teamData.royalty_curr != null ? String(teamData.royalty_curr) : 'да');
+      set(prefix + 'Fallback_curr', teamData && teamData.fallback_share != null ? fmtFallbackShare(Number(teamData.fallback_share)) : '—');
+      set(prefix + 'CpoTotal_curr', teamData && teamData.cpo_total != null ? fmt(Number(teamData.cpo_total)) : '—');
+      return;
     }
     vis(pid + '_surge', ROUND >= 2);
     vis(pid + '_delivery', ROUND >= 3);
     vis(pid + '_churn', ROUND >= 4);
     vis(pid + '_stock', ROUND >= 5);
-    vis(pid + '_royalty', ROUND >= 6);
+    vis(pid + '_royalty', false);
     if (ROUND >= 2) {
-      set(prefix + 'Surge_prev', ROUND === 2 ? 'нет' : 'да');
-      set(prefix + 'Surge_curr', 'да');
+      var sp = teamData && teamData.surge_prev != null ? String(teamData.surge_prev) : (ROUND === 2 ? 'нет' : 'да');
+      var scurr = teamData && teamData.surge_curr != null ? String(teamData.surge_curr) : 'да';
+      set(prefix + 'Surge_prev', sp);
+      set(prefix + 'Surge_curr', scurr);
     }
     if (ROUND >= 3) {
       set(prefix + 'Delivery_prev', ROUND === 3 ? 'нет' : 'да');
@@ -149,10 +196,6 @@
     if (ROUND >= 5) {
       set(prefix + 'Stock_prev', ROUND === 5 ? 'нет' : 'да');
       set(prefix + 'Stock_curr', 'да');
-    }
-    if (ROUND >= 6) {
-      set(prefix + 'Royalty_prev', 'нет');
-      set(prefix + 'Royalty_curr', 'да');
     }
   }
   function getArrowLinks() {

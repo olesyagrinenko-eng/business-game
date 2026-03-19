@@ -8,14 +8,17 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 TXT = os.path.join(os.path.dirname(BASE), "svod_full.txt")
 OUT = os.path.join(BASE, "data", "scenarios.json")
 
-# Индексы строк в svod_full.txt (0-based). Раунд 6: следующий блок после 5 (140+21=161).
+# Индексы строк в svod_full.txt (0-based), не номера строк Excel.
+# Лист Excel «Деревья»: раунд 6 с строки 127; первая строка матрицы сценариев — 138.
+# Колонка P: P138 — доля фоллбэка (в кортеж → индекс 30 для команды 1), P140 — общий CPO (индекс 31 для команды 1);
+# для команды 2 — 32 и 33. При выгрузке листа в txt сдвиньте ROUNDS[6], чтобы эти строки попали в диапазон.
 ROUNDS = {
     1: list(range(33, 33 + 16)),
     2: list(range(58, 58 + 16)),
     3: list(range(84, 84 + 16)),
     4: list(range(111, 111 + 16)),
     5: list(range(140, 140 + 16)),
-    6: list(range(161, 161 + 16)),
+    6: list(range(169, 169 + 16)),  # блок «Раунд 6» в текущем svod_full.txt (строки файла ~170–185)
 }
 
 # Вводные по раундам. Чтобы убрать строку в каком-то раунде — удалите её из списка для этого раунда.
@@ -117,6 +120,8 @@ def main():
             c1, c2 = parts[1], parts[2]
             if c1 is None or c2 is None:
                 continue
+            if not isinstance(c1, (int, float)) or not isinstance(c2, (int, float)):
+                continue
             key = f"{c1}_{c2}"
             def rv(x):
                 if x is None: return None
@@ -128,30 +133,51 @@ def main():
             # Если в svod_full.txt колонки идут как SH, Заказы, OPH, CTE... — то 3=SH1, 4=orders1, 5=OPH1 или сдвиг; при необходимости поправьте индексы ниже.
             def opt(i):
                 return rv(parts[i]) if len(parts) > i and parts[i] is not None else None
-            scenarios[str(r)][key] = {
-                "team1": {
-                    "CTE": rv(parts[4]),
-                    "CPO": rv(parts[5]),
-                    "DCPO": rv(parts[6]),
-                    "DC": rv(parts[7]),
-                    "CTE_in_target": parts[8] == "+",
-                    "place_DC": int(parts[9]) if parts[9] is not None else None,
-                    "SH": opt(10),
-                    "orders": opt(11),
-                    "OPH": opt(12),
-                },
-                "team2": {
-                    "CTE": rv(parts[17]),
-                    "CPO": rv(parts[18]),
-                    "DCPO": rv(parts[19]),
-                    "DC": rv(parts[20]),
-                    "CTE_in_target": parts[21] == "+" if len(parts) > 21 else False,
-                    "place_DC": int(parts[22]) if len(parts) > 22 and parts[22] is not None else None,
-                    "SH": opt(23),
-                    "orders": opt(24),
-                    "OPH": opt(25),
-                },
+
+            def surge_txt(v):
+                """Слоты 26–29 в СВОД: 0/1 → нет/да (сурж и т.п.)."""
+                if v is None:
+                    return None
+                if isinstance(v, (int, float)):
+                    if v == 0:
+                        return "нет"
+                    if v == 1:
+                        return "да"
+                return str(v)
+
+            team1 = {
+                "CTE": rv(parts[4]),
+                "CPO": rv(parts[5]),
+                "DCPO": rv(parts[6]),
+                "DC": rv(parts[7]),
+                "CTE_in_target": parts[8] == "+",
+                "place_DC": int(parts[9]) if parts[9] is not None else None,
+                "SH": opt(10),
+                "orders": opt(11),
+                "OPH": opt(12),
+                "surge_prev": surge_txt(opt(26)),
+                "surge_curr": surge_txt(opt(27)),
             }
+            team2 = {
+                "CTE": rv(parts[17]),
+                "CPO": rv(parts[18]),
+                "DCPO": rv(parts[19]),
+                "DC": rv(parts[20]),
+                "CTE_in_target": parts[21] == "+" if len(parts) > 21 else False,
+                "place_DC": int(parts[22]) if len(parts) > 22 and parts[22] is not None else None,
+                "SH": opt(23),
+                "orders": opt(24),
+                "OPH": opt(25),
+                "surge_prev": surge_txt(opt(28)),
+                "surge_curr": surge_txt(opt(29)),
+            }
+            # Раунд 6, лист «Деревья» колонка P: доля фоллбэка / общий CPO (на строке сценария или с P138/P140)
+            if r == 6:
+                team1["fallback_share"] = opt(30)
+                team1["cpo_total"] = opt(31)
+                team2["fallback_share"] = opt(32)
+                team2["cpo_total"] = opt(33)
+            scenarios[str(r)][key] = {"team1": team1, "team2": team2}
 
     # Общие вводные зависят от раунда: часть пунктов убирается (по правилам из СВОД).
     # hide_from_round = с какого раунда пункт скрывать (2 = показывать только в р1; 3 = в р1–2 и т.д.).

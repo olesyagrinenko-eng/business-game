@@ -308,6 +308,51 @@
     const coefLabels = { "-0.1": "-10%", "0": "0%", "0.2": "+20%", "0.4": "+40%" };
     const metricNames = { CTE: "CTE", CPO: "CPO", DCPO: "DCPO", DC: "DC" };
 
+    function coerceMetricNum(x) {
+      if (x == null || x === "") return null;
+      if (typeof x === "boolean") return null;
+      if (typeof x === "number") return Number.isFinite(x) ? x : null;
+      if (typeof x === "string") {
+        const s = String(x).trim().replace(/\s/g, "").replace(",", ".");
+        if (!s) return null;
+        const n = parseFloat(s);
+        return Number.isFinite(n) ? n : null;
+      }
+      return null;
+    }
+
+    /** Дозаполнить SH / заказы / OPH, если в сценарии null (как в СВОД для этапов 4–6). */
+    function enrichResultShOrdersOph(res, initial) {
+      const out = res && typeof res === "object" ? { ...res } : res;
+      if (!out || !initial) return out;
+      if (out.SH != null && out.orders != null && out.OPH != null) return out;
+      let sh = out.SH != null ? coerceMetricNum(out.SH) : coerceMetricNum(initial.SH);
+      let orders = out.orders;
+      if (orders == null) {
+        const io = coerceMetricNum(initial.orders);
+        let iniDc = coerceMetricNum(initial.DC);
+        if (iniDc == null) iniDc = coerceMetricNum(initial.DCPO);
+        const curDc = coerceMetricNum(out.DC);
+        if (io != null && iniDc != null && iniDc !== 0 && curDc != null)
+          orders = Math.max(0, Math.round((io * curDc) / iniDc));
+        else if (io != null) orders = io;
+      } else {
+        orders = coerceMetricNum(orders);
+      }
+      let oph = out.OPH;
+      if (oph == null) {
+        if (sh != null && sh !== 0 && orders != null)
+          oph = Math.round((orders / sh) * 100) / 100;
+        else oph = coerceMetricNum(initial.OPH);
+      } else {
+        oph = coerceMetricNum(oph);
+      }
+      if (out.SH == null && sh != null) out.SH = sh;
+      if (out.orders == null && orders != null) out.orders = orders;
+      if (out.OPH == null && oph != null) out.OPH = oph;
+      return out;
+    }
+
     function showResult(res, state, data) {
       const box = document.getElementById("resultBox");
       box.innerHTML = "";
@@ -315,6 +360,7 @@
       const oppLabel = state && state.opponent_choice != null ? (coefLabels[String(state.opponent_choice)] || state.opponent_choice) : null;
       const role = (state && state.role != null && state.role !== "") ? Number(state.role) : pairRoleFromStorage();
       const initial = (data && data.initial_metrics) ? data.initial_metrics["team" + role] : {};
+      const resM = enrichResultShOrdersOph(res, initial);
       const resRound = state && state.current_round != null ? state.current_round : "";
       let html = "<p class=\"result-round-label\">Раунд <strong>" + resRound + "</strong> — ваш результат по метрикам (одинаковые цифры в разных раундах — это нормально, смотрите номер раунда).</p>";
       if (oppLabel) {
@@ -322,9 +368,9 @@
       }
       const metrics = ["CTE", "CPO", "DCPO", "DC"];
       const extraMetrics = [
-        ["SH", initial.SH, res.SH],
-        ["Заказы", initial.orders, res.orders],
-        ["OPH", initial.OPH, res.OPH],
+        ["SH", initial.SH, resM.SH],
+        ["Заказы", initial.orders, resM.orders],
+        ["OPH", initial.OPH, resM.OPH],
       ];
       html += "<table class=\"metrics-table\"><thead><tr><th>Метрика</th><th>Исходное</th><th>Итог раунда</th></tr></thead><tbody>";
       metrics.forEach((key) => {
