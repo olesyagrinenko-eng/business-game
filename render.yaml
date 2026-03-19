@@ -1,10 +1,14 @@
 # Render Blueprint: один клик деплой из репозитория
 # https://render.com/docs/blueprint-spec
+#
+# Если репозиторий — весь каталог Cursor, а код игры в подпапке, rootDir обязателен.
+# Если в корне репозитория лежит только game-web — удалите rootDir.
 services:
   - type: web
     name: business-game
     runtime: python
+    rootDir: бизнес игра/game-web
     buildCommand: pip install -r requirements.txt
     startCommand: python run.py
-    # Проверка по HTTP вместо сканирования порта — тогда Render не выключит сервис
+    # HTTP health check (не только открытый TCP-порт)
     healthCheckPath: /health
