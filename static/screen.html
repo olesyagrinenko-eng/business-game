@@ -79,12 +79,6 @@
     </div>
   </div>
 
-  <div class="card" style="margin-bottom:1rem;">
-    <h2>Ссылки для команд (10 экранов)</h2>
-    <p class="muted" style="font-size:1rem;">Раздайте каждой команде свою ссылку — один экран на команду, путаницы не будет.</p>
-    <div id="teamLinksList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; font-size:1rem;"></div>
-  </div>
-
   <div id="teamsManagePanel" class="card hidden" style="margin-bottom:1rem;">
     <h2>Удаление команд</h2>
     <p class="muted" style="font-size:1rem;">Удаляйте команду, если участник выбыл. Он сможет войти заново с тем же именем (Команда 1 … Команда 10).</p>
@@ -97,6 +91,7 @@
     <button data-tab="map">Карта квадрантов</button>
     <button data-tab="allrounds">Итоги по всем раундам</button>
     <button data-tab="names">Названия команд</button>
+    <button data-tab="links">Ссылки для команд</button>
     <a href="/derevya/index.html" style="padding:0.5rem 1rem; border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:12px; text-decoration:none; display:inline-flex; align-items:center;">Деревья метрик</a>
   </div>
 
@@ -197,18 +192,24 @@
     <div id="slotNamesGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:0.6rem 1.25rem; align-items:center;"></div>
   </div>
 
+  <div id="view-links" class="view card">
+    <h2>Ссылки для команд (10 экранов)</h2>
+    <p class="muted" style="font-size:1rem;">Не для проектора: откройте эту вкладку на ноутбуке ведущего, скопируйте ссылки и раздайте командам. У каждой команды свой экран — путаницы не будет.</p>
+    <div id="teamLinksList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; font-size:1rem;"></div>
+  </div>
+
   <div id="view-allrounds" class="view card">
     <h2>Итоги по всем раундам</h2>
-    <p class="muted" style="font-size:1.1rem;">DC и CTE по каждому раунду для каждой команды.</p>
+    <p class="muted" style="font-size:1.1rem;">Сводка за выбранный диапазон этапов: <strong>сумма DC</strong> по всем сыгранным раундам 1…N, <strong>прирост маржи</strong> (DC после этапа N минус исходный DC), финальные SH / заказы / OPH после этапа N, доля раундов с CTE в таргете.</p>
     <div class="map-selector">
-      <label>Показать итоги после раунда: </label>
+      <label>Учитывать этапы 1…</label>
       <select id="allRoundsRoundSelect">
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>
         <option value="5">5</option>
-        <option value="6">6</option>
+        <option value="6" selected>6 (все этапы)</option>
       </select>
     </div>
     <table class="results-table" id="allRoundsTable" style="margin-top:1rem;">
@@ -242,6 +243,7 @@
         if (b.dataset.tab === "map") loadResults();
         if (b.dataset.tab === "allrounds") loadAllRoundsResults();
         if (b.dataset.tab === "names") fillSlotNames(state.slot_display_names || {});
+        if (b.dataset.tab === "links") fillTeamLinks();
       });
     });
 
@@ -548,23 +550,33 @@
         const thead = document.getElementById("allRoundsTableHead");
         const tbody = document.getElementById("allRoundsTableBody");
         if (!thead || !tbody) return;
-        let headHtml = "<tr><th>Команда</th>";
-        for (let i = 1; i <= upTo; i++) headHtml += "<th>Раунд " + i + "</th>";
-        headHtml += "<th>Сумма DC</th><th>CTE в таргете</th></tr>";
-        thead.innerHTML = headHtml;
+        thead.innerHTML = "<tr><th>Команда</th><th>Исх. DC</th><th>Сумма DC<br><span style=\"font-weight:normal;font-size:0.85em\">(этапы 1…" + upTo + ")</span></th><th>Прирост маржи<br><span style=\"font-weight:normal;font-size:0.85em\">(к исх.)</span></th><th>SH</th><th>Заказы</th><th>OPH</th><th>CTE в таргете</th></tr>";
         tbody.innerHTML = "";
         const fmt = (x) => x != null ? (typeof x === "number" && x > 1000 ? x.toLocaleString("ru") : x) : "—";
+        const fmtGrowth = (x) => {
+          if (x == null) return "—";
+          const s = (x >= 0 ? "+" : "") + (typeof x === "number" && x > 1000 ? x.toLocaleString("ru") : x);
+          return s;
+        };
         results.forEach((t) => {
+          const perRound = (t.per_round || []).filter((p) => p.round <= upTo);
+          let sumDc = 0;
+          let nDc = 0;
+          perRound.forEach((p) => {
+            if (p.dc != null) {
+              sumDc += p.dc;
+              nDc += 1;
+            }
+          });
+          const sumStr = nDc ? sumDc.toLocaleString("ru") : "—";
+          const initDc = fmt(t.initial_dc);
+          const growthStr = fmtGrowth(t.dc_growth);
+          const shVal = fmt(t.result_sh != null ? t.result_sh : t.initial_sh);
+          const ordersVal = fmt(t.result_orders != null ? t.result_orders : t.initial_orders);
+          const ophVal = fmt(t.result_oph != null ? t.result_oph : t.initial_oph);
+          const cteStr = t.rounds_played ? t.cte_ok_rounds + " из " + t.rounds_played : "—";
           const tr = document.createElement("tr");
-          let cells = "<td>" + (t.name || "—") + "</td>";
-          const perRound = t.per_round || [];
-          for (let r = 1; r <= upTo; r++) {
-            const pr = perRound.find((p) => p.round === r);
-            cells += "<td>" + (pr && pr.dc != null ? pr.dc.toLocaleString("ru") : "—") + "</td>";
-          }
-          cells += "<td>" + fmt(t.total_dc) + "</td>";
-          cells += "<td>" + (t.rounds_played ? t.cte_ok_rounds + " из " + t.rounds_played : "—") + "</td>";
-          tr.innerHTML = cells;
+          tr.innerHTML = "<td>" + (t.name || "—") + "</td><td>" + initDc + "</td><td>" + sumStr + "</td><td>" + growthStr + "</td><td>" + shVal + "</td><td>" + ordersVal + "</td><td>" + ophVal + "</td><td>" + cteStr + "</td>";
           tbody.appendChild(tr);
         });
       } catch (_) {}
@@ -573,6 +585,8 @@
     function fillTeamLinks() {
       const container = document.getElementById("teamLinksList");
       if (!container) return;
+      if (container.dataset.filled) return;
+      container.dataset.filled = "1";
       const base = location.origin;
       for (let i = 1; i <= 10; i++) {
         const url = base + "/team/" + i;
@@ -601,7 +615,6 @@
         container.appendChild(wrap);
       }
     }
-    fillTeamLinks();
 
     (async () => {
       await loadData();
