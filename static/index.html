@@ -66,6 +66,13 @@
     .complication.complication-new { border-left-width: 8px !important; border-left-color: #e65100 !important; background: linear-gradient(90deg, #fff8e1, #ffffff) !important; font-weight: 700 !important; font-size: 1.08rem !important; box-shadow: 0 2px 10px rgba(230, 81, 0, 0.18); color: #1a237e !important; }
     .new-badge { display: inline-block; margin-right: 0.45rem; padding: 0.15rem 0.45rem; font-size: 0.72rem; font-weight: 800; vertical-align: middle; background: #ff6f00; color: #fff; border-radius: 6px; letter-spacing: 0.06em; }
     .result-round-label { font-size: 1.05rem; margin-bottom: 0.65rem; padding: 0.45rem 0.6rem; background: #e8f5e9; border-left: 5px solid #2e7d32; border-radius: 0 8px 8px 0; color: var(--dark); }
+    .player-initial-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1rem 0 0.75rem; align-items: start; }
+    @media (max-width: 520px) { .player-initial-metrics { grid-template-columns: 1fr; } }
+    .player-initial-metrics .mini-card { background: #fafbfd; border: 1px solid var(--border); border-radius: 12px; padding: 0.55rem 0.7rem; }
+    .player-initial-metrics h3 { font-size: 0.88rem; margin: 0 0 0.35rem 0; color: var(--dark); font-weight: 700; }
+    .player-initial-metrics table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .player-initial-metrics th, .player-initial-metrics td { padding: 0.22rem 0.35rem; text-align: left; border-bottom: 1px solid rgba(35,57,103,0.1); }
+    .player-initial-metrics th { color: var(--muted); font-weight: 600; width: 54%; }
   </style>
 </head>
 <body>
@@ -218,6 +225,58 @@
       }
     });
 
+    function fmtPlayerInitialMetric(x) {
+      if (x == null) return "—";
+      if (typeof x === "number" && x >= 1000) return x.toLocaleString("ru");
+      if (typeof x === "number" && x < 1 && x > 0) return (x * 100).toFixed(0) + "%";
+      return x;
+    }
+
+    function getPlayerInitialMetricRows() {
+      const im = (data && data.initial_metrics) || {};
+      const t1 = im.team1 || {};
+      const t2 = im.team2 || {};
+      return [
+        ["MPH", t1.MPH, t2.MPH],
+        ["CPO", t1.CPO, t2.CPO],
+        ["CTE target", t1.CTE_target, t2.CTE_target],
+        ["CTE факт", t1.CTE, t2.CTE],
+        ["SH", t1.SH, t2.SH],
+        ["OPH", t1.OPH, t2.OPH],
+        ["Кол-во заказов", t1.orders, t2.orders],
+        ["Средний чек", t1.avg_check, t2.avg_check],
+        ["Ком. маржа", t1.margin, t2.margin],
+        ["DCPO", t1.DCPO, t2.DCPO],
+        ["DC (исходный)", t1.DC, t2.DC],
+      ];
+    }
+
+    function renderPlayerIntroMetrics() {
+      const wrap = document.getElementById("playerInitialMetricsWrap");
+      if (!wrap || !data) return;
+      const rows = getPlayerInitialMetricRows();
+      wrap.innerHTML = "";
+      [1, 2].forEach((role) => {
+        const col = role === 1 ? 1 : 2;
+        const card = document.createElement("div");
+        card.className = "mini-card";
+        const h = document.createElement("h3");
+        h.textContent = "Конкурент " + role + " — исходные метрики";
+        card.appendChild(h);
+        const table = document.createElement("table");
+        const tb = document.createElement("tbody");
+        rows.forEach(([label, v1, v2]) => {
+          const v = col === 1 ? v1 : v2;
+          const tr = document.createElement("tr");
+          tr.innerHTML = "<th>" + label + "</th><td>" + fmtPlayerInitialMetric(v) + "</td>";
+          tb.appendChild(tr);
+        });
+        table.appendChild(tb);
+        card.appendChild(table);
+        wrap.appendChild(card);
+      });
+    }
+
     async function initGame() {
       await loadData();
       document.getElementById("teamHeading").textContent = teamName;
@@ -254,6 +313,7 @@
           ul.appendChild(li);
         });
       }
+      renderPlayerIntroMetrics();
       const banner = document.getElementById("newRoundVisualBanner");
       if (banner) {
         banner.innerHTML = "";

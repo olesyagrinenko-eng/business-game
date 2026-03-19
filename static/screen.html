@@ -11,9 +11,10 @@
     * { box-sizing: border-box; }
     html { font-size: 18px; }
     body { font-family: 'YS Text', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; padding: 1.5rem; -webkit-font-smoothing: antialiased; }
-    .header { position: relative; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; padding-left: 5.75rem; min-height: 3rem; }
-    h1 { font-size: 2rem; margin: 0; color: var(--text); }
-    .round-control { display: flex; align-items: center; gap: 0.5rem; }
+    .header { display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem 1rem; margin-bottom: 1rem; }
+    .header-title-block { flex: 1 1 220px; min-width: 0; }
+    h1 { font-size: clamp(1.2rem, 3.2vw, 2rem); margin: 0; color: var(--text); line-height: 1.2; }
+    .round-control { display: flex; align-items: center; gap: 0.5rem; flex: 1 1 auto; justify-content: flex-end; }
     .round-control select, .round-control input, .round-control button { padding: 0.6rem 0.9rem; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 1.1rem; }
     .round-control button { background: var(--dark); border-color: var(--dark); color: #fff; cursor: pointer; font-weight: 500; }
     .round-control button:hover { background: var(--accent); color: var(--dark); }
@@ -69,20 +70,34 @@
     .growth-net-zero { color: var(--muted); font-weight: 600; }
     .growth-net-note { font-size: 0.78rem; font-weight: 500; color: var(--muted); display: block; margin-top: 0.2rem; }
     .host-logo {
-      position: absolute;
-      left: 0;
-      top: 0;
-      max-height: 48px;
+      flex-shrink: 0;
+      max-height: 42px;
       width: auto;
-      max-width: 140px;
+      max-width: 110px;
+      height: auto;
       object-fit: contain;
+      align-self: flex-start;
+      margin-top: 0.2rem;
     }
+    .btn-toggle-round-metrics {
+      padding: 0.45rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--dark);
+      font-size: 0.95rem;
+      cursor: pointer;
+      margin: 0.35rem 0 0.65rem;
+    }
+    .btn-toggle-round-metrics:hover { background: #f0f7ff; border-color: var(--accent); }
   </style>
 </head>
 <body>
   <div class="header">
-    <img class="host-logo" src="/L_blue.png" alt="" width="140" height="48" decoding="async" />
-    <h1>Бизнес-игра — Экран для проектора</h1>
+    <img class="host-logo" src="/L_blue.png" alt="Логотип" width="110" height="42" decoding="async" />
+    <div class="header-title-block">
+      <h1>Бизнес-игра — Экран для проектора</h1>
+    </div>
     <div class="round-control" style="flex-wrap: wrap; gap: 0.5rem; align-items: center;">
       <div class="teams-count-block" style="margin-right: 0.75rem;">
         <strong id="teamsCountText">Команд: 0</strong>
@@ -129,7 +144,10 @@
     <ul id="commonIntro"></ul>
     <h2 style="margin-top:1.25rem;">Новые условия раунда <span id="introRoundNumSmall">1</span></h2>
     <div id="roundIntroComplications"></div>
-    <div id="roundIntroMetricsWrap" class="round-intro-metrics" aria-label="Исходные метрики по конкурентам"></div>
+    <button type="button" class="btn-toggle-round-metrics" id="btnToggleRoundIntroMetrics" aria-expanded="true">Скрыть метрики конкурентов 1 и 2</button>
+    <div id="roundIntroMetricsOuter" aria-label="Исходные метрики по конкурентам">
+      <div id="roundIntroMetricsWrap" class="round-intro-metrics"></div>
+    </div>
     <div class="task-box">
       <h2 style="margin-top:0;">Задание</h2>
       <p>Выбрать коэффициент изменения ставки курьера за заказ на следующую неделю:</p>
@@ -218,7 +236,7 @@
 
   <div id="view-allrounds" class="view card">
     <h2>Итоги по всем раундам</h2>
-    <p class="muted" style="font-size:1.1rem;"><strong>Сумма DC</strong> — сумма маржи по строкам раундов (другая величина, не «прирост»). Колонка <strong>«Итог ΣΔ к исходному»</strong> — <strong>сумма пошаговых изменений маржи</strong> по выбранным этапам: <strong>положительное число = в плюсе к стартовой марже</strong>, <strong>отрицательное = в минусе</strong> (по сравнению с исходным DC на старте). Математически это же значение, что <strong>DC после последнего учтённого этапа минус исходный DC</strong>. Наведите на ячейку — разбивка Δ по раундам. <strong>CTE в таргете</strong> — сколько раундов из числа раундов с расчётом.</p>
+    <p class="muted" style="font-size:1.1rem;"><strong>Сумма DC</strong> — сумма маржи по строкам раундов (другая величина). Колонка <strong>«Итог ΣΔ к исходному»</strong> — <strong>сумма изменений по раундам</strong>, как в таблице: для каждого этапа берётся <strong>текущий округлённый DC минус предыдущий</strong> (для первого этапа — минус исходный DC), затем все шаги <strong>складываются</strong> (пример: −21255 + 23015 − 134111 = −132351). <strong>&gt;0</strong> — суммарно в плюсе к старту, <strong>&lt;0</strong> — в минусе. Наведите на ячейку — шаги по раундам. <strong>CTE в таргете</strong> — сколько раундов из числа раундов с расчётом.</p>
     <div class="map-selector">
       <label>Учитывать этапы 1…</label>
       <select id="allRoundsRoundSelect">
@@ -382,6 +400,23 @@
       });
       renderRoundIntroMetrics();
     }
+
+    const LS_HIDE_ROUND_INTRO_METRICS = "screen_hide_round_intro_metrics";
+    function applyRoundIntroMetricsToggle() {
+      const outer = document.getElementById("roundIntroMetricsOuter");
+      const btn = document.getElementById("btnToggleRoundIntroMetrics");
+      if (!outer || !btn) return;
+      const hide = localStorage.getItem(LS_HIDE_ROUND_INTRO_METRICS) === "1";
+      outer.classList.toggle("hidden", hide);
+      btn.setAttribute("aria-expanded", hide ? "false" : "true");
+      btn.textContent = hide ? "Показать метрики конкурентов 1 и 2" : "Скрыть метрики конкурентов 1 и 2";
+    }
+    document.getElementById("btnToggleRoundIntroMetrics").addEventListener("click", () => {
+      const hide = localStorage.getItem(LS_HIDE_ROUND_INTRO_METRICS) === "1";
+      localStorage.setItem(LS_HIDE_ROUND_INTRO_METRICS, hide ? "" : "1");
+      applyRoundIntroMetricsToggle();
+    });
+    applyRoundIntroMetricsToggle();
 
     document.getElementById("roundSelect").value = "1";
     document.getElementById("roundSelect").addEventListener("change", (e) => {

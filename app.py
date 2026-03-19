@@ -568,33 +568,38 @@ def api_results():
                 if er in dc_by_round:
                     effective_dc_round = er
                     break
-        # Прирост маржи к исходному: DC после effective_dc_round − исходный (для карты по раунду / квадрантов)
-        dc_growth = None
-        if effective_dc_round is not None and initial_dc is not None:
-            dc_growth = dc_by_round[effective_dc_round] - (initial_dc if isinstance(initial_dc, (int, float)) else 0)
-        elif effective_dc_round is not None and 1 in dc_by_round and initial_dc is None:
-            dc_growth = dc_by_round[effective_dc_round] - dc_by_round[1]
-        # Сумма изменений маржи между соседними сыгранными этапами: (DC_r1−I)+(DC_r2−DC_r1)+… = DC_last−I
-        # (телескопическая сумма — численно совпадает с dc_growth, если последний этап с DC = max(dc_by_round))
+        # ΣΔ по раундам: сумма целочисленных шагов (DC_р − DC_пред) по тем же округлённым DC, что в per_round.
+        # Так совпадает с ручным сложением строк вида −21255 + 23015 − 134111 = −132351 (без накопления float-ошибок).
+        _pr_sorted = sorted(per_round, key=lambda x: x["round"])
         dc_growth_sum_round_deltas = None
         dc_step_deltas = []
-        _ordered = sorted(dc_by_round.keys())
-        if _ordered:
-            _prev = float(initial_dc) if isinstance(initial_dc, (int, float)) else None
-            _acc = 0.0
-            for _rk in _ordered:
-                _cur = dc_by_round[_rk]
-                if not isinstance(_cur, (int, float)):
-                    continue
-                _fv = float(_cur)
-                if _prev is not None:
-                    _d = _fv - _prev
-                    _acc += _d
-                    dc_step_deltas.append({"round": _rk, "delta": round(_d, 0)})
-                _prev = _fv
-            dc_growth_sum_round_deltas = _acc
-        # Последний этап, вошедший в ΣΔ (для подписи на вкладке «Итоги»: если < up_to — игра не доведена до N)
-        delta_sum_last_round = max(dc_by_round.keys()) if dc_by_round else None
+        _prev_int = round(float(initial_dc)) if isinstance(initial_dc, (int, float)) else None
+        _acc_m = 0
+        for _pr in _pr_sorted:
+            if _pr["round"] > up_to_round:
+                continue
+            _dcv = _pr.get("dc")
+            if _dcv is None:
+                continue
+            try:
+                _cur_int = int(round(float(_dcv)))
+            except (TypeError, ValueError):
+                continue
+            if _prev_int is not None:
+                _dd = _cur_int - _prev_int
+                _acc_m += _dd
+                dc_step_deltas.append({"round": _pr["round"], "delta": _dd})
+            _prev_int = _cur_int
+        if dc_step_deltas:
+            dc_growth_sum_round_deltas = float(_acc_m)
+        # Прирост на карте = ΣΔ по шагам (те же округлённые DC); fallback — сырая разница без исх. DC
+        dc_growth = None
+        if dc_growth_sum_round_deltas is not None:
+            dc_growth = float(dc_growth_sum_round_deltas)
+        elif effective_dc_round is not None and 1 in dc_by_round and initial_dc is None:
+            dc_growth = dc_by_round[effective_dc_round] - dc_by_round[1]
+        # Последний этап, вошедший в ΣΔ
+        delta_sum_last_round = max(s["round"] for s in dc_step_deltas) if dc_step_deltas else (max(dc_by_round.keys()) if dc_by_round else None)
         # SH / Заказы / OPH — по последнему раунду с данными ≤ up_to, не только строго N
         pr_up = None
         for p in reversed(per_round):
