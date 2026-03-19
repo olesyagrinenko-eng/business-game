@@ -15,15 +15,17 @@ OUT = os.path.join(BASE, "data", "scenarios.json")
 
 # Индексы строк в svod_full.txt (0-based), не номера строк Excel.
 # Лист Excel «Деревья»: раунд 6 с строки 127; первая строка матрицы сценариев — 138.
-# Колонка P: P138 — доля фоллбэка (в кортеж → индекс 30 для команды 1), P140 — общий CPO (индекс 31 для команды 1);
-# для команды 2 — 32 и 33. При выгрузке листа в txt сдвиньте ROUNDS[6], чтобы эти строки попали в диапазон.
+# Колонка P (лист «Деревья»): доля фоллбэка / общий CPO — индексы 30–33 (команда 1: 30–31, команда 2: 32–33).
+# Списания — опционально 34–35, если добавите в кортеж svod_full.txt. Раунды 5–6.
 ROUNDS = {
     1: list(range(33, 33 + 16)),
     2: list(range(58, 58 + 16)),
     3: list(range(84, 84 + 16)),
     4: list(range(111, 111 + 16)),
     5: list(range(140, 140 + 16)),
-    6: list(range(169, 169 + 16)),  # блок «Раунд 6» в текущем svod_full.txt (строки файла ~170–185)
+    # Раунд 6: перед первой строкой матрицы идёт строка-шапка (None, 'Команда 1', …) — её нельзя включать,
+    # иначе в JSON попадёт только 15 сценариев, а последняя комбинация коэф. пропадёт.
+    6: list(range(170, 170 + 16)),
 }
 
 # Вводные по раундам. Чтобы убрать строку в каком-то раунде — удалите её из списка для этого раунда.
@@ -113,6 +115,15 @@ def main():
         if v2 is not None:
             initial_metrics["team2"][key] = round(v2, 2) if isinstance(v2, float) else v2
 
+    # В txt нет отдельной строки «DC» на старте — суммарная маржа = заказы × DCPO (как в вебе)
+    for _tk in ("team1", "team2"):
+        _s = initial_metrics.get(_tk) or {}
+        if _s.get("DC") is None and _s.get("orders") is not None and _s.get("DCPO") is not None:
+            try:
+                _s["DC"] = round(float(_s["orders"]) * float(_s["DCPO"]), 2)
+            except (TypeError, ValueError):
+                pass
+
     scenarios = {}
     for r, row_indices in ROUNDS.items():
         scenarios[str(r)] = {}
@@ -133,9 +144,10 @@ def main():
                 if isinstance(x, float) and x == int(x): return int(x)
                 return round(x, 2) if isinstance(x, float) else x
 
-            # СВОД: по сценарию есть SH, Заказы, OPH, CTE, ... Общий CPO, DCPO, DC и т.д.
-            # Текущая раскладка: 4=CTE1, 5=CPO1, 6=DCPO1, 7=DC1, 8=+/-, 9=place; 17–22=team2.
-            # Если в svod_full.txt колонки идут как SH, Заказы, OPH, CTE... — то 3=SH1, 4=orders1, 5=OPH1 или сдвиг; при необходимости поправьте индексы ниже.
+            # СВОД (кортеж в txt): 4=CTE1, 5=CPO1, 6=DCPO1, 7=DC1, 8=+/-, 9=place; 10–12=SH, заказы, OPH (часто None);
+            # 17–22=team2 CTE…место; 23–25=SH, заказы, OPH. Если 10–12 пустые, веб (app.py) досчитывает как Excel:
+            # заказы≈DC/DCPO, SH≈исх.SH×(заказы/исх.заказы), OPH=заказы/SH. Для полного совпадения со сводной —
+            # заполните ячейки в Excel и пересоберите txt / используйте export_scenarios.py с листа «СВОД».
             def opt(i):
                 return rv(parts[i]) if len(parts) > i and parts[i] is not None else None
 
@@ -180,12 +192,14 @@ def main():
                 "surge_prev": surge_pct(opt(28)),
                 "surge_curr": surge_pct(opt(29)),
             }
-            # Раунд 6, лист «Деревья» колонка P: доля фоллбэка / общий CPO (на строке сценария или с P138/P140)
-            if r == 6:
+            # Раунды 5–6: фоллбэк / общий CPO (как на листе «Деревья»); списания — при наличии слотов в txt
+            if r >= 5:
                 team1["fallback_share"] = opt(30)
                 team1["cpo_total"] = opt(31)
                 team2["fallback_share"] = opt(32)
                 team2["cpo_total"] = opt(33)
+                team1["writeoffs"] = opt(34)
+                team2["writeoffs"] = opt(35)
             scenarios[str(r)][key] = {"team1": team1, "team2": team2}
 
     # Общие вводные зависят от раунда: часть пунктов убирается (по правилам из СВОД).

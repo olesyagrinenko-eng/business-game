@@ -92,7 +92,8 @@
       "orders": 1050.0,
       "avg_check": 1100.0,
       "margin": 0.33,
-      "DCPO": 253.0
+      "DCPO": 253.0,
+      "DC": 265650.0
     },
     "team2": {
       "MPH": 358.9,
@@ -104,7 +105,8 @@
       "orders": 1110.0,
       "avg_check": 1050.0,
       "margin": 0.33,
-      "DCPO": 249.5
+      "DCPO": 249.5,
+      "DC": 276945.0
     }
   },
   "scenarios": {
@@ -1921,7 +1923,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 20.27,
@@ -1934,7 +1939,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.4_0.0": {
@@ -1949,7 +1957,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 20.27,
@@ -1962,7 +1973,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.2_-0.1": {
@@ -1977,7 +1991,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 20.17,
@@ -1990,7 +2007,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.4_0.2": {
@@ -2005,7 +2025,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 18.53,
@@ -2018,7 +2041,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.2_0.0": {
@@ -2033,7 +2059,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 18.47,
@@ -2046,7 +2075,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.0_-0.1": {
@@ -2061,7 +2093,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 16.41,
@@ -2074,7 +2109,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "-0.1_-0.1": {
@@ -2089,7 +2127,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15,
@@ -2102,7 +2143,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.0_0.0": {
@@ -2117,7 +2161,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15,
@@ -2130,7 +2177,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.2_0.2": {
@@ -2145,7 +2195,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15,
@@ -2158,7 +2211,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.4_0.4": {
@@ -2173,7 +2229,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15,
@@ -2186,7 +2245,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "-0.1_0.0": {
@@ -2201,7 +2263,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15.0,
@@ -2214,7 +2279,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.0_0.2": {
@@ -2229,7 +2297,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15,
@@ -2242,7 +2313,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.2_0.4": {
@@ -2257,7 +2331,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15,
@@ -2270,7 +2347,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "-0.1_0.2": {
@@ -2285,7 +2365,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15.0,
@@ -2298,7 +2381,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.0_0.4": {
@@ -2313,7 +2399,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 13.72,
@@ -2326,7 +2415,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "-0.1_0.4": {
@@ -2341,7 +2433,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 12.5,
@@ -2354,7 +2449,10 @@
           "orders": null,
           "OPH": null,
           "surge_prev": 0,
-          "surge_curr": 100
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       }
     },
@@ -2373,7 +2471,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 20.27,
@@ -2388,7 +2487,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.4_0.0": {
@@ -2405,7 +2505,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 20.27,
@@ -2420,7 +2521,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.2_-0.1": {
@@ -2437,7 +2539,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 20.23,
@@ -2452,7 +2555,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.4_0.2": {
@@ -2469,7 +2573,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 18.53,
@@ -2484,7 +2589,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.2_0.0": {
@@ -2501,7 +2607,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 18.51,
@@ -2516,7 +2623,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.0_-0.1": {
@@ -2533,7 +2641,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 16.42,
@@ -2548,7 +2657,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "-0.1_-0.1": {
@@ -2565,7 +2675,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15,
@@ -2580,7 +2691,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.0_0.0": {
@@ -2597,7 +2709,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15,
@@ -2612,7 +2725,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.2_0.2": {
@@ -2629,7 +2743,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15,
@@ -2644,7 +2759,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.4_0.4": {
@@ -2661,7 +2777,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15,
@@ -2676,7 +2793,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "-0.1_0.0": {
@@ -2693,7 +2811,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15.0,
@@ -2708,7 +2827,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.0_0.2": {
@@ -2725,7 +2845,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15,
@@ -2740,7 +2861,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.2_0.4": {
@@ -2757,7 +2879,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15,
@@ -2772,7 +2895,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "-0.1_0.2": {
@@ -2789,7 +2913,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 15.0,
@@ -2804,7 +2929,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         }
       },
       "0.0_0.4": {
@@ -2821,7 +2947,8 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
         },
         "team2": {
           "CTE": 13.72,
@@ -2836,7 +2963,42 @@
           "surge_prev": 0,
           "surge_curr": 100,
           "fallback_share": null,
-          "cpo_total": null
+          "cpo_total": null,
+          "writeoffs": null
+        }
+      },
+      "-0.1_0.4": {
+        "team1": {
+          "CTE": 24.29,
+          "CPO": 93.29,
+          "DCPO": -283.53,
+          "DC": -226826.11,
+          "CTE_in_target": false,
+          "place_DC": 16,
+          "SH": null,
+          "orders": null,
+          "OPH": null,
+          "surge_prev": 0,
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
+        },
+        "team2": {
+          "CTE": 12.5,
+          "CPO": 146.43,
+          "DCPO": 193.77,
+          "DC": 322623,
+          "CTE_in_target": true,
+          "place_DC": 4,
+          "SH": null,
+          "orders": null,
+          "OPH": null,
+          "surge_prev": 0,
+          "surge_curr": 100,
+          "fallback_share": null,
+          "cpo_total": null,
+          "writeoffs": null
         }
       }
     }

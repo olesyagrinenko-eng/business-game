@@ -321,10 +321,7 @@
       return null;
     }
 
-    const SH_SCALE_EXPONENT = 0.5;
-    const CPO_SH_EXPONENT = 0.35;
-
-    /** Как на сервере: заказы ≈ DC/DCPO; SH из исходных с учётом заказов и CPO (иначе OPH «залипает» при одинаковых заказах). */
+    /** Как на сервере и сводной Excel: заказы ≈ DC/DCPO; SH ≈ исх.SH × (заказы/исх.заказы); OPH = заказы/SH. */
     function enrichResultShOrdersOph(res, initial) {
       const out = res && typeof res === "object" ? { ...res } : res;
       if (!out || !initial) return out;
@@ -353,18 +350,10 @@
         sh = null;
         if (ish != null && io != null && io > 0 && orders != null) {
           const oNum = Number(orders);
-          if (oNum > 0) {
-            const ratio = oNum / io;
-            sh = Math.max(1, Math.round(ish * Math.pow(ratio, SH_SCALE_EXPONENT)));
-          } else if (oNum === 0) sh = ish;
+          if (oNum > 0) sh = Math.max(1, Math.round((ish * oNum) / io));
+          else if (oNum === 0) sh = ish;
         }
         if (sh == null) sh = ish;
-        if (sh != null) {
-          const cpoSc = coerceMetricNum(out.CPO);
-          const cpoIm = coerceMetricNum(initial.CPO);
-          if (cpoSc != null && cpoIm != null && cpoIm > 0 && cpoSc > 0)
-            sh = Math.max(1, Math.round(sh * Math.pow(cpoSc / cpoIm, CPO_SH_EXPONENT)));
-        }
       }
 
       let oph = out.OPH;

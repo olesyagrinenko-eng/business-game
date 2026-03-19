@@ -148,18 +148,11 @@ def _coerce_metric_number(x):
     return None
 
 
-# При отсутствии SH в сценарии: часы растут слабее, чем заказы (иначе OPH = const при SH=const).
-_SH_SCALE_EXPONENT = 0.5
-# DC/DCPO даёт одинаковые заказы во многих сценариях одного раунда — тогда SH ещё подстраиваем по CPO сценария.
-_CPO_SH_EXPONENT = 0.35
-
-
 def _enrich_side_sh_orders_oph(side, role):
     """
-    В СВОД (txt→JSON) часто нет SH / заказов / OPH в строках сценария (все None).
-    Заказы ≈ DC / DCPO по строке сценария (суммарная маржа / маржа на заказ).
-    Если SH в сценарии нет: база SH ≈ исходный_SH × (заказы/исх._заказы)^0.5, затем × (CPO_сценария/CPO_исх.)^0.35 —
-    иначе при одинаковом DC/DCPO во всех ячейках раунда заказы и OPH не менялись бы. Уже заданные поля не перезаписываем.
+    В выгрузке svod_full.txt слоты 10–12 (SH, заказы, OPH) часто пустые — тогда досчитываем как на сводной в Excel:
+    заказы ≈ DC/DCPO; SH ≈ исходный_SH × (заказы/исх._заказы); OPH = заказы/SH (совпадает с исходным OPH при линейном SH).
+    Если в JSON уже заданы SH/заказы/OPH из файла — не трогаем (как в строке 0_0 раунда 4 в СВОД).
     """
     if not isinstance(side, dict):
         return
@@ -190,22 +183,12 @@ def _enrich_side_sh_orders_oph(side, role):
         if ish is not None and io is not None and float(io) > 0 and orders is not None:
             o_num = float(orders)
             if o_num > 0:
-                ratio = o_num / float(io)
-                sh = max(1.0, round(ish * (ratio**_SH_SCALE_EXPONENT)))
+                # Линейно с объёмом заказов — как на сводной странице Excel (см. заполненные 10–12 в svod_full)
+                sh = max(1.0, round(ish * o_num / float(io)))
             elif o_num == 0:
                 sh = ish
         if sh is None:
             sh = ish
-        if sh is not None:
-            cpo_sc = _coerce_metric_number(side.get("CPO"))
-            cpo_im = _coerce_metric_number(im.get("CPO"))
-            if (
-                cpo_sc is not None
-                and cpo_im is not None
-                and cpo_im > 0
-                and cpo_sc > 0
-            ):
-                sh = max(1.0, round(float(sh) * ((cpo_sc / cpo_im) ** _CPO_SH_EXPONENT)))
 
     oph = side.get("OPH")
     if oph is None:

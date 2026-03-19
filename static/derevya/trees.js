@@ -121,6 +121,15 @@
     set(prefix + 'OPH_prev', fmtDec1(prev.OPH)); set(prefix + 'OPH_curr', ophCurr != null ? fmtDec1(Number(ophCurr)) : '—'); setDot(prefix + 'OPH_dot', metricStatus(ophOk)); set(prefix + 'OPH_pct', pctStr(ophPct)); setPlashka('p' + team + '_oph', 'status-' + metricStatus(ophOk));
     set(prefix + 'CTE_prev', prev.CTE != null ? fmtDec1(Number(prev.CTE)) : '—'); set(prefix + 'CTE_curr', curr ? fmtDec1(Number(curr.CTE)) : '—'); setDot(prefix + 'CTE_dot', metricStatus(cteOk)); set(prefix + 'CTE_pct', pctStr(ctePct)); setPlashka('p' + team + '_cte', 'status-' + metricStatus(cteOk));
     set(prefix + 'AOV_prev', fmt(prev.avg_check)); set(prefix + 'AOV_curr', fmt(aovCurr)); setDot(prefix + 'AOV_dot', metricStatus(aovOk)); set(prefix + 'AOV_pct', pctStr(aovPct)); setPlashka('p' + team + '_aov', 'status-' + metricStatus(aovOk));
+    var woPrev = prev.writeoffs;
+    var woCurr = curr && curr.writeoffs;
+    var woPct = pctChange(woPrev, woCurr);
+    var woOk = woPct == null ? null : (woPct < 0 ? true : woPct > 0 ? false : null);
+    set(prefix + 'Writeoffs_prev', woPrev != null && woPrev !== undefined ? fmt(woPrev) : '—');
+    set(prefix + 'Writeoffs_curr', woCurr != null && woCurr !== undefined ? fmt(woCurr) : '—');
+    setDot(prefix + 'Writeoffs_dot', woOk == null ? 'yellow' : metricStatus(woOk));
+    set(prefix + 'Writeoffs_pct', pctStr(woPct));
+    setPlashka('p' + team + '_writeoffs', woOk == null ? 'status-yellow' : 'status-' + metricStatus(woOk));
     set(prefix + 'Margin_prev', prev.margin != null ? pctPlain(prev.margin * 100) : '—'); set(prefix + 'Margin_curr', prev.margin != null ? pctPlain(prev.margin * 100) : '—'); setDot(prefix + 'Margin_dot', 'yellow'); set(prefix + 'Margin_pct', '0%'); setPlashka('p' + team + '_margin', 'status-yellow');
     set(prefix + 'DCPO_prev', String(Math.round(prev.DCPO))); set(prefix + 'DCPO_curr', curr ? String(Math.round(curr.DCPO)) : '—');
     var dcpoTraffic = (curr && curr.CTE_in_target === false) ? 'red' : metricStatus(dcpoOk);
@@ -179,6 +188,7 @@
       vis(pid + '_delivery', false);
       vis(pid + '_churn', false);
       vis(pid + '_stock', false);
+      vis(pid + '_writeoffs', false);
       vis(pid + '_royalty', true);
       vis(pid + '_fallback', true);
       vis(pid + '_cpo_total', true);
@@ -196,8 +206,11 @@
     }
     vis(pid + '_surge', ROUND >= 2);
     vis(pid + '_delivery', false);
-    vis(pid + '_churn', ROUND >= 4);
-    vis(pid + '_stock', ROUND >= 5);
+    vis(pid + '_churn', ROUND >= 4 && ROUND !== 5);
+    vis(pid + '_stock', ROUND >= 6);
+    vis(pid + '_writeoffs', ROUND === 5);
+    vis(pid + '_fallback', ROUND >= 5);
+    vis(pid + '_cpo_total', ROUND >= 5);
     vis(pid + '_royalty', false);
     if (ROUND >= 2) {
       var sp = teamData && teamData.surge_prev != null ? fmtSurgePct(teamData.surge_prev) : (ROUND === 2 ? '0%' : '—');
@@ -209,9 +222,13 @@
       set(prefix + 'Churn_prev', ROUND === 4 ? 'нет' : 'да');
       set(prefix + 'Churn_curr', 'да');
     }
-    if (ROUND >= 5) {
-      set(prefix + 'Stock_prev', ROUND === 5 ? 'нет' : 'да');
+    if (ROUND >= 6) {
+      set(prefix + 'Stock_prev', 'да');
       set(prefix + 'Stock_curr', 'да');
+    }
+    if (ROUND >= 5 && ROUND < 6) {
+      set(prefix + 'Fallback_curr', teamData && teamData.fallback_share != null ? fmtFallbackShare(Number(teamData.fallback_share)) : '—');
+      set(prefix + 'CpoTotal_curr', teamData && teamData.cpo_total != null ? fmt(Number(teamData.cpo_total)) : '—');
     }
   }
   function getArrowLinks() {
@@ -230,7 +247,7 @@
       L.push({ from: 'surge', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
     }
     if (ROUND >= 4) L.push({ from: 'churn', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
-    if (ROUND >= 5) L.push({ from: 'stock', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
+    if (ROUND >= 6) L.push({ from: 'stock', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
     if (ROUND >= 6) {
       L.push({ from: 'cte', to: 'royalty', fromSide: 'right', toSide: 'top', route: 'elbow' });
       L.push({ from: 'royalty', to: 'margin', fromSide: 'right', toSide: 'top', route: 'elbow' });
@@ -296,39 +313,39 @@
   function getColumnGutters(diag, dr) {
     var orders = diag.querySelector('.col-left');
     var mid = diag.querySelector('.mid-stack');
-    var cpo = diag.querySelector('.block-cpo');
-    var rs = diag.querySelector('.right-stack');
-    if (!orders || !mid || !cpo || !rs) return null;
+    var stack = diag.querySelector('.cpo-stack');
+    var cpo = stack ? stack.querySelector('.block-cpo') : diag.querySelector('.block-cpo');
+    if (!orders || !mid || !stack || !cpo) return null;
     var o = orders.getBoundingClientRect();
     var c = cpo.getBoundingClientRect();
-    var r = rs.getBoundingClientRect();
+    var stackBox = stack.getBoundingClientRect();
     var ext = midPlashkaExtents(mid, dr);
     var mL = ext.mL;
     var mR = ext.mR;
     var oR = o.right - dr.left;
     var cL = c.left - dr.left;
     var cR = c.right - dr.left;
-    var rL = r.left - dr.left;
+    var sL = stackBox.left - dr.left;
+    var sR = stackBox.right - dr.left;
+    var gStack = (sL + sR) / 2;
     function clampGap(x, lo, hi, margin) {
       margin = margin || 4;
       if (hi - lo < margin * 2 + 2) return (lo + hi) / 2;
       return Math.max(lo + margin, Math.min(x, hi - margin));
     }
     var g12ideal = (oR + mL) / 2;
-    var g34ideal = (cR + rL) / 2;
     var g12 = clampGap(g12ideal, oR, mL, 5);
     g12 = Math.min(g12, mL - 6);
     g12 = Math.max(g12, oR + 4);
     var g23 = cL - 8;
     if (g23 < mR + 8) g23 = mR + 12;
     if (g23 > cL - 3) g23 = Math.max(mR + 10, (mR + cL) / 2);
-    var g34 = clampGap(g34ideal, cR, rL, 5);
-    return { g12: g12, g23: g23, g34: g34, mR: mR, mL: mL, midTop: ext.midTop, midBottom: ext.midBottom };
+    var g34 = clampGap((cR + sR) / 2, cR, sR, 4);
+    return { g12: g12, g23: g23, g34: g34, gStack: gStack, mR: mR, mL: mL, midTop: ext.midTop, midBottom: ext.midBottom };
   }
   function linkColumn(nodeId) {
     if (nodeId === 'orders') return 1;
-    if (nodeId === 'cpo') return 3;
-    if (nodeId === 'dcpo' || nodeId === 'dc') return 4;
+    if (nodeId === 'cpo' || nodeId === 'dcpo' || nodeId === 'dc') return 3;
     return 2;
   }
   /** Mid → Заказы с левого края механики: вверх по левому краю, полоса над всем столбцом, затем к заказам (не режем соседние плашки) */
@@ -415,35 +432,7 @@
     var xc2 = Math.min(x2 + stub, xg - 2);
     return 'M' + x1 + ',' + y1 + ' L' + xb2 + ',' + y1 + ' L' + xg + ',' + y1 + ' L' + xg + ',' + y2 + ' L' + xc2 + ',' + y2 + ' L' + x2 + ',' + y2;
   }
-  /** Кол. 2 → 4: два коридора + обход CPO; горизонталь yLane не проводим «на уровне середины» mid, если можно ниже/выше */
-  function pathViaGutters2to4(p1, p2, g23, g34, cpoRel, drH, stub, midBand) {
-    stub = stub || 10;
-    var yTop = Math.max(8, cpoRel.top - 8);
-    var yBot = Math.min(drH - 8, cpoRel.bottom + 8);
-    var yBelowMid = midBand && isFinite(midBand.bottom) ? Math.min(drH - 8, midBand.bottom + 20) : null;
-    var yAboveMid = midBand && isFinite(midBand.top) ? Math.max(8, midBand.top - 14) : null;
-    var candidates = [yTop, yBot];
-    if (yBelowMid != null) candidates.push(yBelowMid);
-    if (yAboveMid != null) candidates.push(yAboveMid);
-    function manhattan(yc) {
-      return Math.abs(p1.y - yc) + Math.abs(p2.y - yc);
-    }
-    var yLane = yTop;
-    var best = Infinity;
-    for (var ci = 0; ci < candidates.length; ci++) {
-      var yc = candidates[ci];
-      if (!isFinite(yc)) continue;
-      var sc = manhattan(yc);
-      if (sc < best) {
-        best = sc;
-        yLane = yc;
-      }
-    }
-    var xa = Math.min(p1.x + stub, g23 - 2);
-    var xb = Math.max(p2.x - stub, g34 + 2);
-    return 'M' + p1.x + ',' + p1.y + ' L' + xa + ',' + p1.y + ' L' + g23 + ',' + p1.y + ' L' + g23 + ',' + yLane + ' L' + g34 + ',' + yLane + ' L' + g34 + ',' + p2.y + ' L' + xb + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
-  }
-  /** DCPO → DC: только в правой колонке, излом по середине по Y */
+  /** DCPO → DC: в одной колонке cpo-stack, излом по середине по Y */
   function pathElbowVerticalCol4(p1, p2) {
     var ym = (p1.y + p2.y) / 2;
     var xc = (p1.x + p2.x) / 2;
@@ -473,7 +462,6 @@
     var gutters = getColumnGutters(diag, dr);
     var cpoEl = diag.querySelector('.block-cpo');
     var cpoRel = cpoEl ? { top: cpoEl.getBoundingClientRect().top - dr.top, bottom: cpoEl.getBoundingClientRect().bottom - dr.top } : { top: dr.height * 0.35, bottom: dr.height * 0.55 };
-    var midBand = gutters ? { top: gutters.midTop, bottom: gutters.midBottom } : null;
     getArrowLinks().forEach(function (link, idx) {
       var fromEl = document.getElementById(prefix + link.from);
       var toEl = document.getElementById(prefix + link.to);
@@ -500,7 +488,7 @@
         if (cf === 2 && ct === 1 && link.fromSide === 'left' && link.toSide === 'right') {
           d = pathMidLeftToOrdersRight(p1, p2, gutters.g12, gutters.midTop);
         } else if (cf === ct) {
-          var xgSame = cf === 2 ? gutters.g23 : (cf === 4 ? gutters.g34 : gutters.g12);
+          var xgSame = cf === 2 ? gutters.g23 : (cf === 4 ? gutters.g34 : (cf === 3 ? gutters.gStack : gutters.g12));
           if (cf === 2 && gutters.mR != null) xgSame = Math.max(xgSame, gutters.mR + 12);
           if (cf === 2 && link.toSide === 'top') {
             d = pathSpineToTopMid(p1, p2, xgSame, 10, fromRect, toRect, dr.height, link.fromSide, gutters.midTop);
@@ -513,8 +501,6 @@
           var lo = Math.min(cf, ct), hi = Math.max(cf, ct);
           var xgOne = (lo === 1 && hi === 2) ? gutters.g12 : (lo === 2 && hi === 3) ? Math.max(gutters.g23, (gutters.mR != null ? gutters.mR : 0) + 12) : gutters.g34;
           d = pathViaOneGutter(p1, p2, xgOne, 10);
-        } else if (cf === 2 && ct === 4) {
-          d = pathViaGutters2to4(p1, p2, gutters.g23, gutters.g34, cpoRel, dr.height, 10, midBand);
         } else {
           d = pathViaOneGutter(p1, p2, gutters.g12, 10);
         }
