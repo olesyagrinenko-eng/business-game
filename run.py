@@ -13,6 +13,7 @@ def main():
     except ValueError:
         port = "10000"
     bind = f"0.0.0.0:{port}"
+    print(f"[run.py] gunicorn bind={bind} (PORT from env)", file=sys.stderr, flush=True)
     # Запуск gunicorn программно с нужным bind
     sys.argv = [
         "gunicorn",
