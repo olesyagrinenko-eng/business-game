@@ -6,6 +6,11 @@
   var ROUND_INTRO = window.ROUND_INTRO;
   var INITIAL = window.INITIAL;
   var SCENARIOS = window.SCENARIOS;
+  /**
+   * Раунды 3–6: одна топология дерева (фоллбэк, «Общий CPO») и те же ортогональные маршруты стрелок,
+   * что настроены для раунда 3: левые «автобусы» Заказы→OPH/DCPO/DC, OPH→Общий CPO, разведение AOV/маржа→DCPO.
+   */
+  var FULL_TREE = ROUND >= 3;
 
   document.getElementById('roundNum').textContent = ROUND;
   document.getElementById('roundIntro').textContent = ROUND_INTRO;
@@ -73,11 +78,17 @@
     }
     return fmt(n) + '%';
   }
-  /** Доля фоллбэка из Excel: 0–1 как доля, иначе как проценты (5 → 5%) */
+  /** Доля фоллбэка из Excel: 0–1 как доля, иначе как проценты (5 → 5%); 0 — валидное значение */
   function fmtFallbackShare(x) {
     if (x == null || typeof x !== 'number' || !isFinite(x)) return '—';
     if (x >= 0 && x <= 1) return pctPlain(x * 100);
     return fmt(x) + '%';
+  }
+  /** Роялти в процентах для отображения (число в JSON — как в СВОД: 5 или 0,05) */
+  function fmtRoyaltyPct(x) {
+    if (x == null || typeof x !== 'number' || !isFinite(x)) return '—';
+    if (x >= 0 && x <= 1) return pctPlain(Math.round(x * 100));
+    return pctPlain(Math.round(x));
   }
   function set(id, value) {
     var el = document.getElementById(id);
@@ -100,6 +111,11 @@
     if (improved === false) return 'red';
     return 'yellow';
   }
+  function numericOrNull(v) {
+    if (v == null) return null;
+    var n = Number(v);
+    return isFinite(n) ? n : null;
+  }
   function fillTeam(team, prev, curr, shCurr) {
     var prefix = team === 1 ? 't1' : 't2';
     var ordersCurr = (curr && curr.orders != null) ? curr.orders : (curr && curr.DCPO ? curr.DC / curr.DCPO : null);
@@ -117,7 +133,6 @@
     var cteAtTarget = curr && prev && curr.CTE != null && prev.CTE != null && Math.abs(Number(curr.CTE) - Number(prev.CTE)) < 0.01;
     var cteTraffic = cteAtTarget ? 'yellow' : metricStatus(cteOk);
     var aovPct = pctChange(prev.avg_check, aovCurr); var aovOk = aovPct == null ? null : (aovPct === 0 ? null : aovPct > 0 ? true : false);
-    var marginPct = 0; var marginOk = null;
     var cpoPct = curr ? pctChange(prev.CPO, curr.CPO) : null; var cpoOk = cpoPct == null ? null : (cpoPct < 0 ? true : cpoPct > 0 ? false : null);
     var dcpoPct = curr ? pctChange(prev.DCPO, curr.DCPO) : null; var dcpoOk = dcpoPct == null ? null : (dcpoPct > 0 ? true : dcpoPct < 0 ? false : null);
     var dcPct = curr ? pctChange(prev.DC, curr.DC) : null; var dcOk = dcPct == null ? null : (dcPct > 0 ? true : dcPct < 0 ? false : null);
@@ -127,7 +142,8 @@
     set(prefix + 'CTE_prev', prev.CTE != null ? fmtDec1(Number(prev.CTE)) : '—'); set(prefix + 'CTE_curr', curr ? fmtDec1(Number(curr.CTE)) : '—'); setDot(prefix + 'CTE_dot', cteTraffic); set(prefix + 'CTE_pct', pctStr(ctePct)); setPlashka('p' + team + '_cte', 'status-' + cteTraffic);
     set(prefix + 'AOV_prev', fmt(prev.avg_check)); set(prefix + 'AOV_curr', fmt(aovCurr)); setDot(prefix + 'AOV_dot', metricStatus(aovOk)); set(prefix + 'AOV_pct', pctStr(aovPct)); setPlashka('p' + team + '_aov', 'status-' + metricStatus(aovOk));
     var woPrev = prev.writeoffs;
-    var woCurr = curr && curr.writeoffs;
+    /* null в JSON → показываем 0 (иначе прочерк при writeoffs: null) */
+    var woCurr = curr == null ? null : (curr.writeoffs != null ? curr.writeoffs : 0);
     var woPct = pctChange(woPrev, woCurr);
     var woOk = woPct == null ? null : (woPct < 0 ? true : woPct > 0 ? false : null);
     set(prefix + 'Writeoffs_prev', woPrev != null && woPrev !== undefined ? fmt(woPrev) : '—');
@@ -135,7 +151,15 @@
     setDot(prefix + 'Writeoffs_dot', woOk == null ? 'yellow' : metricStatus(woOk));
     set(prefix + 'Writeoffs_pct', pctStr(woPct));
     setPlashka('p' + team + '_writeoffs', woOk == null ? 'status-yellow' : 'status-' + metricStatus(woOk));
-    set(prefix + 'Margin_prev', prev.margin != null ? pctPlain(prev.margin * 100) : '—'); set(prefix + 'Margin_curr', prev.margin != null ? pctPlain(prev.margin * 100) : '—'); setDot(prefix + 'Margin_dot', 'yellow'); set(prefix + 'Margin_pct', '0%'); setPlashka('p' + team + '_margin', 'status-yellow');
+    var marginPrev = prev.margin != null && prev.margin !== '' ? Number(prev.margin) : null;
+    var marginCurr = (curr && curr.margin != null && curr.margin !== '') ? Number(curr.margin) : marginPrev;
+    var marginPct = pctChange(marginPrev, marginCurr);
+    var marginOk = marginPct == null ? null : (marginPct > 0 ? true : marginPct < 0 ? false : null);
+    set(prefix + 'Margin_prev', marginPrev != null ? pctPlain(marginPrev * 100) : '—');
+    set(prefix + 'Margin_curr', marginCurr != null ? pctPlain(marginCurr * 100) : '—');
+    setDot(prefix + 'Margin_dot', marginOk == null ? 'yellow' : metricStatus(marginOk));
+    set(prefix + 'Margin_pct', pctStr(marginPct));
+    setPlashka('p' + team + '_margin', marginOk == null ? 'status-yellow' : 'status-' + metricStatus(marginOk));
     set(prefix + 'DCPO_prev', String(Math.round(prev.DCPO))); set(prefix + 'DCPO_curr', curr ? String(Math.round(curr.DCPO)) : '—');
     var dcpoTraffic = (curr && curr.CTE_in_target === false) ? 'red' : metricStatus(dcpoOk);
     setDot(prefix + 'DCPO_dot', 'status-' + dcpoTraffic); set(prefix + 'DCPO_pct', pctStr(dcpoPct)); setPlashka('p' + team + '_dcpo', 'status-' + dcpoTraffic);
@@ -146,10 +170,10 @@
     return (c1 === 0 ? '0.0' : String(c1)) + '_' + (c2 === 0 ? '0.0' : String(c2));
   }
 
-  /** Больше механик в mid-stack — больше min-height, чтобы полоса orders→DC не наезжала на блоки */
+  /** Больше механик в mid-stack — больше min-height (для FULL_TREE в т.ч. вертикали левых автобусов Заказы→…) */
   function applyDiagramMinHeight() {
     var h = 320;
-    if (ROUND >= 6) h = 580;
+    if (ROUND >= 6) h = 620;
     else if (ROUND >= 5) h = 500;
     else if (ROUND >= 4) h = 420;
     else if (ROUND >= 2) h = 360;
@@ -186,80 +210,113 @@
       var el = document.getElementById(id);
       if (el) el.style.display = on ? '' : 'none';
     }
-    /* Раунд 6: упрощённое дерево — без суржа/вывоза/склада; блок «роялти» без старого подзаголовка */
-    if (ROUND >= 6) {
-      vis(pid + '_surge', false);
-      vis(pid + '_delivery', false);
-      vis(pid + '_stock', false);
-      vis(pid + '_writeoffs', false);
-      vis(pid + '_royalty', true);
-      vis(pid + '_fallback', true);
-      vis(pid + '_cpo_total', true);
-      var roy = document.querySelector('#' + pid + '_royalty .name');
-      if (roy) roy.textContent = 'Роялти';
-      var royRows = document.querySelectorAll('#' + pid + '_royalty .row');
-      for (var ri = 0; ri < royRows.length; ri++) {
-        if (royRows[ri].textContent.indexOf('Зависят') >= 0) royRows[ri].style.display = 'none';
-      }
-      set(prefix + 'Royalty_prev', teamData && teamData.royalty_prev != null ? String(teamData.royalty_prev) : 'нет');
-      set(prefix + 'Royalty_curr', teamData && teamData.royalty_curr != null ? String(teamData.royalty_curr) : 'да');
-      set(prefix + 'Fallback_curr', teamData && teamData.fallback_share != null ? fmtFallbackShare(Number(teamData.fallback_share)) : '—');
-      set(prefix + 'CpoTotal_curr', teamData && teamData.cpo_total != null ? fmt(Number(teamData.cpo_total)) : '—');
-      return;
-    }
     vis(pid + '_surge', ROUND >= 2);
     vis(pid + '_delivery', false);
-    vis(pid + '_stock', ROUND >= 6);
-    vis(pid + '_writeoffs', ROUND === 5);
-    vis(pid + '_fallback', ROUND >= 4);
-    vis(pid + '_cpo_total', ROUND >= 4);
-    vis(pid + '_royalty', false);
+    vis(pid + '_stock', false);
+    vis(pid + '_writeoffs', ROUND >= 5);
+    vis(pid + '_fallback', FULL_TREE);
+    vis(pid + '_cpo_total', FULL_TREE);
+    vis(pid + '_royalty', ROUND >= 6);
     if (ROUND >= 2) {
-      var sp = teamData && teamData.surge_prev != null ? fmtSurgePct(teamData.surge_prev) : (ROUND === 2 ? '0%' : '—');
-      var scurr = teamData && teamData.surge_curr != null ? fmtSurgePct(teamData.surge_curr) : '—';
+      var prevSurgeNum = teamData && teamData.surge_prev != null ? numericOrNull(teamData.surge_prev) : (ROUND === 2 ? 0 : null);
+      var currSurgeNum = teamData && teamData.surge_curr != null ? numericOrNull(teamData.surge_curr) : null;
+      var sp = prevSurgeNum != null ? fmtSurgePct(prevSurgeNum) : '—';
+      var scurr = currSurgeNum != null ? fmtSurgePct(currSurgeNum) : '—';
+      var surgeOk = null;
+      if (prevSurgeNum != null && currSurgeNum != null) {
+        // Для суржа рост = ухудшение (красный), снижение = улучшение (зеленый)
+        if (currSurgeNum > prevSurgeNum) surgeOk = false;
+        else if (currSurgeNum < prevSurgeNum) surgeOk = true;
+      }
       set(prefix + 'Surge_prev', sp);
       set(prefix + 'Surge_curr', scurr);
+      setDot(prefix + 'Surge_dot', metricStatus(surgeOk));
+      setPlashka(pid + '_surge', 'status-' + metricStatus(surgeOk));
     }
     if (ROUND >= 6) {
-      set(prefix + 'Stock_prev', 'да');
-      set(prefix + 'Stock_curr', 'да');
+      var roy = document.querySelector('#' + pid + '_royalty .name');
+      if (roy) roy.textContent = 'Роялти, %';
+      var initR = INITIAL['team' + teamNum];
+      /* Прошлая неделя — из INITIAL; текущая — из сценария (как фоллбэк/CPO total) */
+      var rpv = numericOrNull(initR && initR.royalty_prev != null ? initR.royalty_prev : 0);
+      var rcv = numericOrNull(teamData && teamData.royalty_curr != null ? teamData.royalty_curr : 0);
+      set(prefix + 'Royalty_prev', rpv != null ? fmtRoyaltyPct(rpv) : '—');
+      set(prefix + 'Royalty_curr', rcv != null ? fmtRoyaltyPct(rcv) : '—');
+      var royOk = null;
+      if (rpv != null && rcv != null) {
+        if (rcv > rpv) royOk = false;
+        else if (rcv < rpv) royOk = true;
+      }
+      setDot(prefix + 'Royalty_dot', royOk == null ? 'yellow' : metricStatus(royOk));
+      setPlashka(pid + '_royalty', royOk == null ? 'status-yellow' : 'status-' + metricStatus(royOk));
     }
-    if (ROUND >= 4 && ROUND < 6) {
+    if (FULL_TREE) {
+      var init = INITIAL['team' + teamNum];
+      var fbPrev = init && init.fallback_share != null ? Number(init.fallback_share) : null;
+      var ctotPrev = init && init.cpo_total != null ? Number(init.cpo_total) : null;
+      set(prefix + 'Fallback_prev', fbPrev != null ? fmtFallbackShare(fbPrev) : '—');
+      set(prefix + 'CpoTotal_prev', ctotPrev != null ? fmt(ctotPrev) : '—');
       set(prefix + 'Fallback_curr', teamData && teamData.fallback_share != null ? fmtFallbackShare(Number(teamData.fallback_share)) : '—');
       set(prefix + 'CpoTotal_curr', teamData && teamData.cpo_total != null ? fmt(Number(teamData.cpo_total)) : '—');
     }
   }
   function getArrowLinks() {
+    /* Точки крепления и route — см. drawArrows; для FULL_TREE (раунды 3–6) маршруты как в раунде 3. */
     var L = [
-      { from: 'orders', to: 'oph', fromSide: 'right', toSide: 'left', route: 'elbow' },
-      { from: 'orders', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'ordersToDc', toOffsetY: -12 },
-      { from: 'aov', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'elbow' },
-      { from: 'oph', to: 'cpo', fromSide: 'right', toSide: 'left', route: 'elbow' },
-      { from: 'cpo', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'elbow' },
-      { from: 'margin', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'elbow' },
-      { from: 'dcpo', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'elbow-v', toOffsetY: 8 }
+      { from: 'orders', to: 'oph', fromSide: 'bottom', toSide: 'left', route: 'orders-oph-left' },
+      { from: 'orders', to: 'dcpo', fromSide: 'bottom', toSide: 'left', route: 'orders-dcpo-leftbus' },
+      { from: 'orders', to: 'dc', fromSide: 'bottom', toSide: 'left', route: 'orders-dc-leftbus' },
+      { from: 'aov', to: 'dcpo', fromSide: 'right', toSide: 'leftUpper', route: 'aov-dcpo-h' },
+      { from: 'margin', to: 'dcpo', fromSide: 'right', toSide: 'leftLower', route: 'margin-dcpo-edge' },
+      { from: 'dcpo', to: 'dc', fromSide: 'bottom', toSide: 'top', route: 'stack-v' }
     ];
-    if (ROUND >= 2) {
-      /* toSide: top — у mid-колонки общий левый край; вход слева давал вертикаль через весь столбец (CTE, AOV…) */
-      L.push({ from: 'surge', to: 'aov', fromSide: 'right', toSide: 'top', route: 'elbow' });
-      L.push({ from: 'surge', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
+    if (FULL_TREE) {
+      L.splice(3, 0, { from: 'oph', to: 'cpo_total', fromSide: 'right', toSide: 'left', route: 'oph-cpo-total-h' });
+    } else {
+      L.splice(3, 0, { from: 'oph', to: 'cpo', fromSide: 'right', toSide: 'left', route: 'oph-cpo-h' });
     }
-    if (ROUND >= 6) L.push({ from: 'stock', to: 'orders', fromSide: 'left', toSide: 'right', route: 'elbow' });
+    if (ROUND <= 2) {
+      L.push({ from: 'cpo', to: 'dcpo', fromSide: 'bottom', toSide: 'top', route: 'stack-v' });
+    }
+    if (ROUND >= 2) {
+      L.push({ from: 'sh', to: 'orders', fromSide: 'left', toSide: 'right', route: 'sh-orders-h' });
+      L.push({ from: 'surge', to: 'aov', fromSide: 'bottom', toSide: 'top', route: 'stack-v' });
+    }
+    if (FULL_TREE) {
+      L.push({ from: 'oph', to: 'fallback', fromSide: 'right', toSide: 'left', route: 'oph-fallback-h' });
+      L.push({ from: 'cpo', to: 'fallback', fromSide: 'bottom', toSide: 'top', route: 'stack-v' });
+      L.push({ from: 'fallback', to: 'cpo_total', fromSide: 'bottom', toSide: 'top', route: 'stack-v' });
+      L.push({ from: 'cpo_total', to: 'dcpo', fromSide: 'bottom', toSide: 'top', route: 'cpo-total-dcpo-v' });
+      L.push({ from: 'cpo_total', to: 'dc', fromSide: 'right', toSide: 'left', route: 'col3' });
+    }
+    if (ROUND >= 5) {
+      L.push({ from: 'writeoffs', to: 'margin', fromSide: 'right', toSide: 'left', route: 'elbow' });
+    }
     if (ROUND >= 6) {
-      L.push({ from: 'cte', to: 'royalty', fromSide: 'right', toSide: 'top', route: 'elbow' });
-      L.push({ from: 'royalty', to: 'margin', fromSide: 'right', toSide: 'top', route: 'elbow' });
-      L.push({ from: 'royalty', to: 'dcpo', fromSide: 'right', toSide: 'left', route: 'elbow' });
+      L.push({ from: 'royalty', to: 'margin', fromSide: 'bottom', toSide: 'top', route: 'stack-v' });
     }
     return L;
   }
+  /** Минимум отступа линии от границы блока / края коридора (px) */
+  var AR_PAD = 10;
   function pointOnRect(r, side, refPoint) {
     var cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
-    var pad = 5;
+    var pad = 0;
     if (side === 'topUnderStart' && refPoint) return { x: refPoint.x, y: r.top + pad };
     if (side === 'left') return { x: r.left + pad, y: cy };
     if (side === 'right') return { x: r.right - pad, y: cy };
     if (side === 'top') return { x: cx, y: r.top + pad };
     if (side === 'bottom') return { x: cx, y: r.bottom - pad };
+    if (side === 'leftBottom') return { x: r.left + pad, y: r.bottom - pad };
+    /* Верхняя / нижняя часть левого края (разведение стрелок к DCPO) */
+    if (side === 'leftUpper') {
+      var hu = r.bottom - r.top;
+      return { x: r.left + pad, y: r.top + pad + hu * 0.22 };
+    }
+    if (side === 'leftLower') {
+      var hl = r.bottom - r.top;
+      return { x: r.left + pad, y: r.bottom - pad - hl * 0.22 };
+    }
     return { x: cx, y: cy };
   }
   function getMaxPlashkaBottomRel(diag, dr) {
@@ -273,16 +330,6 @@
       if (isFinite(bot) && bot > maxB) maxB = bot;
     }
     return maxB;
-  }
-
-  /** Нижняя горизонталь «Заказы→DC»: строго ниже всех видимых плашек */
-  function getOrdersToDcLaneY(diag, dr) {
-    var maxB = getMaxPlashkaBottomRel(diag, dr);
-    var gap = 22;
-    var y = maxB > 0 ? maxB + gap : dr.height - 16;
-    var floor = dr.height - 9;
-    if (y > floor) y = floor;
-    return y;
   }
 
   /** Реальные границы плашек mid (контейнер .mid-stack может быть уже детей из-за flex) */
@@ -326,115 +373,158 @@
     var sR = stackBox.right - dr.left;
     var gStack = (sL + sR) / 2;
     function clampGap(x, lo, hi, margin) {
-      margin = margin || 4;
+      margin = margin == null ? AR_PAD : margin;
       if (hi - lo < margin * 2 + 2) return (lo + hi) / 2;
       return Math.max(lo + margin, Math.min(x, hi - margin));
     }
     var g12ideal = (oR + mL) / 2;
-    var g12 = clampGap(g12ideal, oR, mL, 5);
-    g12 = Math.min(g12, mL - 6);
-    g12 = Math.max(g12, oR + 4);
-    var g23 = cL - 8;
-    if (g23 < mR + 8) g23 = mR + 12;
-    if (g23 > cL - 3) g23 = Math.max(mR + 10, (mR + cL) / 2);
-    var g34 = clampGap((cR + sR) / 2, cR, sR, 4);
-    return { g12: g12, g23: g23, g34: g34, gStack: gStack, mR: mR, mL: mL, midTop: ext.midTop, midBottom: ext.midBottom };
+    var g12 = clampGap(g12ideal, oR, mL, AR_PAD);
+    g12 = Math.min(g12, mL - AR_PAD);
+    g12 = Math.max(g12, oR + AR_PAD);
+    var g23 = cL - 14;
+    if (g23 < mR + AR_PAD + 2) g23 = mR + AR_PAD + 8;
+    if (g23 > cL - AR_PAD) g23 = Math.max(mR + AR_PAD, (mR + cL) / 2);
+    var g34 = clampGap((cR + sR) / 2, cR, sR, AR_PAD);
+    var oL = o.left - dr.left;
+    /* Левый автобус (Заказы→OPH и др.) */
+    var gLeft = Math.max(AR_PAD + 4, oL - 16);
+    /* Правое поле: вертикаль справа от cpo-stack; горизонталь «над» SH и CPO до фоллбэка */
+    var cTop = c.top - dr.top;
+    var yTopBand = Math.min(ext.midTop, cTop) - AR_PAD - 10;
+    if (!isFinite(yTopBand) || yTopBand < AR_PAD + 4) yTopBand = AR_PAD + 8;
+    var gRight = Math.min(dr.width - AR_PAD - 4, sR + 22);
+    return {
+      g12: g12, g23: g23, g34: g34, gStack: gStack, gLeft: gLeft, gRight: gRight, yTopBand: yTopBand,
+      oBottom: o.bottom - dr.top, mR: mR, mL: mL, midTop: ext.midTop, midBottom: ext.midBottom
+    };
   }
   function linkColumn(nodeId) {
     if (nodeId === 'orders') return 1;
-    if (nodeId === 'cpo' || nodeId === 'dcpo' || nodeId === 'dc') return 3;
+    if (nodeId === 'cpo' || nodeId === 'fallback' || nodeId === 'cpo_total' || nodeId === 'dcpo' || nodeId === 'dc') return 3;
     return 2;
   }
-  /** Mid → Заказы с левого края механики: вверх по левому краю, полоса над всем столбцом, затем к заказам (не режем соседние плашки) */
+  /** Разнесение параллельных линий в вертикальных коридорах (смещение от базовой линии, px) */
+  var laneNext = { g12: 0, g23: 0, g34: 0 };
+  var LANE_STEP = 5;
+  var LANE_MAX = 6;
+  function laneOffset(gutterId) {
+    var n = laneNext[gutterId]++;
+    var k = n % LANE_MAX;
+    return (k - (LANE_MAX - 1) / 2) * LANE_STEP;
+  }
+  function resetLanes() {
+    laneNext.g12 = 0;
+    laneNext.g23 = 0;
+    laneNext.g34 = 0;
+  }
+
+  /** Mid → Заказы: ортогонально по коридору g12 */
   function pathMidLeftToOrdersRight(p1, p2, g12, midTop) {
-    var yEsc = Math.max(8, (isFinite(midTop) ? midTop : p1.y) - 14);
+    var yEsc = Math.max(AR_PAD, (isFinite(midTop) ? midTop : p1.y) - AR_PAD - 4);
     return 'M' + p1.x + ',' + p1.y + ' L' + p1.x + ',' + yEsc + ' L' + g12 + ',' + yEsc + ' L' + g12 + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
   }
 
-  /**
-   * Стебель справа → вход в цель сверху (toSide top): горизонталь только над верхом mid / целей,
-   * короткий спуск по центру верха — не делит общий левый край со всем столбцом.
-   */
-  function pathSpineToTopMid(p1, p2, xg, stub, fromRect, toRect, drH, fromSide, midTop) {
-    stub = stub || 10;
-    var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
-    var yEsc = Math.min(toRect.top - 7, fromRect.top - 7);
-    if (isFinite(midTop)) yEsc = Math.min(yEsc, midTop - 12);
-    yEsc = Math.max(6, yEsc);
-    var xa;
-    if (fromSide === 'right') {
-      xa = Math.min(x1 + stub, xg - 2);
-    } else if (fromSide === 'left') {
-      xa = Math.max(x1 - stub, xg + 2);
-    } else {
-      xa = x1;
-    }
-    return 'M' + x1 + ',' + y1 + ' L' + xa + ',' + y1 + ' L' + xg + ',' + y1 + ' L' + xg + ',' + yEsc + ' L' + x2 + ',' + yEsc + ' L' + x2 + ',' + y2;
+  /** Вертикаль в одной колонке: общая ось X по центрам блоков, без диагоналей */
+  function pathStackVerticalStrictBetween(fromRect, toRect, stub) {
+    stub = stub || AR_PAD;
+    var xc = ((fromRect.left + fromRect.right) + (toRect.left + toRect.right)) / 4;
+    var y1 = fromRect.bottom - stub;
+    var y2 = toRect.top + stub;
+    return 'M' + xc + ',' + y1 + ' L' + xc + ',' + y2;
   }
 
-  /**
-   * Вход на левый край плашки mid-stack без горизонтали через середину блока (CTE, AOV и т.д.):
-   * стебель xg → yJoin над/под блоком → коротко влево → вниз/вверх по левому краю к точке входа.
-   */
-  function pathSpineToLeftEdgeMid(p1, p2, xg, stub, toRect, drH, fromSide, fromRect) {
-    stub = stub || 10;
-    var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
-    var margin = 12;
-    var yJoin;
-    if (fromRect && fromRect.bottom < toRect.top - 2) {
-      yJoin = (fromRect.bottom + toRect.top) / 2;
-    } else if (fromRect && toRect.bottom < fromRect.top - 2) {
-      yJoin = (toRect.bottom + fromRect.top) / 2;
-    } else if (y2 < y1 - 4) {
-      yJoin = Math.max(8, toRect.top - margin);
-    } else if (y2 > y1 + 4) {
-      yJoin = Math.min(drH - 8, toRect.bottom + margin);
-    } else {
-      var yAb = Math.max(8, toRect.top - margin);
-      var yBe = Math.min(drH - 8, toRect.bottom + margin);
-      var c1 = Math.abs(y1 - yAb) + Math.abs(y2 - yAb);
-      var c2 = Math.abs(y1 - yBe) + Math.abs(y2 - yBe);
-      yJoin = c1 <= c2 ? yAb : yBe;
-    }
-    yJoin = Math.max(8, Math.min(drH - 8, yJoin));
-    var xa;
-    if (fromSide === 'right') {
-      xa = Math.min(x1 + stub, xg - 2);
-    } else if (fromSide === 'left') {
-      xa = Math.max(x1 - stub, xg + 2);
-    } else {
-      xa = x1;
-    }
-    return 'M' + x1 + ',' + y1 + ' L' + xa + ',' + y1 + ' L' + xg + ',' + y1 + ' L' + xg + ',' + yJoin + ' L' + x2 + ',' + yJoin + ' L' + x2 + ',' + y2;
+  /** SH → Заказы: одна горизонталь на общей высоте (между блоками, без петель) */
+  function pathSHtoOrdersHorizontal(fromRect, toRect) {
+    var cy = ((fromRect.top + fromRect.bottom) + (toRect.top + toRect.bottom)) / 4;
+    var x1 = fromRect.left;
+    var x2 = toRect.right;
+    return 'M' + x1 + ',' + cy + ' L' + x2 + ',' + cy;
   }
-  /** Одна вертикаль в коридоре xg; не пересекает блоки колонок */
+
+  /** Заказы → OPH / DCPO / DC: низ заказов → влево на «автобус» xBus → вниз → в цель слева (xBus_OPH правее xBus_DCPO правее xBus_DC) */
+  function pathOrdersBottomLeftBus(p1, p2, xBus, stub) {
+    stub = stub || AR_PAD;
+    var xin = p2.x - stub;
+    return 'M' + p1.x + ',' + p1.y + ' L' + xBus + ',' + p1.y + ' L' + xBus + ',' + p2.y + ' L' + xin + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
+  }
+
+  /** AOV → DCPO: к верхней части левого края DCPO (сначала по вертикали у правого края AOV, затем горизонталь); p2 = leftUpper */
+  function pathAovToDcpoUpper(fromRect, p2, stub) {
+    stub = stub || AR_PAD;
+    var x1 = fromRect.right;
+    var y1 = (fromRect.top + fromRect.bottom) / 2;
+    return 'M' + x1 + ',' + y1 + ' L' + x1 + ',' + p2.y + ' L' + (p2.x - stub) + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
+  }
+
+  /** Коридор между OPH и CTE (одинаковая y для OPH→CPO и OPH→Доля фоллбэка) */
+  function yCorridorOphCte(fromRect, dr, cteEl) {
+    var ophBtm = fromRect.bottom;
+    var cteTop = cteEl && cteEl.offsetParent !== null
+      ? (cteEl.getBoundingClientRect().top - dr.top)
+      : ophBtm + 28;
+    var y = (ophBtm + cteTop) / 2;
+    return Math.max(ophBtm + 3, Math.min(cteTop - 3, y));
+  }
+
+  /** Одна горизонталь (коридор между строками или к col3) */
+  function pathHorizontalStraight(p1, p2) {
+    return 'M' + p1.x + ',' + p1.y + ' L' + p2.x + ',' + p2.y;
+  }
+
+  /** Правая колонка cpo-stack: обход по внешнему коридору g34 (ортогонально) */
+  function pathCol3RightCorridor(p1, p2, xg, stub) {
+    stub = stub || AR_PAD;
+    var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
+    var xa = Math.min(x1 + stub, xg - AR_PAD);
+    return 'M' + x1 + ',' + y1 + ' L' + xa + ',' + y1 + ' L' + xg + ',' + y1 + ' L' + xg + ',' + y2 + ' L' + x2 + ',' + y2;
+  }
+
+  /** Одна вертикаль в коридоре xg */
   function pathViaOneGutter(p1, p2, xg, stub) {
-    stub = stub || 10;
+    stub = stub || AR_PAD;
+    var gap = AR_PAD;
     var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
     if (Math.abs(x1 - x2) < 5 && Math.abs(y1 - y2) < 5) return 'M' + x1 + ',' + y1 + ' L' + x2 + ',' + y2;
     if (xg >= Math.max(x1, x2) - 0.5) {
-      var xa = Math.min(x1 + stub, xg - 2);
+      var xa = Math.min(x1 + stub, xg - gap);
       return 'M' + x1 + ',' + y1 + ' L' + xa + ',' + y1 + ' L' + xg + ',' + y1 + ' L' + xg + ',' + y2 + ' L' + x2 + ',' + y2;
     }
     if (xg <= Math.min(x1, x2) + 0.5) {
-      var xaL = Math.max(x1 - stub, xg + 2);
+      var xaL = Math.max(x1 - stub, xg + gap);
       return 'M' + x1 + ',' + y1 + ' L' + xaL + ',' + y1 + ' L' + xg + ',' + y1 + ' L' + xg + ',' + y2 + ' L' + x2 + ',' + y2;
     }
     if (x2 > x1) {
-      var xb = Math.min(x1 + stub, xg - 2);
-      var xc = Math.max(x2 - stub, xg + 2);
+      var xb = Math.min(x1 + stub, xg - gap);
+      var xc = Math.max(x2 - stub, xg + gap);
       return 'M' + x1 + ',' + y1 + ' L' + xb + ',' + y1 + ' L' + xg + ',' + y1 + ' L' + xg + ',' + y2 + ' L' + xc + ',' + y2 + ' L' + x2 + ',' + y2;
     }
-    var xb2 = Math.max(x1 - stub, xg + 2);
-    var xc2 = Math.min(x2 + stub, xg - 2);
+    var xb2 = Math.max(x1 - stub, xg + gap);
+    var xc2 = Math.min(x2 + stub, xg - gap);
     return 'M' + x1 + ',' + y1 + ' L' + xb2 + ',' + y1 + ' L' + xg + ',' + y1 + ' L' + xg + ',' + y2 + ' L' + xc2 + ',' + y2 + ' L' + x2 + ',' + y2;
   }
-  /** DCPO → DC: в одной колонке cpo-stack, излом по середине по Y */
-  function pathElbowVerticalCol4(p1, p2) {
-    var ym = (p1.y + p2.y) / 2;
-    var xc = (p1.x + p2.x) / 2;
-    return 'M' + p1.x + ',' + p1.y + ' L' + xc + ',' + p1.y + ' L' + xc + ',' + ym + ' L' + xc + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
+
+  /** Ком.маржа → DCPO: вправо к правому краю mid, вдоль него к уровню DCPO, к левому краю DCPO (не через Общий CPO) */
+  function pathMarginToDcpoEdge(p1, p2, mR, stub) {
+    stub = stub || AR_PAD;
+    var xEdge = mR + stub + 4;
+    return 'M' + p1.x + ',' + p1.y + ' L' + xEdge + ',' + p1.y + ' L' + xEdge + ',' + p2.y + ' L' + p2.x + ',' + p2.y;
   }
+
+  /** Колонка 1 -> 3: коридоры g12 и g23, полоса над/под mid */
+  function pathCol1to3OutsideMid(p1, p2, g12, g23, midTop, midBottom, drH) {
+    var pad = AR_PAD + 4;
+    var yAbove = Math.max(AR_PAD, (isFinite(midTop) ? midTop : p1.y) - pad);
+    var yBelow = Math.min(drH - AR_PAD, (isFinite(midBottom) ? midBottom : p1.y) + pad);
+    function score(y) { return Math.abs(p1.y - y) + Math.abs(p2.y - y); }
+    var yLane = score(yAbove) <= score(yBelow) ? yAbove : yBelow;
+    return 'M' + p1.x + ',' + p1.y +
+      ' L' + g12 + ',' + p1.y +
+      ' L' + g12 + ',' + yLane +
+      ' L' + g23 + ',' + yLane +
+      ' L' + g23 + ',' + p2.y +
+      ' L' + p2.x + ',' + p2.y;
+  }
+
   function drawArrows(diagId, arrowsGroupId, markerUrl, prefix) {
     var diag = document.getElementById(diagId);
     var g = document.getElementById(arrowsGroupId);
@@ -456,10 +546,10 @@
     dr = diag.getBoundingClientRect();
     svg.setAttribute('viewBox', '0 0 ' + dr.width + ' ' + dr.height);
     g.innerHTML = '';
+    resetLanes();
     var gutters = getColumnGutters(diag, dr);
-    var cpoEl = diag.querySelector('.block-cpo');
-    var cpoRel = cpoEl ? { top: cpoEl.getBoundingClientRect().top - dr.top, bottom: cpoEl.getBoundingClientRect().bottom - dr.top } : { top: dr.height * 0.35, bottom: dr.height * 0.55 };
-    getArrowLinks().forEach(function (link, idx) {
+    var midBand = gutters ? { top: gutters.midTop, bottom: gutters.midBottom } : null;
+    getArrowLinks().forEach(function (link) {
       var fromEl = document.getElementById(prefix + link.from);
       var toEl = document.getElementById(prefix + link.to);
       if (!fromEl || !toEl) return;
@@ -470,39 +560,75 @@
       var fromRect = { left: fr.left - dr.left, right: fr.right - dr.left, top: fr.top - dr.top, bottom: fr.bottom - dr.top };
       var p1 = pointOnRect(fromRect, link.fromSide);
       var p2 = pointOnRect(toRect, link.toSide);
-      if (link.toOffsetY) p2 = { x: p2.x, y: p2.y + link.toOffsetY };
       var d;
-      if (link.route === 'ordersToDc') {
-        var pathY = getOrdersToDcLaneY(diag, dr);
-        var dcCx = (toRect.left + toRect.right) / 2;
-        var endY = Math.max(pathY + 8, p2.y - 6);
-        d = 'M' + p1.x + ',' + p1.y + ' L' + p1.x + ',' + pathY + ' L' + dcCx + ',' + pathY + ' L' + dcCx + ',' + endY + ' L' + p2.x + ',' + p2.y;
-      } else if (link.route === 'elbow-v') {
-        d = pathElbowVerticalCol4(p1, p2);
-      } else if (link.route === 'elbow' && gutters) {
+      var route = link.route;
+      if (route === 'stack-v' || route === 'cpo-total-dcpo-v') {
+        d = pathStackVerticalStrictBetween(fromRect, toRect, AR_PAD);
+      } else if (route === 'sh-orders-h') {
+        d = pathSHtoOrdersHorizontal(fromRect, toRect);
+      } else if (route === 'orders-oph-left' && gutters) {
+        /* FULL_TREE: самый правый из трёх левых автобусов (ближе к колонкам), без захода на SH */
+        var xBusOph = gutters.gLeft + 14;
+        d = pathOrdersBottomLeftBus(p1, p2, xBusOph, AR_PAD);
+      } else if (route === 'orders-dcpo-leftbus' && gutters) {
+        var xBusDcpo = gutters.gLeft + 6;
+        d = pathOrdersBottomLeftBus(p1, p2, xBusDcpo, AR_PAD);
+      } else if (route === 'orders-dc-leftbus' && gutters) {
+        var xBusDc = Math.max(AR_PAD + 2, gutters.gLeft - 4);
+        d = pathOrdersBottomLeftBus(p1, p2, xBusDc, AR_PAD);
+      } else if ((route === 'oph-cpo-h' || route === 'oph-cpo-total-h') && gutters) {
+        var cteEl0 = document.getElementById(prefix + 'cte');
+        var yOphCte = yCorridorOphCte(fromRect, dr, cteEl0);
+        var pOph = { x: fromRect.right, y: yOphCte };
+        var pTgt = { x: toRect.left, y: yOphCte };
+        d = pathHorizontalStraight(pOph, pTgt);
+      } else if (route === 'oph-fallback-h' && gutters) {
+        var cteEl1 = document.getElementById(prefix + 'cte');
+        var yLaneFb = yCorridorOphCte(fromRect, dr, cteEl1) + 3;
+        var pOphF = { x: fromRect.right, y: yLaneFb };
+        var pFb = { x: toRect.left, y: yLaneFb };
+        d = pathHorizontalStraight(pOphF, pFb);
+      } else if (route === 'aov-dcpo-h' && gutters) {
+        d = pathAovToDcpoUpper(fromRect, p2, AR_PAD);
+      } else if (route === 'margin-dcpo-edge' && gutters) {
+        d = pathMarginToDcpoEdge(p1, p2, gutters.mR, AR_PAD);
+      } else if (route === 'col3' && gutters) {
+        d = pathCol3RightCorridor(p1, p2, gutters.g34 + laneOffset('g34'), AR_PAD);
+      } else if (route === 'elbow' && gutters) {
         var cf = linkColumn(link.from);
         var ct = linkColumn(link.to);
         if (cf === 2 && ct === 1 && link.fromSide === 'left' && link.toSide === 'right') {
-          d = pathMidLeftToOrdersRight(p1, p2, gutters.g12, gutters.midTop);
+          d = pathMidLeftToOrdersRight(p1, p2, gutters.g12 + laneOffset('g12'), gutters.midTop);
         } else if (cf === ct) {
-          var xgSame = cf === 2 ? gutters.g23 : (cf === 4 ? gutters.g34 : (cf === 3 ? gutters.gStack : gutters.g12));
-          if (cf === 2 && gutters.mR != null) xgSame = Math.max(xgSame, gutters.mR + 12);
-          if (cf === 2 && link.toSide === 'top') {
-            d = pathSpineToTopMid(p1, p2, xgSame, 10, fromRect, toRect, dr.height, link.fromSide, gutters.midTop);
-          } else if (cf === 2 && link.toSide === 'left') {
-            d = pathSpineToLeftEdgeMid(p1, p2, xgSame, 10, toRect, dr.height, link.fromSide, fromRect);
-          } else {
-            d = pathViaOneGutter(p1, p2, xgSame, 10);
-          }
+          var xgSame = cf === 2 ? gutters.g23 + laneOffset('g23') : (cf === 3 ? gutters.g34 + laneOffset('g34') : gutters.g12 + laneOffset('g12'));
+          if (cf === 2 && gutters.mR != null) xgSame = Math.max(xgSame, gutters.mR + AR_PAD + 2);
+          d = pathViaOneGutter(p1, p2, xgSame, AR_PAD);
         } else if (Math.abs(cf - ct) === 1) {
-          var lo = Math.min(cf, ct), hi = Math.max(cf, ct);
-          var xgOne = (lo === 1 && hi === 2) ? gutters.g12 : (lo === 2 && hi === 3) ? Math.max(gutters.g23, (gutters.mR != null ? gutters.mR : 0) + 12) : gutters.g34;
-          d = pathViaOneGutter(p1, p2, xgOne, 10);
+          var lo = Math.min(cf, ct);
+          var hi = Math.max(cf, ct);
+          var xgOne = (lo === 1 && hi === 2)
+            ? gutters.g12 + laneOffset('g12')
+            : (lo === 2 && hi === 3)
+              ? Math.max(gutters.g23 + laneOffset('g23'), (gutters.mR != null ? gutters.mR : 0) + AR_PAD + 2)
+              : gutters.g34 + laneOffset('g34');
+          d = pathViaOneGutter(p1, p2, xgOne, AR_PAD);
+        } else if (cf === 1 && ct === 3) {
+          var o12 = laneOffset('g12');
+          var o23 = laneOffset('g23');
+          d = pathCol1to3OutsideMid(
+            p1,
+            p2,
+            gutters.g12 + o12,
+            gutters.g23 + o23,
+            midBand ? midBand.top : NaN,
+            midBand ? midBand.bottom : NaN,
+            dr.height
+          );
         } else {
-          d = pathViaOneGutter(p1, p2, gutters.g12, 10);
+          d = pathViaOneGutter(p1, p2, gutters.g12 + laneOffset('g12'), AR_PAD);
         }
       } else {
-        d = pathViaOneGutter(p1, p2, (p1.x + p2.x) / 2, 10);
+        d = pathViaOneGutter(p1, p2, (p1.x + p2.x) / 2, AR_PAD);
       }
       var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('d', d);

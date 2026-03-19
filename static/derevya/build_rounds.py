@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Генерация round2.html .. round6.html из scenarios.json."""
+"""Генерация round1.html .. round6.html из шаблона (одинаковая разметка диаграммы).
+
+Страницы раундов 3–6 подключают общий trees.js: маршруты стрелок для полной схемы (FULL_TREE)
+одинаковые, см. комментарий к FULL_TREE в trees.js.
+"""
 import json
 import os
 import re
@@ -11,6 +15,8 @@ with open(os.path.join(BASE, "..", "..", "data", "scenarios.json"), "r", encodin
 
 rounds_intro = data.get("rounds_intro", {})
 scenarios = data.get("scenarios", {})
+initial_metrics = data.get("initial_metrics", {})
+initial_json = json.dumps(initial_metrics, ensure_ascii=False)
 
 # AOV (средний чек) по раундам — из вкладки Деревья (T18=1100, T61=1210 и т.д.)
 AOV_BY_ROUND = {"1": 1100, "2": 1155, "3": 1210, "4": 1210, "5": 1270, "6": 1270}
@@ -45,6 +51,12 @@ for r in ["1", "2", "3", "4", "5", "6"]:
         content,
         count=1,
         flags=re.DOTALL,
+    )
+    content = re.sub(
+        r"const INITIAL = \{[\s\S]*?\};",
+        "const INITIAL = " + initial_json + ";",
+        content,
+        count=1,
     )
     # Replace SCENARIOS = {...}; by matching braces
     pos = content.find("const SCENARIOS = ")

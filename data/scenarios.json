@@ -93,7 +93,12 @@
       "avg_check": 1100.0,
       "margin": 0.33,
       "DCPO": 253.0,
-      "DC": 265650.0
+      "DC": 265650.0,
+      "cpo_total": 110.0,
+      "fallback_share": 0,
+      "writeoffs": 0,
+      "royalty_prev": 0,
+      "royalty_curr": 0
     },
     "team2": {
       "MPH": 358.9,
@@ -106,7 +111,12 @@
       "avg_check": 1050.0,
       "margin": 0.33,
       "DCPO": 249.5,
-      "DC": 276945.0
+      "DC": 276945.0,
+      "cpo_total": 97.0,
+      "fallback_share": 0,
+      "writeoffs": 0,
+      "royalty_prev": 0,
+      "royalty_curr": 0
     }
   },
   "scenarios": {
@@ -1088,7 +1098,9 @@
           "orders": 1260,
           "OPH": 2.33,
           "surge_prev": 0,
-          "surge_curr": 0
+          "surge_curr": 0,
+          "fallback_share": 0,
+          "cpo_total": 156.86
         },
         "team2": {
           "CTE": 20.27,
@@ -1102,7 +1114,9 @@
           "orders": 800,
           "OPH": 5,
           "surge_prev": 0,
-          "surge_curr": 77.0
+          "surge_curr": 77.0,
+          "fallback_share": 0.62,
+          "cpo_total": 595.76
         }
       },
       "0.4_0.0": {
@@ -1118,7 +1132,9 @@
           "orders": 1260,
           "OPH": 2.56,
           "surge_prev": 0,
-          "surge_curr": 0
+          "surge_curr": 0,
+          "fallback_share": 0,
+          "cpo_total": 153.05
         },
         "team2": {
           "CTE": 20.27,
@@ -1132,7 +1148,9 @@
           "orders": 1040,
           "OPH": 5,
           "surge_prev": 0,
-          "surge_curr": 59.0
+          "surge_curr": 59.0,
+          "fallback_share": 0.48,
+          "cpo_total": 484.04
         }
       },
       "0.2_-0.1": {
@@ -1148,7 +1166,9 @@
           "orders": 1260,
           "OPH": 2.84,
           "surge_prev": 0,
-          "surge_curr": 0
+          "surge_curr": 0,
+          "fallback_share": 0,
+          "cpo_total": 132.95
         },
         "team2": {
           "CTE": 19.59,
@@ -1162,7 +1182,9 @@
           "orders": 1280,
           "OPH": 5,
           "surge_prev": 0,
-          "surge_curr": 41.0
+          "surge_curr": 41.0,
+          "fallback_share": 0.39,
+          "cpo_total": 407.33
         }
       },
       "0.4_0.2": {
@@ -1178,7 +1200,9 @@
           "orders": 1260,
           "OPH": 3.18,
           "surge_prev": 0,
-          "surge_curr": 0
+          "surge_curr": 0,
+          "fallback_share": 0,
+          "cpo_total": 145.43
         },
         "team2": {
           "CTE": 18.53,
@@ -1192,7 +1216,9 @@
           "orders": 1332,
           "OPH": 4.57,
           "surge_prev": 0,
-          "surge_curr": 30.0
+          "surge_curr": 30.0,
+          "fallback_share": 0.3,
+          "cpo_total": 352.89
         }
       },
       "0.2_0.0": {
@@ -1208,7 +1234,9 @@
           "orders": 1260,
           "OPH": 3.18,
           "surge_prev": 0,
-          "surge_curr": 0
+          "surge_curr": 0,
+          "fallback_share": 0,
+          "cpo_total": 129.14
         },
         "team2": {
           "CTE": 17.9,
@@ -1222,7 +1250,9 @@
           "orders": 1332,
           "OPH": 4.57,
           "surge_prev": 0,
-          "surge_curr": 30.0
+          "surge_curr": 30.0,
+          "fallback_share": 0.3,
+          "cpo_total": 341.49
         }
       },
       "0.0_-0.1": {
@@ -1238,7 +1268,9 @@
           "orders": 1134,
           "OPH": 3.26,
           "surge_prev": 0,
-          "surge_curr": 10.0
+          "surge_curr": 10.0,
+          "fallback_share": 0,
+          "cpo_total": 112.12
         },
         "team2": {
           "CTE": 16.1,
@@ -1252,7 +1284,9 @@
           "orders": 1332,
           "OPH": 4.05,
           "surge_prev": 0,
-          "surge_curr": 23.0
+          "surge_curr": 23.0,
+          "fallback_share": 0.23,
+          "cpo_total": 284.46
         }
       },
       "-0.1_-0.1": {
@@ -1268,7 +1302,9 @@
           "orders": 1050,
           "OPH": 3.5,
           "surge_prev": 0,
-          "surge_curr": 17.0
+          "surge_curr": 17.0,
+          "fallback_share": 0,
+          "cpo_total": 101.86
         },
         "team2": {
           "CTE": 15,
@@ -1282,7 +1318,9 @@
           "orders": 1110,
           "OPH": 3.7,
           "surge_prev": 0,
-          "surge_curr": 17.0
+          "surge_curr": 17.0,
+          "fallback_share": 0,
+          "cpo_total": 100.31
         }
       },
       "0.0_0.0": {
@@ -1298,7 +1336,9 @@
           "orders": 1050,
           "OPH": 3.5,
           "surge_prev": 0,
-          "surge_curr": 17.0
+          "surge_curr": 17.0,
+          "fallback_share": 0,
+          "cpo_total": 110
         },
         "team2": {
           "CTE": 15,
@@ -1312,7 +1352,9 @@
           "orders": 1110,
           "OPH": 3.7,
           "surge_prev": 0,
-          "surge_curr": 17.0
+          "surge_curr": 17.0,
+          "fallback_share": 0,
+          "cpo_total": 108.46
         }
       },
       "0.2_0.2": {
@@ -1328,7 +1370,9 @@
           "orders": 1050,
           "OPH": 3.5,
           "surge_prev": 0,
-          "surge_curr": 17.0
+          "surge_curr": 17.0,
+          "fallback_share": 0,
+          "cpo_total": 126.29
         },
         "team2": {
           "CTE": 15,
@@ -1342,7 +1386,9 @@
           "orders": 1110,
           "OPH": 3.7,
           "surge_prev": 0,
-          "surge_curr": 17.0
+          "surge_curr": 17.0,
+          "fallback_share": 0,
+          "cpo_total": 124.74
         }
       },
       "0.4_0.4": {
@@ -1358,7 +1404,9 @@
           "orders": 1050,
           "OPH": 3.5,
           "surge_prev": 0,
-          "surge_curr": 17.0
+          "surge_curr": 17.0,
+          "fallback_share": 0,
+          "cpo_total": 142.57
         },
         "team2": {
           "CTE": 15,
@@ -1372,7 +1420,9 @@
           "orders": 1110,
           "OPH": 3.7,
           "surge_prev": 0,
-          "surge_curr": 17.0
+          "surge_curr": 17.0,
+          "fallback_share": 0,
+          "cpo_total": 141.03
         }
       },
       "-0.1_0.0": {
@@ -1388,7 +1438,9 @@
           "orders": 1260,
           "OPH": 3.83,
           "surge_prev": 0,
-          "surge_curr": 23.0
+          "surge_curr": 23.0,
+          "fallback_share": 0.23,
+          "cpo_total": 300.77
         },
         "team2": {
           "CTE": 13.97,
@@ -1402,7 +1454,9 @@
           "orders": 1198.8,
           "OPH": 3.44,
           "surge_prev": 0,
-          "surge_curr": 10.0
+          "surge_curr": 10.0,
+          "fallback_share": 0,
+          "cpo_total": 110.46
         }
       },
       "0.0_0.2": {
@@ -1418,7 +1472,9 @@
           "orders": 1260,
           "OPH": 4.32,
           "surge_prev": 0,
-          "surge_curr": 30.0
+          "surge_curr": 30.0,
+          "fallback_share": 0.3,
+          "cpo_total": 361.94
         },
         "team2": {
           "CTE": 13.64,
@@ -1432,7 +1488,9 @@
           "orders": 1332,
           "OPH": 3.36,
           "surge_prev": 0,
-          "surge_curr": 0
+          "surge_curr": 0,
+          "fallback_share": 0,
+          "cpo_total": 127.44
         }
       },
       "0.2_0.4": {
@@ -1448,7 +1506,9 @@
           "orders": 1260,
           "OPH": 4.32,
           "surge_prev": 0,
-          "surge_curr": 30.0
+          "surge_curr": 30.0,
+          "fallback_share": 0.3,
+          "cpo_total": 373.34
         },
         "team2": {
           "CTE": 13.64,
@@ -1462,7 +1522,9 @@
           "orders": 1332,
           "OPH": 3.36,
           "surge_prev": 0,
-          "surge_curr": 0
+          "surge_curr": 0,
+          "fallback_share": 0,
+          "cpo_total": 143.73
         }
       },
       "-0.1_0.2": {
@@ -1478,7 +1540,9 @@
           "orders": 1260,
           "OPH": 5,
           "surge_prev": 0,
-          "surge_curr": 38.0
+          "surge_curr": 38.0,
+          "fallback_share": 0.38,
+          "cpo_total": 424.41
         },
         "team2": {
           "CTE": 12.16,
@@ -1492,7 +1556,9 @@
           "orders": 1332,
           "OPH": 3,
           "surge_prev": 0,
-          "surge_curr": 0
+          "surge_curr": 0,
+          "fallback_share": 0,
+          "cpo_total": 131.05
         }
       },
       "0.0_0.4": {
@@ -1508,7 +1574,9 @@
           "orders": 1040,
           "OPH": 5,
           "surge_prev": 0,
-          "surge_curr": 57.0
+          "surge_curr": 57.0,
+          "fallback_share": 0.48,
+          "cpo_total": 515.41
         },
         "team2": {
           "CTE": 10.98,
@@ -1522,7 +1590,9 @@
           "orders": 1332,
           "OPH": 2.71,
           "surge_prev": 0,
-          "surge_curr": 0
+          "surge_curr": 0,
+          "fallback_share": 0,
+          "cpo_total": 150.94
         }
       },
       "-0.1_0.4": {
@@ -1538,7 +1608,9 @@
           "orders": 800,
           "OPH": 5,
           "surge_prev": 0,
-          "surge_curr": 76.0
+          "surge_curr": 76.0,
+          "fallback_share": 0.62,
+          "cpo_total": 636.54
         },
         "team2": {
           "CTE": 10,
@@ -1552,7 +1624,9 @@
           "orders": 1332,
           "OPH": 2.47,
           "surge_prev": 0,
-          "surge_curr": 0
+          "surge_curr": 0,
+          "fallback_share": 0,
+          "cpo_total": 154.54
         }
       }
     },
@@ -2119,7 +2193,7 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 146.97,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 20.27,
@@ -2136,7 +2210,7 @@
           "surge_curr": 77.0,
           "fallback_share": 0.62,
           "cpo_total": 595.76,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "0.4_0.0": {
@@ -2155,7 +2229,7 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 144.04,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 20.27,
@@ -2172,7 +2246,7 @@
           "surge_curr": 59.0,
           "fallback_share": 0.48,
           "cpo_total": 484.04,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "0.2_-0.1": {
@@ -2191,7 +2265,7 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 126.29,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 20.17,
@@ -2208,7 +2282,7 @@
           "surge_curr": 41.0,
           "fallback_share": 0.39,
           "cpo_total": 407.33,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "0.4_0.2": {
@@ -2227,7 +2301,7 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 142.57,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 18.53,
@@ -2244,7 +2318,7 @@
           "surge_curr": 30.0,
           "fallback_share": 0.3,
           "cpo_total": 352.89,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "0.2_0.0": {
@@ -2263,7 +2337,7 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 126.29,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 18.47,
@@ -2280,7 +2354,7 @@
           "surge_curr": 30.0,
           "fallback_share": 0.3,
           "cpo_total": 341.49,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "0.0_-0.1": {
@@ -2299,7 +2373,7 @@
           "surge_curr": 3.0,
           "fallback_share": 0,
           "cpo_total": 110,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 16.41,
@@ -2316,7 +2390,7 @@
           "surge_curr": 23.0,
           "fallback_share": 0.23,
           "cpo_total": 284.46,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "-0.1_-0.1": {
@@ -2335,7 +2409,7 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 101.86,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 15,
@@ -2352,7 +2426,7 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 100.31,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "0.0_0.0": {
@@ -2371,7 +2445,7 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 110,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 15,
@@ -2388,7 +2462,7 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 108.46,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "0.2_0.2": {
@@ -2407,7 +2481,7 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 126.29,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 15,
@@ -2424,7 +2498,7 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 124.74,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "0.4_0.4": {
@@ -2443,7 +2517,7 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 142.57,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 15,
@@ -2460,7 +2534,7 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 141.03,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "-0.1_0.0": {
@@ -2479,7 +2553,7 @@
           "surge_curr": 23.0,
           "fallback_share": 0.23,
           "cpo_total": 300.77,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 15.0,
@@ -2496,7 +2570,7 @@
           "surge_curr": 3.0,
           "fallback_share": 0,
           "cpo_total": 108.46,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "0.0_0.2": {
@@ -2515,7 +2589,7 @@
           "surge_curr": 30.0,
           "fallback_share": 0.3,
           "cpo_total": 361.94,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 15,
@@ -2532,7 +2606,7 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 124.74,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "0.2_0.4": {
@@ -2551,7 +2625,7 @@
           "surge_curr": 30.0,
           "fallback_share": 0.3,
           "cpo_total": 373.34,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 15,
@@ -2568,7 +2642,7 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 141.03,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "-0.1_0.2": {
@@ -2587,7 +2661,7 @@
           "surge_curr": 38.0,
           "fallback_share": 0.38,
           "cpo_total": 424.41,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 15.0,
@@ -2604,7 +2678,7 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 124.74,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "0.0_0.4": {
@@ -2623,7 +2697,7 @@
           "surge_curr": 57.0,
           "fallback_share": 0.48,
           "cpo_total": 515.41,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 13.72,
@@ -2640,7 +2714,7 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 143.55,
-          "writeoffs": null
+          "writeoffs": 0
         }
       },
       "-0.1_0.4": {
@@ -2659,7 +2733,7 @@
           "surge_curr": 76.0,
           "fallback_share": 0.62,
           "cpo_total": 636.54,
-          "writeoffs": null
+          "writeoffs": 0
         },
         "team2": {
           "CTE": 12.5,
@@ -2676,7 +2750,7 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 146.43,
-          "writeoffs": null
+          "writeoffs": 0
         }
       }
     },
@@ -2697,7 +2771,9 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 146.97,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 20.27,
@@ -2714,7 +2790,9 @@
           "surge_curr": 77.0,
           "fallback_share": 0.62,
           "cpo_total": 595.76,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "0.4_0.0": {
@@ -2733,7 +2811,9 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 144.04,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 20.27,
@@ -2750,7 +2830,9 @@
           "surge_curr": 59.0,
           "fallback_share": 0.48,
           "cpo_total": 484.04,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "0.2_-0.1": {
@@ -2769,7 +2851,9 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 126.29,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 20.23,
@@ -2786,7 +2870,9 @@
           "surge_curr": 41.0,
           "fallback_share": 0.39,
           "cpo_total": 407.33,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "0.4_0.2": {
@@ -2805,7 +2891,9 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 142.57,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 18.53,
@@ -2822,7 +2910,9 @@
           "surge_curr": 30.0,
           "fallback_share": 0.3,
           "cpo_total": 352.89,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "0.2_0.0": {
@@ -2841,7 +2931,9 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 126.29,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 18.51,
@@ -2858,7 +2950,9 @@
           "surge_curr": 30.0,
           "fallback_share": 0.3,
           "cpo_total": 341.49,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "0.0_-0.1": {
@@ -2877,7 +2971,9 @@
           "surge_curr": 3.0,
           "fallback_share": 0,
           "cpo_total": 110,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 16.42,
@@ -2894,7 +2990,9 @@
           "surge_curr": 23.0,
           "fallback_share": 0.23,
           "cpo_total": 284.46,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "-0.1_-0.1": {
@@ -2913,7 +3011,9 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 101.86,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 15,
@@ -2930,7 +3030,9 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 100.31,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "0.0_0.0": {
@@ -2949,7 +3051,9 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 110,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 15,
@@ -2966,7 +3070,9 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 108.46,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "0.2_0.2": {
@@ -2985,7 +3091,9 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 126.29,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 15,
@@ -3002,7 +3110,9 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 124.74,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "0.4_0.4": {
@@ -3021,7 +3131,9 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 142.57,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 15,
@@ -3038,7 +3150,9 @@
           "surge_curr": 17.0,
           "fallback_share": 0,
           "cpo_total": 141.03,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "-0.1_0.0": {
@@ -3057,7 +3171,9 @@
           "surge_curr": 23.0,
           "fallback_share": 0.23,
           "cpo_total": 300.77,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 15.0,
@@ -3074,7 +3190,9 @@
           "surge_curr": 3.0,
           "fallback_share": 0,
           "cpo_total": 108.46,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "0.0_0.2": {
@@ -3093,7 +3211,9 @@
           "surge_curr": 30.0,
           "fallback_share": 0.3,
           "cpo_total": 361.94,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 15,
@@ -3110,7 +3230,9 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 124.74,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "0.2_0.4": {
@@ -3129,7 +3251,9 @@
           "surge_curr": 30.0,
           "fallback_share": 0.3,
           "cpo_total": 373.34,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 15,
@@ -3146,7 +3270,9 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 141.03,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "-0.1_0.2": {
@@ -3165,7 +3291,9 @@
           "surge_curr": 38.0,
           "fallback_share": 0.38,
           "cpo_total": 424.41,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 15.0,
@@ -3182,7 +3310,9 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 124.74,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "0.0_0.4": {
@@ -3201,7 +3331,9 @@
           "surge_curr": 57.0,
           "fallback_share": 0.48,
           "cpo_total": 515.41,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 13.72,
@@ -3218,7 +3350,9 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 143.55,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       },
       "-0.1_0.4": {
@@ -3237,7 +3371,9 @@
           "surge_curr": 76.0,
           "fallback_share": 0.62,
           "cpo_total": 636.54,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         },
         "team2": {
           "CTE": 12.5,
@@ -3254,7 +3390,9 @@
           "surge_curr": 0,
           "fallback_share": 0,
           "cpo_total": 146.43,
-          "writeoffs": null
+          "writeoffs": 0,
+          "royalty_prev": 0,
+          "royalty_curr": 0
         }
       }
     }

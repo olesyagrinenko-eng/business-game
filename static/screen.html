@@ -75,14 +75,7 @@
       </select>
       <button id="btnSetRound">Применить</button>
       <button id="btnReset" style="background: #d32f2f; border-color: #d32f2f;">Сбросить игру</button>
-      <button id="btnManageTeams">Управление игроками</button>
     </div>
-  </div>
-
-  <div id="teamsManagePanel" class="card hidden" style="margin-bottom:1rem;">
-    <h2>Удаление команд</h2>
-    <p class="muted" style="font-size:1rem;">Удаляйте команду, если участник выбыл. Он сможет войти заново с тем же именем (Команда 1 … Команда 10).</p>
-    <ul id="teamsManageList" style="list-style:none; padding:0;"></ul>
   </div>
 
   <div class="tabs">
@@ -241,6 +234,8 @@
     const API = "";
     let state = { current_round: 1, teams: [], pairs: [], choices: {}, expected_teams: null, teams_count: 0 };
     let data = null;
+    // Локально выбранный раунд до нажатия «Применить» (poll не должен его перетирать).
+    let pendingRoundSelection = null;
 
     function updateTeamsCountDisplay() {
       const n = state.teams_count ?? 0;
@@ -332,8 +327,7 @@
 
     document.getElementById("roundSelect").value = "1";
     document.getElementById("roundSelect").addEventListener("change", (e) => {
-      state.current_round = parseInt(e.target.value, 10);
-      renderIntro();
+      pendingRoundSelection = parseInt(e.target.value, 10);
     });
     document.getElementById("btnReset").addEventListener("click", async () => {
       if (!confirm("Удалить все команды и ответы, начать игру заново? Участникам нужно будет нажать «Войти заново» на телефонах.")) return;
@@ -356,6 +350,7 @@
           body: JSON.stringify({ round: r }),
         });
         state.current_round = r;
+        pendingRoundSelection = null;
         renderIntro();
         loadState();
       } catch (e) {
@@ -420,48 +415,6 @@
       // Не перезаписываем значения полей при каждом опросе — иначе ввод слетает
     }
 
-    function fillTeamsManageList() {
-      const ul = document.getElementById("teamsManageList");
-      if (!ul) return;
-      ul.innerHTML = "";
-      (state.teams || []).forEach((t) => {
-        const li = document.createElement("li");
-        li.style.marginBottom = "0.5rem";
-        li.style.display = "flex";
-        li.style.alignItems = "center";
-        li.style.gap = "0.5rem";
-        const name = t.name || ("Команда " + t.id);
-        const btnDel = document.createElement("button");
-        btnDel.textContent = "Удалить";
-        btnDel.type = "button";
-        btnDel.style.background = "#d32f2f";
-        btnDel.style.borderColor = "#d32f2f";
-        btnDel.style.padding = "0.35rem 0.75rem";
-        btnDel.onclick = async () => {
-          if (!confirm("Удалить команду «" + name + "»? Она сможет войти заново с тем же именем.")) return;
-          try {
-            const resp = await fetch(API + "/api/teams/" + t.id, { method: "DELETE" });
-            const j = await resp.json();
-            if (resp.ok) {
-              await loadState();
-              fillTeamsManageList();
-              updateTeamsCountDisplay();
-            } else alert(j.error || "Ошибка");
-          } catch (e) {
-            alert("Ошибка сети");
-          }
-        };
-        li.appendChild(document.createTextNode(name + " "));
-        li.appendChild(btnDel);
-        ul.appendChild(li);
-      });
-    }
-    document.getElementById("btnManageTeams").addEventListener("click", () => {
-      const panel = document.getElementById("teamsManagePanel");
-      panel.classList.toggle("hidden");
-      if (!panel.classList.contains("hidden")) fillTeamsManageList();
-    });
-
     const quadrantNames = { top_right: "Рост маржи + CTE в таргете", top_left: "Рост маржи, CTE вне таргета", bottom_right: "Маржа не выросла, CTE в таргете", bottom_left: "Маржа не выросла, CTE вне таргета" };
     const coefLabels = { "-0.1": "-10%", "0": "0%", "0.2": "+20%", "0.4": "+40%" };
 
@@ -470,7 +423,12 @@
         const r = await fetch(API + "/api/state");
         const j = await r.json();
         state = { ...state, ...j };
-        document.getElementById("roundSelect").value = String(state.current_round);
+        const roundSelectEl = document.getElementById("roundSelect");
+        const serverRound = parseInt(state.current_round, 10);
+        if (pendingRoundSelection == null || pendingRoundSelection === serverRound) {
+          roundSelectEl.value = String(serverRound);
+          pendingRoundSelection = null;
+        }
         updateTeamsCountDisplay();
         renderIntro();
         const statusEl = document.getElementById("roundStatusBox");

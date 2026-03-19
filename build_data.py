@@ -123,6 +123,21 @@ def main():
                 _s["DC"] = round(float(_s["orders"]) * float(_s["DCPO"]), 2)
             except (TypeError, ValueError):
                 pass
+        # Для дерева: «прошлая неделя» для фоллбэка / общего CPO до появления в матрице.
+        if _s.get("cpo_total") is None and _s.get("CPO") is not None:
+            try:
+                _s["cpo_total"] = float(_s["CPO"])
+            except (TypeError, ValueError):
+                pass
+        if _s.get("fallback_share") is None:
+            _s["fallback_share"] = 0
+        if _s.get("writeoffs") is None:
+            _s["writeoffs"] = 0
+        # Роялти на старте (раунд 6 в дереве): если нет в svod — 0
+        if _s.get("royalty_prev") is None:
+            _s["royalty_prev"] = 0
+        if _s.get("royalty_curr") is None:
+            _s["royalty_curr"] = 0
 
     scenarios = {}
     for r, row_indices in ROUNDS.items():
@@ -133,6 +148,8 @@ def main():
             parts = parse_line(get_content(lines[idx]))
             if not parts or len(parts) < 23:
                 continue
+            while len(parts) < 44:
+                parts.append(None)
             c1, c2 = parts[1], parts[2]
             if c1 is None or c2 is None:
                 continue
@@ -194,16 +211,42 @@ def main():
                 "surge_prev": surge_pct(opt(28)),
                 "surge_curr": surge_pct(opt(29)),
             }
-            # Фоллбэк / общий CPO из колонок СВОД (слоты 30–33) доступны со сценариев раунда 4+.
-            if r >= 4:
+            # Фоллбэк / общий CPO — слоты 30–33 (как в СВОД); с раунда 3 в дереве.
+            if r >= 3:
                 team1["fallback_share"] = opt(30)
                 team1["cpo_total"] = opt(31)
                 team2["fallback_share"] = opt(32)
                 team2["cpo_total"] = opt(33)
-            # Списания заполнены в раундах 5+ (если есть слоты).
+            # Списания — слоты 34–35, раунды 5+ (None в дампе → 0, иначе в дереве прочерк).
             if r >= 5:
-                team1["writeoffs"] = opt(34)
-                team2["writeoffs"] = opt(35)
+                w1, w2 = opt(34), opt(35)
+                team1["writeoffs"] = 0 if w1 is None else w1
+                team2["writeoffs"] = 0 if w2 is None else w2
+            # Комм. маржа (доля 0–1 или % в Excel) — слоты 38–39, раунды 5+ (если колонки добавлены в кортеж).
+            if r >= 5 and len(parts) > 39:
+                def norm_margin(v):
+                    if v is None:
+                        return None
+                    if isinstance(v, (int, float)) and v > 1:
+                        return round(float(v) / 100.0, 6)
+                    return rv(v)
+
+                m1 = norm_margin(parts[38])
+                m2 = norm_margin(parts[39])
+                if m1 is not None:
+                    team1["margin"] = m1
+                if m2 is not None:
+                    team2["margin"] = m2
+            # Роялти, % — слоты 40–43, раунд 6 (прошлая/текущая × 2 команды). Пустые слоты → 0.
+            if r >= 6:
+                rp1 = opt(40) if len(parts) > 40 else None
+                rc1 = opt(41) if len(parts) > 41 else None
+                rp2 = opt(42) if len(parts) > 42 else None
+                rc2 = opt(43) if len(parts) > 43 else None
+                team1["royalty_prev"] = 0 if rp1 is None else rp1
+                team1["royalty_curr"] = 0 if rc1 is None else rc1
+                team2["royalty_prev"] = 0 if rp2 is None else rp2
+                team2["royalty_curr"] = 0 if rc2 is None else rc2
             scenarios[str(r)][key] = {"team1": team1, "team2": team2}
 
     # Общие вводные зависят от раунда: часть пунктов убирается (по правилам из СВОД).
