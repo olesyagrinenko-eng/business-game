@@ -145,15 +145,15 @@ def main():
                 return round(x, 2) if isinstance(x, float) else x
 
             # СВОД (кортеж в txt): 4=CTE1, 5=CPO1, 6=DCPO1, 7=DC1, 8=+/-, 9=place; 10–12=SH, заказы, OPH (часто None);
-            # 17–22=team2 CTE…место; 23–25=SH, заказы, OPH. Если 10–12 пустые, веб (app.py) досчитывает как Excel:
-            # заказы≈DC/DCPO, SH≈исх.SH×(заказы/исх.заказы), OPH=заказы/SH. Для полного совпадения со сводной —
+            # 17–22=team2 CTE…место; 23–25=SH, заказы, OPH. Если 10–12 пустые, веб (app.py): заказы≈DC/DCPO,
+            # SH=исх.SH, OPH=заказы/SH (как Excel). Для полного совпадения —
             # заполните ячейки в Excel и пересоберите txt / используйте export_scenarios.py с листа «СВОД».
             def opt(i):
                 return rv(parts[i]) if len(parts) > i and parts[i] is not None else None
 
             def surge_pct(v):
-                """Сурж в процентах для дерева (слоты 26–29). 0 = 0%; 1 (устар. флаг) = 100%;
-                0<d<1 — доля (0,15 → 15%); ≥2 — уже проценты (5 → 5%)."""
+                """Сурж в процентах для дерева (слоты 26–29). 0 → 0%; 1 → 1% (как в листе «Деревья», не 100%);
+                0<d<1 — доля (0,15 → 15%); 2…100 — уже проценты; 100 — 100%."""
                 if v is None:
                     return None
                 if not isinstance(v, (int, float)):
@@ -161,7 +161,7 @@ def main():
                 if v == 0:
                     return 0
                 if v == 1:
-                    return 100
+                    return 1
                 if 0 < v < 1:
                     return round(float(v) * 100, 2)
                 return rv(v)

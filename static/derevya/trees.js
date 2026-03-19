@@ -29,10 +29,11 @@
   function cteStatus(ok) {
     return ok ? 'status-green' : 'status-red';
   }
-  function computeSH(c1, c2) {
-    var sh1 = Math.max(0, 300 + 600 * c1);
-    var sh2 = Math.max(0, 300 - 600 * c1);
-    return { sh1: Math.round(sh1 * 10) / 10, sh2: Math.round(sh2 * 10) / 10 };
+  /** Как в app.py `_enrich_side_sh_orders_oph`: если SH нет в сценарии — исходные часы смены из INITIAL, не 300+600*коэф. */
+  function defaultSh(teamNum) {
+    var t = INITIAL['team' + teamNum];
+    if (t && t.SH != null && t.SH !== '') return Number(t.SH);
+    return 300;
   }
   function pctChange(prev, curr) {
     if (prev == null || prev === 0 || curr == null) return null;
@@ -102,8 +103,10 @@
   function fillTeam(team, prev, curr, shCurr) {
     var prefix = team === 1 ? 't1' : 't2';
     var ordersCurr = (curr && curr.orders != null) ? curr.orders : (curr && curr.DCPO ? curr.DC / curr.DCPO : null);
+    /* Как app.py: заказы из DC/DCPO — целые; OPH = round(заказы/SH, 1) */
+    if (ordersCurr != null && curr && curr.orders == null) ordersCurr = Math.round(Number(ordersCurr));
     if (curr && curr.SH != null) shCurr = curr.SH;
-    var ophCurr = (curr && curr.OPH != null) ? curr.OPH : (shCurr > 0 && ordersCurr != null ? ordersCurr / shCurr : null);
+    var ophCurr = (curr && curr.OPH != null) ? curr.OPH : (shCurr > 0 && ordersCurr != null ? Math.round((Number(ordersCurr) / shCurr) * 10) / 10 : null);
     /* Текущий AOV: только из сценария или «как на прошлой неделе»; глобальный AOV раунда не подставляем (ломает команды с разным чеком). */
     var aovCurr = (curr && curr.avg_check != null) ? curr.avg_check : prev.avg_check;
     var ordPrev = prev.orders, shPrev = prev.SH;
@@ -164,10 +167,9 @@
     document.getElementById('vCoef2').textContent = coefLabels[String(c2)] || c2;
     var diffPct = Math.round((c2 - c1) * 100);
     document.getElementById('vDiff').textContent = (diffPct > 0 ? '+' : '') + diffPct + '%';
-    var sh = computeSH(c1, c2);
     var prev1 = INITIAL.team1, prev2 = INITIAL.team2;
-    fillTeam(1, prev1, sc ? sc.team1 : null, sh.sh1);
-    fillTeam(2, prev2, sc ? sc.team2 : null, sh.sh2);
+    fillTeam(1, prev1, sc ? sc.team1 : null, defaultSh(1));
+    fillTeam(2, prev2, sc ? sc.team2 : null, defaultSh(2));
     fillMechanics(1, sc);
     fillMechanics(2, sc);
     applyDiagramMinHeight();

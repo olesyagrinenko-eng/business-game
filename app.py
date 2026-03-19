@@ -150,9 +150,10 @@ def _coerce_metric_number(x):
 
 def _enrich_side_sh_orders_oph(side, role):
     """
-    В выгрузке svod_full.txt слоты 10–12 (SH, заказы, OPH) часто пустые — тогда досчитываем как на сводной в Excel:
-    заказы ≈ DC/DCPO; SH ≈ исходный_SH × (заказы/исх._заказы); OPH = заказы/SH (совпадает с исходным OPH при линейном SH).
-    Если в JSON уже заданы SH/заказы/OPH из файла — не трогаем (как в строке 0_0 раунда 4 в СВОД).
+    В выгрузке svod_full.txt слоты 10–12 (SH, заказы, OPH) часто пустые — тогда как на сводной Excel:
+    заказы ≈ DC/DCPO; SH = исходный_SH (часы смены не пересчитываем от объёма); OPH = заказы/SH.
+    Пример 0%/0%: заказы 1260/1332, SH 300, OPH 4.2 / 4.4. Одна и та же логика для раундов 1–6 (номер раунда не меняет формулу).
+    Если в JSON заданы все три поля — не трогаем (как вручную заполненные ячейки Excel).
     """
     if not isinstance(side, dict):
         return
@@ -177,24 +178,15 @@ def _enrich_side_sh_orders_oph(side, role):
     if sh_in is not None:
         sh = _coerce_metric_number(sh_in)
     else:
-        io = _coerce_metric_number(im.get("orders"))
-        ish = _coerce_metric_number(im.get("SH"))
-        sh = None
-        if ish is not None and io is not None and float(io) > 0 and orders is not None:
-            o_num = float(orders)
-            if o_num > 0:
-                # Линейно с объёмом заказов — как на сводной странице Excel (см. заполненные 10–12 в svod_full)
-                sh = max(1.0, round(ish * o_num / float(io)))
-            elif o_num == 0:
-                sh = ish
-        if sh is None:
-            sh = ish
+        # Без масштабирования на заказы — иначе OPH «залипает» на исходном 3.5/3.7 вместо 4.2/4.4 как в Excel
+        sh = _coerce_metric_number(im.get("SH"))
 
     oph = side.get("OPH")
     if oph is None:
         if sh is not None and sh != 0 and orders is not None:
             try:
-                oph = round(float(orders) / float(sh), 2)
+                # Как в сводной Excel: обычно один знак после запятой (4.2; 4.4)
+                oph = round(float(orders) / float(sh), 1)
             except (ValueError, ZeroDivisionError):
                 oph = _coerce_metric_number(im.get("OPH"))
         else:

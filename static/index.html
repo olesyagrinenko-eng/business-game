@@ -321,7 +321,7 @@
       return null;
     }
 
-    /** Как на сервере и сводной Excel: заказы ≈ DC/DCPO; SH ≈ исх.SH × (заказы/исх.заказы); OPH = заказы/SH. */
+    /** Как на сервере и Excel: заказы ≈ DC/DCPO; SH = исх.SH; OPH = заказы/SH. */
     function enrichResultShOrdersOph(res, initial) {
       const out = res && typeof res === "object" ? { ...res } : res;
       if (!out || !initial) return out;
@@ -345,21 +345,13 @@
       if (out.SH != null) {
         sh = coerceMetricNum(out.SH);
       } else {
-        const io = coerceMetricNum(initial.orders);
-        const ish = coerceMetricNum(initial.SH);
-        sh = null;
-        if (ish != null && io != null && io > 0 && orders != null) {
-          const oNum = Number(orders);
-          if (oNum > 0) sh = Math.max(1, Math.round((ish * oNum) / io));
-          else if (oNum === 0) sh = ish;
-        }
-        if (sh == null) sh = ish;
+        sh = coerceMetricNum(initial.SH);
       }
 
       let oph = out.OPH;
       if (oph == null) {
         if (sh != null && sh !== 0 && orders != null)
-          oph = Math.round((orders / sh) * 100) / 100;
+          oph = Math.round((orders / sh) * 10) / 10;
         else oph = coerceMetricNum(initial.OPH);
       } else {
         oph = coerceMetricNum(oph);
