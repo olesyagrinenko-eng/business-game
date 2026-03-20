@@ -252,6 +252,7 @@
       <thead id="allRoundsTableHead"></thead>
       <tbody id="allRoundsTableBody"></tbody>
     </table>
+    <p class="muted" style="font-size:0.98rem; margin-top:1rem;">На этой вкладке ось CTE на карте: <strong>строго больше половины</strong> раундов с расчётом были в таргете (как колонка «N из M»). На вкладке «Карта квадрантов» ось CTE — только <strong>выбранный</strong> раунд.</p>
     <h3 style="margin-top:1.75rem;">Карта квадрантов (по тем же данным)</h3>
     <div class="quadrant-map">
       <div class="quadrant top_left">
@@ -625,7 +626,7 @@
     async function loadAllRoundsResults() {
       const upTo = parseInt(document.getElementById("allRoundsRoundSelect").value, 10) || 6;
       try {
-        const r = await fetch(API + "/api/results?round=" + upTo);
+        const r = await fetch(API + "/api/results?round=" + upTo + "&cte_quadrant_aggregate=1");
         const j = await r.json();
         const results = j.results || [];
         const thead = document.getElementById("allRoundsTableHead");

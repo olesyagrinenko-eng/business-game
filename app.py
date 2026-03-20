@@ -508,6 +508,8 @@ def api_results():
     up_to_round = request.args.get("round", type=int)
     if up_to_round is None or up_to_round < 1 or up_to_round > max_rounds:
         up_to_round = max_rounds
+    # Вкладка «Итоги по всем раундам»: ось CTE на карте = большинство раундов (согласовано с колонкой «N из M»)
+    cte_quadrant_aggregate = request.args.get("cte_quadrant_aggregate", type=int) == 1
     rounds_consider = list(range(1, up_to_round + 1))
     initial_metrics = DATA.get("initial_metrics", {})
     results = []
@@ -638,13 +640,19 @@ def api_results():
         x["quadrant"] = None
         if x["rounds_played"] < 1:
             continue
-        # CTE в таргете в том же «эффективном» раунде, что и для прироста (последний с данными ≤ N)
-        pr_sel = None
-        for p in reversed(x.get("per_round", [])):
-            if p["round"] <= up_to_round:
-                pr_sel = p
-                break
-        cte_ok = pr_sel.get("cte_ok", False) if pr_sel else False
+        if cte_quadrant_aggregate:
+            n_res = x.get("rounds_with_result") or 0
+            ok_c = int(x.get("cte_ok_rounds") or 0)
+            # Строго больше половины раундов с расчётом — «CTE в таргете» для квадранта (как смысл колонки N из M)
+            cte_ok = n_res > 0 and (ok_c * 2 > n_res)
+        else:
+            # Карта по выбранному раунду: только CTE этого (последнего ≤ N) раунда
+            pr_sel = None
+            for p in reversed(x.get("per_round", [])):
+                if p["round"] <= up_to_round:
+                    pr_sel = p
+                    break
+            cte_ok = pr_sel.get("cte_ok", False) if pr_sel else False
         gx = _growth_for_axis(x)
         # Верхние квадранты: любой положительный прирост маржи (без сравнения с медианой)
         high = gx is not None and gx > 0
@@ -661,6 +669,7 @@ def api_results():
         "median_dc_growth": None,
         "up_to_round": up_to_round,
         "max_rounds": max_rounds,
+        "cte_quadrant_aggregate": cte_quadrant_aggregate,
         "show_total_only_after_round_5": True,
     })
 
