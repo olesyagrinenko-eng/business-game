@@ -28,4 +28,8 @@ def main():
     run()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"[run.py] FATAL: {e!r}", file=sys.stderr, flush=True)
+        raise

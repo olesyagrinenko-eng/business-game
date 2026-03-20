@@ -1,14 +1,19 @@
 # Render Blueprint: один клик деплой из репозитория
 # https://render.com/docs/blueprint-spec
 #
-# Если репозиторий — весь каталог Cursor, а код игры в подпапке, rootDir обязателен.
-# Если в корне репозитория лежит только game-web — удалите rootDir.
+# ВАЖНО: rootDir с кириллицей («бизнес игра») иногда ломает деплой на Render.
+# Надёжнее: вынести game-web в корень репозитория или задать Root Directory вручную в панели.
+#
+# Если в корне репозитория только game-web — удалите rootDir и startCommand ниже оставьте как есть.
 services:
   - type: web
     name: business-game
     runtime: python
     rootDir: бизнес игра/game-web
-    buildCommand: pip install -r requirements.txt
-    startCommand: python run.py
-    # HTTP health check (не только открытый TCP-порт)
+    buildCommand: pip install --no-cache-dir -r requirements.txt
+    # Shell раскрывает $PORT; прямой gunicorn надёжнее, чем python run.py на части образов
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 2 --timeout 120 --graceful-timeout 30 --access-logfile - --error-logfile - app:app
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
     healthCheckPath: /health

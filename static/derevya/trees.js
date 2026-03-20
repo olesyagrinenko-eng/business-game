@@ -123,6 +123,28 @@
     var n = Number(v);
     return isFinite(n) ? n : null;
   }
+  /**
+   * Ком. маржа текущей недели (доля 0–1), если в сценарии нет поля margin (слоты 38–39 СВОД).
+   * Иначе «текущая» копировалась с «прошлой» и на раунде 6 получалось 33% / 33%.
+   * Оценка по DCPO и среднему чеку текущей недели (как в AOV: из сценария или прошлой недели);
+   * коэффициенты подогнаны под исходные метрики (33%) и лист «Деревья» (−10%/0 → ~29%).
+   * Явное scenario.margin в JSON имеет приоритет.
+   */
+  function inferredMarginFraction(prev, curr) {
+    if (ROUND < 5 || !curr) return null;
+    var ac = numericOrNull(
+      curr.avg_check != null && curr.avg_check !== '' ? curr.avg_check : prev.avg_check
+    );
+    var dcpo = numericOrNull(curr.DCPO);
+    if (ac == null || ac === 0 || dcpo == null) return null;
+    var k = 0.225;
+    var b = 0.278;
+    var m = k * (dcpo / ac) + b;
+    if (!isFinite(m)) return null;
+    if (m > 0.999) m = 0.999;
+    if (m < -0.999) m = -0.999;
+    return m;
+  }
   function fillTeam(team, prev, curr, shCurr) {
     var prefix = team === 1 ? 't1' : 't2';
     var ordersCurr = (curr && curr.orders != null) ? curr.orders : (curr && curr.DCPO ? curr.DC / curr.DCPO : null);
@@ -159,7 +181,13 @@
     set(prefix + 'Writeoffs_pct', pctStr(woPct));
     setPlashka('p' + team + '_writeoffs', woOk == null ? 'status-yellow' : 'status-' + metricStatus(woOk));
     var marginPrev = prev.margin != null && prev.margin !== '' ? Number(prev.margin) : null;
-    var marginCurr = (curr && curr.margin != null && curr.margin !== '') ? Number(curr.margin) : marginPrev;
+    var marginCurr;
+    if (curr && curr.margin != null && curr.margin !== '') {
+      marginCurr = Number(curr.margin);
+    } else if (curr && ROUND >= 5) {
+      marginCurr = inferredMarginFraction(prev, curr);
+    }
+    if (marginCurr == null) marginCurr = marginPrev;
     var marginPct = pctChange(marginPrev, marginCurr);
     var marginOk = marginPct == null ? null : (marginPct > 0 ? true : marginPct < 0 ? false : null);
     set(prefix + 'Margin_prev', marginPrev != null ? pctPlain(marginPrev * 100) : '—');
