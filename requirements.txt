@@ -1,3 +1,4 @@
 flask>=2.0.0
-gunicorn>=21.0.0
+# gunicorn 25 + Render иногда даёт «No HTTP ports»; локально можно gunicorn -c gunicorn.conf.py
+gunicorn>=21.2,<24
 waitress>=2.1.2
