@@ -11,8 +11,8 @@ services:
     runtime: python
     rootDir: бизнес игра/game-web
     buildCommand: pip install --no-cache-dir -r requirements.txt
-    # Shell раскрывает $PORT; прямой gunicorn надёжнее, чем python run.py на части образов
-    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 2 --timeout 120 --graceful-timeout 30 --access-logfile - --error-logfile - app:app
+    # Waitress: один процесс, сразу HTTP на PORT (gunicorn на Render иногда не проходит port scan)
+    startCommand: python serve_waitress.py
     envVars:
       - key: PYTHONUNBUFFERED
         value: "1"

@@ -1,29 +1,17 @@
 #!/usr/bin/env python3
 """
-Запуск gunicorn с портом из переменной PORT (для Render).
-Так порт гарантированно подставляется даже если shell не раскрывает $PORT.
+Локальный запуск: python run.py
+На Render используйте: gunicorn -c gunicorn.conf.py app:app
 """
 import os
 import sys
 
 def main():
-    port = os.environ.get("PORT", "10000")
-    try:
-        port = str(int(port))
-    except ValueError:
-        port = "10000"
-    bind = f"0.0.0.0:{port}"
-    print(f"[run.py] gunicorn bind={bind} (PORT from env)", file=sys.stderr, flush=True)
-    # Запуск gunicorn программно с нужным bind
-    sys.argv = [
-        "gunicorn",
-        "-b", bind,
-        "--workers", "1",
-        "--timeout", "120",
-        "--access-logfile", "-",
-        "--error-logfile", "-",
-        "app:app",
-    ]
+    root = os.path.abspath(os.path.dirname(__file__))
+    cfg = os.path.join(root, "gunicorn.conf.py")
+    print(f"[run.py] gunicorn -c {cfg} app:app", file=sys.stderr, flush=True)
+    sys.argv = ["gunicorn", "-c", cfg, "app:app"]
+    os.chdir(root)
     from gunicorn.app.wsgiapp import run
     run()
 
